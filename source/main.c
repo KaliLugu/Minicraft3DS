@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "Render.h"
 #include "SaveLoad.h"
+#include "engine/engine.h"
 #include "network/Network.h"
 #include "network/PacketHandler.h"
 #include "network/Synchronizer.h"
@@ -97,8 +98,7 @@ int main() {
     }
     sf2d_init();
 
-    ndspInit();
-    ndspSetOutputMode(NDSP_OUTPUT_STEREO);
+    initEngine();
 
     networkInit();
     romfsInit();
@@ -134,7 +134,7 @@ int main() {
     batch_init(1024 * 10);
 
     loadSounds();
-    playMusic(&music_menu);
+    playMusic(music_menu);
 
     bakeLights();
 
@@ -242,7 +242,7 @@ int main() {
 
     romfsExit();
     networkExit();
-    ndspExit();
+    exitEngine();
     cfguExit();
     sf2d_fini();
     return 0;

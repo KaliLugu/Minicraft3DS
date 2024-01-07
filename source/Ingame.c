@@ -378,5 +378,5 @@ void exitGame() {
     currentSelection = 0;
     currentMenu = MENU_TITLE;
 
-    playMusic(&music_menu);
+    playMusic(music_menu);
 }

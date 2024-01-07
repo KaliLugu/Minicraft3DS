@@ -2,6 +2,7 @@
 
 #include "../Player.h"
 #include "Network.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 #define PACKET_START 0

@@ -33,7 +33,7 @@ include $(DEVKITARM)/3ds_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	Minicraft3DS
 BUILD		:=	build
-SOURCES		:=	source source/minizip source/data source/menu source/editor source/network source/ingamemenu source/entity source/render
+SOURCES		:=	source source/minizip source/data source/menu source/editor source/network source/ingamemenu source/entity source/render source/engine source/engine/3ds
 DATA		:=	data
 INCLUDES	:=	include
 GRAPHICS	:=	gfx
