@@ -1,12 +1,12 @@
 #pragma once
+#include <3ds.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <3ds.h>
 
 // Note: The lower channels (<8 ?) seem to not work?
-#define SOUND_CHANNEL_MIN 16
-#define SOUND_CHANNEL_MAX 24
+#define SOUND_CHANNEL_MIN 15
+#define SOUND_CHANNEL_MAX 23
 #define MUSIC_CHANNEL 10
 
 #define MUSIC_STREAM_BUFFER_SIZE (65536 * 8)

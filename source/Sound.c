@@ -19,6 +19,8 @@ u8 soundListenerLevel;
 int soundListenerX;
 int soundListenerY;
 
+ndspWaveBuf *channelBuf;
+
 void loadSound(Sound *snd, char *filename) {
     FILE *file = fopen(filename, "rb");
     if (file != NULL) {
@@ -33,13 +35,15 @@ void loadSound(Sound *snd, char *filename) {
 
 void playSound(Sound snd) {
     int c;
-    u8 status;
 
     for (c = SOUND_CHANNEL_MIN; c <= SOUND_CHANNEL_MAX; c++) {
-        csndIsPlaying(c, &status);
+        if (!ndspChnIsPlaying(c)) {
+            ndspChnSetFormat(c, NDSP_FORMAT_MONO_PCM16);
+            ndspChnSetRate(c, 44100);
 
-        if (!status) {
-            csndPlaySound(c, SOUND_FORMAT_16BIT | SOUND_ONE_SHOT, 44100, 1, 0, snd.buffer, snd.buffer, snd.size);
+            channelBuf[c].data_pcm16 = (s16 *)snd.buffer;
+            channelBuf[c].nsamples = snd.size / 2;
+            ndspChnWaveBufAdd(c, channelBuf + c);
             return;
         }
     }
@@ -53,17 +57,7 @@ void playSoundPositioned(Sound snd, s8 level, int x, int y) {
     if (xd * xd + yd * yd > 80 * 80)
         return;
 
-    int c;
-    u8 status;
-
-    for (c = SOUND_CHANNEL_MIN; c <= SOUND_CHANNEL_MAX; c++) {
-        csndIsPlaying(c, &status);
-
-        if (!status) {
-            csndPlaySound(c, SOUND_FORMAT_16BIT | SOUND_ONE_SHOT, 44100, 1, 0, snd.buffer, snd.buffer, snd.size);
-            return;
-        }
-    }
+    playSound(snd);
 }
 
 void setListenerPosition(s8 level, int x, int y) {
@@ -77,6 +71,10 @@ u8 *musicBuffer1;
 u8 *musicBuffer2;
 u8 *musicBufferCurrent;
 u32 musicBufferCurrentSize;
+ndspWaveBuf *streamBuffer1;
+ndspWaveBuf *streamBuffer2;
+ndspWaveBuf *streamBufferCurrent;
+
 Music *currentMusic;
 bool runMusicThread;
 Thread musicThread;
@@ -123,9 +121,8 @@ void playMusic(Music *music) {
 }
 
 void stopMusic() {
+    ndspChnWaveBufClear(MUSIC_CHANNEL);
     currentMusic = NULL;
-    CSND_SetPlayState(MUSIC_CHANNEL, 0);
-    csndExecCmds(true);
 }
 
 void updateMusic(int lvl, int time) {
@@ -151,47 +148,51 @@ void updateMusic(int lvl, int time) {
 }
 
 void musicStreamThreadMain(void *arg) {
-    u8 playbackStatus = 1;
+    ndspChnSetFormat(MUSIC_CHANNEL, NDSP_FORMAT_MONO_PCM16);
+    ndspChnSetRate(MUSIC_CHANNEL, 44100);
 
     while (runMusicThread) {
-        if (R_SUCCEEDED(csndIsPlaying(MUSIC_CHANNEL, &playbackStatus))) {
-            if (playbackStatus == 0 && currentMusic != NULL) {
-                // play current buffer
-                csndPlaySound(MUSIC_CHANNEL, SOUND_FORMAT_16BIT | SOUND_ONE_SHOT, 44100, 1, 0, musicBufferCurrent, musicBufferCurrent, musicBufferCurrentSize);
-                playbackStatus = 1;
+        if (!ndspChnIsPlaying(MUSIC_CHANNEL) && currentMusic != NULL) {
+            // play current buffer
+            streamBufferCurrent->data_pcm16 = (s16 *)musicBufferCurrent;
+            streamBufferCurrent->nsamples = musicBufferCurrentSize / 2;
+            ndspChnWaveBufAdd(MUSIC_CHANNEL, streamBufferCurrent);
 
-                // switch buffer
-                if (musicBufferCurrent == musicBuffer1) {
-                    musicBufferCurrent = musicBuffer2;
-                } else {
-                    musicBufferCurrent = musicBuffer1;
-                }
-
-                // load next buffer
-                u32 bufferSize = MUSIC_STREAM_BUFFER_SIZE;
-                if (currentMusic->size - currentMusic->pos < bufferSize) {
-                    bufferSize = currentMusic->size - currentMusic->pos;
-                }
-                FILE *file = fopen(currentMusic->filename, "rb");
-                if (file != NULL) {
-                    fseek(file, currentMusic->pos, SEEK_SET);
-                    fread(musicBufferCurrent, 1, bufferSize, file);
-                    musicBufferCurrentSize = bufferSize;
-
-                    currentMusic->pos = currentMusic->pos + bufferSize;
-                    if (currentMusic->pos >= currentMusic->size) {
-                        currentMusic->pos = 0;
-                    }
-                } else {
-                    currentMusic = NULL;
-                }
-                fclose(file);
+            // switch buffer
+            if (musicBufferCurrent == musicBuffer1) {
+                musicBufferCurrent = musicBuffer2;
+                streamBufferCurrent = streamBuffer2;
+            } else {
+                musicBufferCurrent = musicBuffer1;
+                streamBufferCurrent = streamBuffer1;
             }
+
+            // load next buffer
+            u32 bufferSize = MUSIC_STREAM_BUFFER_SIZE;
+            if (currentMusic->size - currentMusic->pos < bufferSize) {
+                bufferSize = currentMusic->size - currentMusic->pos;
+            }
+            FILE *file = fopen(currentMusic->filename, "rb");
+            if (file != NULL) {
+                fseek(file, currentMusic->pos, SEEK_SET);
+                fread(musicBufferCurrent, 1, bufferSize, file);
+                musicBufferCurrentSize = bufferSize;
+
+                currentMusic->pos = currentMusic->pos + bufferSize;
+                if (currentMusic->pos >= currentMusic->size) {
+                    currentMusic->pos = 0;
+                }
+            } else {
+                currentMusic = NULL;
+            }
+            fclose(file);
         }
     }
 }
 
 void loadSounds() {
+    channelBuf = linearAlloc(sizeof(ndspWaveBuf) * SOUND_CHANNEL_MAX);
+
     // create and load buffers
     loadSound(&snd_playerHurt, "romfs:/playerhurt.raw");
     loadSound(&snd_playerDeath, "romfs:/playerdeath.raw");
@@ -204,6 +205,9 @@ void loadSounds() {
     musicBuffer1 = linearAlloc(MUSIC_STREAM_BUFFER_SIZE);
     musicBuffer2 = linearAlloc(MUSIC_STREAM_BUFFER_SIZE);
     musicBufferCurrent = musicBuffer1;
+    streamBuffer1 = linearAlloc(sizeof(ndspWaveBuf));
+    streamBuffer2 = linearAlloc(sizeof(ndspWaveBuf));
+    streamBufferCurrent = streamBuffer1;
     currentMusic = NULL;
 
     loadMusic(&music_menu, "romfs:/music/menu.raw");
@@ -222,7 +226,6 @@ void loadSounds() {
 
 void freeSounds() {
     // stop streaming thread
-    runMusicThread = false;
     if (runMusicThread) {
         runMusicThread = false;
         threadJoin(musicThread, U64_MAX);
@@ -230,11 +233,10 @@ void freeSounds() {
     }
 
     // stop all sounds
-    CSND_SetPlayState(MUSIC_CHANNEL, 0);
+    ndspChnWaveBufClear(MUSIC_CHANNEL);
     for (int c = SOUND_CHANNEL_MIN; c <= SOUND_CHANNEL_MAX; c++) {
-        CSND_SetPlayState(c, 0);
+        ndspChnWaveBufClear(c);
     }
-    csndExecCmds(true);
 
     // free buffers
     linearFree(snd_playerHurt.buffer);
@@ -247,4 +249,8 @@ void freeSounds() {
 
     linearFree(musicBuffer1);
     linearFree(musicBuffer2);
+    linearFree(streamBuffer1);
+    linearFree(streamBuffer2);
+
+    linearFree(channelBuf);
 }

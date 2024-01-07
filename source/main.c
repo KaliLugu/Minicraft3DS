@@ -96,7 +96,10 @@ int main() {
         fclose(file);
     }
     sf2d_init();
-    csndInit();
+
+    ndspInit();
+    ndspSetOutputMode(NDSP_OUTPUT_STEREO);
+
     networkInit();
     romfsInit();
 
@@ -239,7 +242,7 @@ int main() {
 
     romfsExit();
     networkExit();
-    csndExit();
+    ndspExit();
     cfguExit();
     sf2d_fini();
     return 0;
