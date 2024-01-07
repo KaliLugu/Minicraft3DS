@@ -1,5 +1,5 @@
 #pragma once
 
-void menuSettingsRebindInit();
-void menuSettingsRebindTick();
-void menuSettingsRebindRender();
+extern void menuSettingsRebindInit();
+extern void menuSettingsRebindTick();
+extern void menuSettingsRebindRender();

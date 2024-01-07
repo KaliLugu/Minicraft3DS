@@ -15,7 +15,6 @@
 #define MENU_SETTINGS_TP 12
 #define MENU_ABOUT 13
 
-
 #include "menu/MenuAbout.h"
 #include "menu/MenuChooseGame.h"
 #include "menu/MenuLoadGame.h"
@@ -29,14 +28,14 @@
 #include "menu/MenuTitle.h"
 #include "menu/MenuTutorial.h"
 
-void initMenus();
-void renderMenu(int menu);
-void tickMenu(int menu);
+extern void initMenus();
+extern void renderMenu(int menu);
+extern void tickMenu(int menu);
 
-void menuTickKeyboard(char * string, int maxLength);
-void menuRenderKeyboard();
+extern void menuTickKeyboard(char *string, int maxLength);
+extern void menuRenderKeyboard();
 
-void menuInitMapBG();
-void menuUpdateMapBG();
-void menuRenderMapBGTop();
-void menuRenderMapBGBottom();
+extern void menuInitMapBG();
+extern void menuUpdateMapBG();
+extern void menuRenderMapBGTop();
+extern void menuRenderMapBGBottom();

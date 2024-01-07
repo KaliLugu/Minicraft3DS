@@ -1,4 +1,4 @@
 #pragma once
 
-void menuMultiplayerWaitTick();
-void menuMultiplayerWaitRender();
+extern void menuMultiplayerWaitTick();
+extern void menuMultiplayerWaitRender();

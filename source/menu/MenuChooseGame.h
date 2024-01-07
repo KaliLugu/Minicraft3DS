@@ -1,4 +1,4 @@
 #pragma once
 
-void menuChooseGameTick();
-void menuChooseGameRender();
+extern void menuChooseGameTick();
+extern void menuChooseGameRender();

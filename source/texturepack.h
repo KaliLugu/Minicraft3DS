@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string.h>
+#include "Globals.h"
+#include "minizip/unzip.h"
 #include <ctype.h>
 #include <sf2d.h>
 #include <sfil.h>
-#include "Globals.h"
-#include "minizip/unzip.h"
+#include <string.h>
 
-int loadTexturePack(char * filename);
-int getTexturePackComment(char * filename, char * cmmtBuf);
+extern int loadTexturePack(char *filename);
+extern int getTexturePackComment(char *filename, char *cmmtBuf);

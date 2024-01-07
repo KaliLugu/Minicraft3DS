@@ -1,11 +1,13 @@
 #include "Input.h"
 
-void toggleKey(Key* key, bool held, bool down){
+Inputs localInputs;
+
+void toggleKey(Key *key, bool held, bool down) {
     key->down = held;
     key->clicked = down;
 }
-    
-void tickKeys(Inputs *inputs, u32 held, u32 down){
+
+void tickKeys(Inputs *inputs, u32 held, u32 down) {
     hidTouchRead(&(inputs->k_touch)); // Update touch position
     toggleKey(&(inputs->k_up), held & localInputs.k_up.input, down & localInputs.k_up.input);
     toggleKey(&(inputs->k_down), held & localInputs.k_down.input, down & localInputs.k_down.input);
@@ -24,7 +26,7 @@ void tickKeys(Inputs *inputs, u32 held, u32 down){
 void resetKeys(Inputs *inputs) {
     (inputs->k_touch).px = -1;
     (inputs->k_touch).py = -1;
-    
+
     toggleKey(&(inputs->k_up), false, false);
     toggleKey(&(inputs->k_down), false, false);
     toggleKey(&(inputs->k_left), false, false);

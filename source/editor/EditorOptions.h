@@ -1,6 +1,6 @@
 #pragma once
 
-void editorOptionsInit();
-void editorOptionsTick();
-void editorOptionsRenderTop();
-void editorOptionsRenderBottom();
+extern void editorOptionsInit();
+extern void editorOptionsTick();
+extern void editorOptionsRenderTop();
+extern void editorOptionsRenderBottom();

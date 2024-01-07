@@ -1,10 +1,10 @@
 #include "EffectsData.h"
 
-static char* _effectNames[EFFECTS_MAX+1];
-static int _effectIconX[EFFECTS_MAX+1];
-static int _effectIconY[EFFECTS_MAX+1];
+static char *_effectNames[EFFECTS_MAX + 1];
+static int _effectIconX[EFFECTS_MAX + 1];
+static int _effectIconY[EFFECTS_MAX + 1];
 
-static void _effectRegister(int id, char* name, int iconX, int iconY) {
+static void _effectRegister(int id, char *name, int iconX, int iconY) {
     _effectNames[id] = name;
     _effectIconX[id] = iconX;
     _effectIconY[id] = iconY;
@@ -19,8 +19,7 @@ void effectsDataInit() {
     _effectRegister(EFFECT_NIGHTVISION, "Night Vision", 40, 352);
 }
 
-
-char* effectGetName(int id) {
+char *effectGetName(int id) {
     return _effectNames[id];
 }
 

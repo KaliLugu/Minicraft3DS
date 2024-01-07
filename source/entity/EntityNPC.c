@@ -15,8 +15,8 @@ Entity newEntityNPC(int type, int x, int y, int level) {
     e.xr = 4;
     e.yr = 3;
     e.canPass = false;
-    
+
     e.tickFunction = NULL;
-    
+
     return e;
 }

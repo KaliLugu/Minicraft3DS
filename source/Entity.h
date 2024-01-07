@@ -27,9 +27,10 @@
 
 typedef struct Entity Entity;
 
-typedef struct _plrd PlayerData; //in order to not include Player.h and cause all sorts of problems
+typedef struct _plrd PlayerData; // in order to not include Player.h and cause all sorts of problems
 
-typedef struct {
+typedef struct
+{
     s8 ax;
     s8 ay;
     u8 dir;
@@ -47,12 +48,12 @@ typedef struct {
     bool isCarrying;
     bool isSwimming;
     int swimTimer;
-    
+
     PlayerData *data;
 } Player;
 
-
-typedef struct {
+typedef struct
+{
     float xa;
     float ya;
     float za;
@@ -63,14 +64,16 @@ typedef struct {
     Item item;
 } EntityItem;
 
-typedef struct {
+typedef struct
+{
     s16 itemID;
     bool active;
-    s8 r; // light radius for lantern.
-    Inventory* inv; // Points to chest inventory.
+    s8 r;           // light radius for lantern.
+    Inventory *inv; // Points to chest inventory.
 } EntityFurniture;
 
-typedef struct {
+typedef struct
+{
     u8 mtype;
     s8 xa;
     s8 ya;
@@ -80,7 +83,8 @@ typedef struct {
     s8 walkDist;
 } PassiveMob;
 
-typedef struct {
+typedef struct
+{
     s8 xa;
     s8 ya;
     s16 health;
@@ -92,7 +96,8 @@ typedef struct {
     u32 color;
 } HostileMob;
 
-typedef struct {
+typedef struct
+{
     s8 xa;
     s8 ya;
     s16 health;
@@ -105,8 +110,9 @@ typedef struct {
     s8 spriteAdjust;
 } AirWizard;
 
-typedef struct {
-    Entity* parent;
+typedef struct
+{
+    Entity *parent;
     s16 age;
     float xa;
     float ya;
@@ -114,15 +120,17 @@ typedef struct {
     float yy;
 } Spark;
 
-typedef struct {
-    Entity* parent;
+typedef struct
+{
+    Entity *parent;
     s16 age;
     s16 itemID;
     s8 xa;
     s8 ya;
 } Arrow;
 
-typedef struct {
+typedef struct
+{
     s8 xa;
     s8 ya;
     s16 health;
@@ -135,8 +143,9 @@ typedef struct {
     int animTimer;
 } Dragon;
 
-typedef struct {
-    Entity* parent;
+typedef struct
+{
+    Entity *parent;
     u8 type;
     s16 age;
     float xa;
@@ -145,18 +154,21 @@ typedef struct {
     float yy;
 } DragonFire;
 
-typedef struct {
+typedef struct
+{
     s8 xa;
     s8 ya;
     s8 randWalkTime;
     s8 waitTime;
 } Glowworm;
 
-typedef struct {
+typedef struct
+{
     u8 type;
 } NPC;
 
-typedef struct {
+typedef struct
+{
     float xa;
     float ya;
     float za;
@@ -164,11 +176,12 @@ typedef struct {
     float yy;
     float zz;
     s16 age;
-    char* text;
+    char *text;
     int color;
 } TextParticleEntity;
 
-typedef struct {
+typedef struct
+{
     s16 age;
 } SmashParticleEntity;
 
@@ -176,9 +189,9 @@ struct Entity {
     s16 x;
     s16 y;
     s16 type;
-    
-    s8 xKnockback,yKnockback;
-    u8 xr,yr;
+
+    s8 xKnockback, yKnockback;
+    u8 xr, yr;
     u8 level;
     s8 hurtTime;
     s16 slotNum; // Read-only. Do not mess with this.
@@ -200,44 +213,41 @@ struct Entity {
         TextParticleEntity textParticle;
         SmashParticleEntity smashParticle;
     };
-    
-    //TODO: Move more "callbacks" to this "dynamic functions"
-    //Note: These need to always be set (explicitly set to NULL if unused) ot the game will crash
+
+    // TODO: Move more "callbacks" to this "dynamic functions"
+    // Note: These need to always be set (explicitly set to NULL if unused) ot the game will crash
     void (*tickFunction)(Entity *e, PlayerData *pd);
 };
 
-typedef struct {
+typedef struct
+{
     Entity entities[6][1000];
     s16 lastSlot[6];
     Inventory invs[300];
     s16 nextInv;
 } EntityManager;
 
-EntityManager eManager;
-Entity nullEntity;
+extern EntityManager eManager;
+extern Entity nullEntity;
 
+extern Entity newEntityItem(Item item, int x, int y, int level);
+extern Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, int level);
+extern Entity newEntityPassive(int type, int x, int y, int level);
+extern Entity newEntityZombie(int lvl, int x, int y, int level);
+extern Entity newEntitySkeleton(int lvl, int x, int y, int level);
+extern Entity newEntityKnight(int lvl, int x, int y, int level);
+extern Entity newEntitySlime(int lvl, int x, int y, int level);
+extern Entity newEntityAirWizard(int x, int y, int level);
+extern Entity newEntitySpark(Entity *parent, float xa, float ya);
+extern Entity newEntityDragon(int x, int y, int level);
+extern Entity newEntityDragonFire(Entity *parent, u8 type, int x, int y, float xa, float ya);
+extern Entity newEntityMagicPillar(int x, int y, int level);
+extern Entity newEntityArrow(Entity *parent, int itemID, s8 xa, s8 ya, int level);
+extern Entity newEntityGlowworm(int x, int y, int level);
+extern Entity newEntityNPC(int type, int x, int y, int level);
 
-Entity newEntityItem(Item item, int x, int y, int level);
-Entity newEntityFurniture(int itemID, Inventory * invPtr, int x, int y, int level);
-Entity newEntityPassive(int type, int x, int y, int level);
-Entity newEntityZombie(int lvl, int x, int y, int level);
-Entity newEntitySkeleton(int lvl, int x, int y, int level);
-Entity newEntityKnight(int lvl, int x, int y, int level);
-Entity newEntitySlime(int lvl, int x, int y, int level);
-Entity newEntityAirWizard(int x, int y, int level);
-Entity newEntitySpark(Entity* parent, float xa, float ya);
-Entity newEntityDragon(int x, int y, int level);
-Entity newEntityDragonFire(Entity* parent, u8 type, int x, int y, float xa, float ya);
-Entity newEntityMagicPillar(int x, int y, int level);
-Entity newEntityArrow(Entity* parent, int itemID, s8 xa, s8 ya, int level);
-Entity newEntityGlowworm(int x, int y, int level);
-Entity newEntityNPC(int type, int x, int y, int level);
+extern Entity newParticleText(char *str, u32 color, int xa, int ya, int level);
+extern Entity newParticleSmash(int xa, int ya, int level);
 
-Entity newParticleText(char * str, u32 color, int xa, int ya, int level);
-Entity newParticleSmash(int xa, int ya, int level);
-
-void addEntityToList(Entity e, EntityManager* em);
-void removeEntityFromList(Entity * e,int level,EntityManager* em);
-
-
-
+extern void addEntityToList(Entity e, EntityManager *em);
+extern void removeEntityFromList(Entity *e, int level, EntityManager *em);

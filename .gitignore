@@ -46,9 +46,13 @@ Temporary Items
 *.3dsx
 *.elf
 *.smdh
+*.lst
 build
 
 # Eclipse
 .settings
 .cproject
 .project
+
+# VSCode
+.vscode

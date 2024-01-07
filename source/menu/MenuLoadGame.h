@@ -4,6 +4,6 @@
 #define LOAD_TO_MULTIPLAYER 2
 #define LOAD_TO_EDITOR 3
 
-void menuLoadGameInit(int target);
-void menuLoadGameTick();
-void menuLoadGameRender();
+extern void menuLoadGameInit(int target);
+extern void menuLoadGameTick();
+extern void menuLoadGameRender();

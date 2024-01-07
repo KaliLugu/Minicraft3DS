@@ -1,6 +1,6 @@
 #pragma once
 
-void editorTilesInit();
-void editorTilesTick();
-void editorTilesRenderTop();
-void editorTilesRenderBottom();
+extern void editorTilesInit();
+extern void editorTilesTick();
+extern void editorTilesRenderTop();
+extern void editorTilesRenderBottom();

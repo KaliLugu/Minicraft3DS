@@ -1,5 +1,5 @@
 #pragma once
 
-void menuSettingsTextureInit();
-void menuSettingsTextureTick();
-void menuSettingsTextureRender();
+extern void menuSettingsTextureInit();
+extern void menuSettingsTextureTick();
+extern void menuSettingsTextureRender();

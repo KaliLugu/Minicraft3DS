@@ -2,7 +2,7 @@
 
 #include "Player.h"
 
-void ingameMenuTick(PlayerData *pd, int menu);
-void ingameMenuRender(PlayerData *pd, int menu);
+extern void ingameMenuTick(PlayerData *pd, int menu);
+extern void ingameMenuRender(PlayerData *pd, int menu);
 
-void ingameMenuTickTouch(PlayerData *pd);
+extern void ingameMenuTickTouch(PlayerData *pd);

@@ -2,8 +2,8 @@
 
 #include <3ds.h>
 
-void startGame(bool load, char *filename);
-void tickGame();
-void renderGame();
+extern void startGame(bool load, char *filename);
+extern void tickGame();
+extern void renderGame();
 
-void exitGame();
+extern void exitGame();

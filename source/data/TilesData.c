@@ -1,8 +1,8 @@
 #include "TilesData.h"
 
-static char* _tileNames[MAX_TILE_ID+1];
+static char *_tileNames[MAX_TILE_ID + 1];
 
-static void _tileRegister(u8 id, char* name) {
+static void _tileRegister(u8 id, char *name) {
     _tileNames[id] = name;
 }
 
@@ -48,7 +48,6 @@ void tilesDataInit() {
     _tileRegister(TILE_ICE, "Ice");
 }
 
-
-char* tileGetName(u8 id) {
+char *tileGetName(u8 id) {
     return _tileNames[id];
 }

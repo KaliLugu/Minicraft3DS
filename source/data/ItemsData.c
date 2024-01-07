@@ -2,12 +2,12 @@
 
 #include <stdio.h>
 
-static char* _itemNames[MAX_ITEM_ID+1];
-static int _itemIconX[MAX_ITEM_ID+1];
-static int _itemIconY[MAX_ITEM_ID+1];
-static bool _itemSingle[MAX_ITEM_ID+1];
+static char *_itemNames[MAX_ITEM_ID + 1];
+static int _itemIconX[MAX_ITEM_ID + 1];
+static int _itemIconY[MAX_ITEM_ID + 1];
+static bool _itemSingle[MAX_ITEM_ID + 1];
 
-static void _itemRegister(s16 id, char* name, int iconX, int iconY, bool isSingle) {
+static void _itemRegister(s16 id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;
     _itemIconX[id] = iconX;
     _itemIconY[id] = iconY;
@@ -16,8 +16,8 @@ static void _itemRegister(s16 id, char* name, int iconX, int iconY, bool isSingl
 
 void itemsDataInit() {
     _itemRegister(ITEM_NULL, "", 0, 0, true);
-    
-    //tools 1
+
+    // tools 1
     _itemRegister(TOOL_SHOVEL, "Shovel", 0, 144, true);
     _itemRegister(TOOL_HOE, "Hoe", 40, 144, true);
     _itemRegister(TOOL_SWORD, "Sword", 80, 144, true);
@@ -25,7 +25,7 @@ void itemsDataInit() {
     _itemRegister(TOOL_AXE, "Axe", 160, 144, true);
     _itemRegister(ITEM_POWGLOVE, "Power Glove", 56, 152, true);
 
-    //items 1
+    // items 1
     _itemRegister(ITEM_FLOWER, "Flower", 0, 152, false);
     _itemRegister(ITEM_WOOD, "Wood", 8, 152, false);
     _itemRegister(ITEM_STONE, "Stone", 16, 152, false);
@@ -48,7 +48,7 @@ void itemsDataInit() {
     _itemRegister(ITEM_GLASS, "Glass", 104, 152, false);
     _itemRegister(ITEM_GEM, "Gem", 112, 152, false);
 
-    //furniture
+    // furniture
     _itemRegister(ITEM_ANVIL, "Anvil", 120, 152, true);
     _itemRegister(ITEM_CHEST, "Chest", 128, 152, true);
     _itemRegister(ITEM_OVEN, "Oven", 136, 152, true);
@@ -58,7 +58,7 @@ void itemsDataInit() {
     _itemRegister(ITEM_LOOM, "Loom", 120, 160, true);
     _itemRegister(ITEM_ENCHANTER, "Enchanter", 144, 160, true);
 
-    //items 2
+    // items 2
     _itemRegister(ITEM_WALL_WOOD, "Wood Wall", 224, 144, false);
     _itemRegister(ITEM_WALL_STONE, "Stone Wall", 224, 160, false);
     _itemRegister(ITEM_WALL_IRON, "Iron Wall", 232, 160, false);
@@ -85,12 +85,12 @@ void itemsDataInit() {
     _itemRegister(ITEM_MAGIC_DUST, "Magic Dust", 200, 152, false);
     _itemRegister(ITEM_COIN, "Coin", 208, 152, false);
 
-    //tools 2
+    // tools 2
     _itemRegister(TOOL_BUCKET, "Bucket", 200, 144, true);
     _itemRegister(TOOL_BOW, "Bow", 64, 168, true);
     _itemRegister(TOOL_MAGIC_COMPASS, "Magic Compass", 112, 168, true);
 
-    //items 3
+    // items 3
     _itemRegister(ITEM_SCROLL_UNDYING, "Undying", 144, 168, false);
     _itemRegister(ITEM_SCROLL_REGENERATION, "Regeneration", 144, 168, false);
     _itemRegister(ITEM_SCROLL_SPEED, "Speed", 144, 168, false);
@@ -99,65 +99,92 @@ void itemsDataInit() {
     _itemRegister(ITEM_SCROLL_NIGHTVISION, "Night Vision", 144, 168, false);
 }
 
-
-char* itemGetName(s16 id, s16 countLevel) {
-    switch(id) {
-    //handle special cases here
+char *itemGetName(s16 id, s16 countLevel) {
+    switch (id) {
+    // handle special cases here
     case TOOL_SHOVEL:
-        switch(countLevel){
-            case 1: return "Rock Shovel";
-            case 2: return "Iron Shovel";
-            case 3: return "Gold Shovel";
-            case 4: return "Gem Shovel";
-            default: return "Wood Shovel";
+        switch (countLevel) {
+        case 1:
+            return "Rock Shovel";
+        case 2:
+            return "Iron Shovel";
+        case 3:
+            return "Gold Shovel";
+        case 4:
+            return "Gem Shovel";
+        default:
+            return "Wood Shovel";
         }
     case TOOL_HOE:
-        switch(countLevel){
-            case 1: return "Rock Hoe";
-            case 2: return "Iron Hoe";
-            case 3: return "Gold Hoe";
-            case 4: return "Gem Hoe";
-            default: return "Wood Hoe";
+        switch (countLevel) {
+        case 1:
+            return "Rock Hoe";
+        case 2:
+            return "Iron Hoe";
+        case 3:
+            return "Gold Hoe";
+        case 4:
+            return "Gem Hoe";
+        default:
+            return "Wood Hoe";
         }
     case TOOL_SWORD:
-        switch(countLevel){
-            case 1: return "Rock Sword";
-            case 2: return "Iron Sword";
-            case 3: return "Gold Sword";
-            case 4: return "Gem Sword";
-            default: return "Wood Sword";
+        switch (countLevel) {
+        case 1:
+            return "Rock Sword";
+        case 2:
+            return "Iron Sword";
+        case 3:
+            return "Gold Sword";
+        case 4:
+            return "Gem Sword";
+        default:
+            return "Wood Sword";
         }
     case TOOL_PICKAXE:
-        switch(countLevel){
-            case 1: return "Rock Pickaxe";
-            case 2: return "Iron Pickaxe";
-            case 3: return "Gold Pickaxe";
-            case 4: return "Gem Pickaxe";
-            default: return "Wood Pickaxe";
+        switch (countLevel) {
+        case 1:
+            return "Rock Pickaxe";
+        case 2:
+            return "Iron Pickaxe";
+        case 3:
+            return "Gold Pickaxe";
+        case 4:
+            return "Gem Pickaxe";
+        default:
+            return "Wood Pickaxe";
         }
     case TOOL_AXE:
-        switch(countLevel){
-            case 1: return "Rock Axe";
-            case 2: return "Iron Axe";
-            case 3: return "Gold Axe";
-            case 4: return "Gem Axe";
-            default: return "Wood Axe";
+        switch (countLevel) {
+        case 1:
+            return "Rock Axe";
+        case 2:
+            return "Iron Axe";
+        case 3:
+            return "Gold Axe";
+        case 4:
+            return "Gem Axe";
+        default:
+            return "Wood Axe";
         }
     case TOOL_BUCKET:
-        switch(countLevel){
-            case 1: return "Water Bucket";
-            case 2: return "Lava Bucket";
-            default: return "Empty Bucket";
+        switch (countLevel) {
+        case 1:
+            return "Water Bucket";
+        case 2:
+            return "Lava Bucket";
+        default:
+            return "Empty Bucket";
         }
-    //else just return the registered value
+    // else just return the registered value
     default:
         return _itemNames[id];
     }
 }
 
 char _itemCurrentName[20];
-char* itemGetNameWithCount(s16 id, s16 countLevel) {
-    if(itemIsSingle(id, countLevel)) {
+char *itemGetNameWithCount(s16 id, s16 countLevel) {
+    if (itemIsSingle(id, countLevel)) {
         return itemGetName(id, countLevel);
     } else {
         sprintf(_itemCurrentName, "%d %s", countLevel, itemGetName(id, countLevel));
@@ -166,8 +193,8 @@ char* itemGetNameWithCount(s16 id, s16 countLevel) {
 }
 
 int itemGetIconX(s16 id, s16 countLevel) {
-    switch(id) {
-    //handle special cases here
+    switch (id) {
+    // handle special cases here
     case TOOL_SHOVEL:
     case TOOL_HOE:
     case TOOL_SWORD:
@@ -175,17 +202,17 @@ int itemGetIconX(s16 id, s16 countLevel) {
     case TOOL_AXE:
     case TOOL_BUCKET:
         return _itemIconX[id] + countLevel * 8;
-    //else just return the registered value
+    // else just return the registered value
     default:
         return _itemIconX[id];
     }
 }
 
 int itemGetIconY(s16 id, s16 countLevel) {
-    switch(id) {
-    //handle special cases here
-    
-    //else just return the registered value
+    switch (id) {
+    // handle special cases here
+
+    // else just return the registered value
     default:
         return _itemIconY[id];
     }

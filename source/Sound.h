@@ -4,48 +4,50 @@
 #include <stdint.h>
 #include <3ds.h>
 
-//Note: The lower channels (<8 ?) seem to not work?
+// Note: The lower channels (<8 ?) seem to not work?
 #define SOUND_CHANNEL_MIN 16
 #define SOUND_CHANNEL_MAX 24
 #define MUSIC_CHANNEL 10
 
-#define MUSIC_STREAM_BUFFER_SIZE (65536*8)
+#define MUSIC_STREAM_BUFFER_SIZE (65536 * 8)
 
-typedef struct {
+typedef struct
+{
     u32 size;
-    u8 * buffer;
+    u8 *buffer;
 } Sound;
 
-typedef struct {
+typedef struct
+{
     u32 size;
     u32 pos;
     char *filename;
 } Music;
 
-void loadSound(Sound * snd, char * filename);
-void playSound(Sound snd);
-void playSoundPositioned(Sound snd, s8 level, int x, int y);
-void setListenerPosition(s8 level, int x, int y);
+extern void loadSound(Sound *snd, char *filename);
+extern void playSound(Sound snd);
+extern void playSoundPositioned(Sound snd, s8 level, int x, int y);
+extern void setListenerPosition(s8 level, int x, int y);
 
-void loadMusic(Music *music, char * filename);
-void playMusic(Music *music);
-void updateMusic(int lvl, int time);
-void stopMusic();
+extern void loadMusic(Music *music, char *filename);
+extern void playMusic(Music *music);
+extern void updateMusic(int lvl, int time);
+extern void stopMusic();
 
-void loadSounds();
-void freeSounds();
+extern void loadSounds();
+extern void freeSounds();
 
-Sound snd_playerHurt;
-Sound snd_playerDeath;
-Sound snd_monsterHurt;
-Sound snd_test;
-Sound snd_pickup;
-Sound snd_bossdeath;
-Sound snd_craft;
+extern Sound snd_playerHurt;
+extern Sound snd_playerDeath;
+extern Sound snd_monsterHurt;
+extern Sound snd_test;
+extern Sound snd_pickup;
+extern Sound snd_bossdeath;
+extern Sound snd_craft;
 
-Music music_menu;
-Music music_floor0;
-Music music_floor1;
-Music music_floor1_night;
-Music music_floor23;
-Music music_floor4;
+extern Music music_menu;
+extern Music music_floor0;
+extern Music music_floor1;
+extern Music music_floor1_night;
+extern Music music_floor23;
+extern Music music_floor4;

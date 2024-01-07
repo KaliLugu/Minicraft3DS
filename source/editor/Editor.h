@@ -1,5 +1,5 @@
 #pragma once
 
-void editorInit();
-void editorTick();
-void editorRender();
+extern void editorInit();
+extern void editorTick();
+extern void editorRender();

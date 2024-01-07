@@ -1,18 +1,18 @@
 #pragma once
 
-#include <3ds.h>
 #include "Data.h"
-#include "Menu.h"
 #include "Entity.h"
-#include "Player.h"
 #include "Input.h"
 #include "MapGen.h"
+#include "Menu.h"
+#include "Player.h"
 #include "Quests.h"
+#include <3ds.h>
 
-#include "icons_png.h"
-#include "player_png.h"
 #include "Font_png.h"
 #include "bottombg_png.h"
+#include "icons_png.h"
+#include "player_png.h"
 
 #define CIRCLEPAD 0xF0000000
 #define CSTICK 0x0F000000
@@ -27,7 +27,6 @@
 #define MENU_NPC 107
 #define MENU_CHARACTER_CUSTOMIZE 108
 
-
 #define NPC_GIRL 0
 #define NPC_PRIEST 1
 #define NPC_FARMER 2
@@ -36,119 +35,119 @@
 
 #define SWAP_UINT32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) | (((x) & 0x0000FF00) << 8) | ((x) << 24))
 
-//WARNING: Having this set to different values in different clients will break multiplayer!
-//TODO: Change back before any release
+// WARNING: Having this set to different values in different clients will break multiplayer!
+// TODO: Change back before any release
 #define TESTGODMODE true
 
-u32 localUID;
+extern u32 localUID;
 
-int loadedtp;
+extern int loadedtp;
 
-u8 MODEL_3DS;
+extern u8 MODEL_3DS;
 
 extern char versionText[34];
 
-bool shouldRenderDebug;
-bool shouldSpeedup;
+extern bool shouldRenderDebug;
+extern bool shouldSpeedup;
 
-sf2d_texture *icons;
-sf2d_texture *playerSprites;
-sf2d_texture *font;
-sf2d_texture *bottombg;
-sf2d_texture *minimap[6];
+extern sf2d_texture *icons;
+extern sf2d_texture *playerSprites;
+extern sf2d_texture *font;
+extern sf2d_texture *bottombg;
+extern sf2d_texture *minimap[6];
 
-u32 dirtColor[5];
-u32 grassColor;
-u32 sandColor;
-u32 waterColor[2];
-u32 lavaColor[2];
-u32 rockColor[4];
-u32 woodColor;
-u32 ironColor;
-u32 goldColor;
-u32 gemColor;
-u32 dungeonColor[2];
-u32 myceliumColor;
-u32 mushroomColor;
-u32 snowColor;
-u32 iceColor;
+extern u32 dirtColor[5];
+extern u32 grassColor;
+extern u32 sandColor;
+extern u32 waterColor[2];
+extern u32 lavaColor[2];
+extern u32 rockColor[4];
+extern u32 woodColor;
+extern u32 ironColor;
+extern u32 goldColor;
+extern u32 gemColor;
+extern u32 dungeonColor[2];
+extern u32 myceliumColor;
+extern u32 mushroomColor;
+extern u32 snowColor;
+extern u32 iceColor;
 
-char currentFileName[256];
+extern char currentFileName[256];
 extern u8 currentMenu;
 extern char fpsstr[];
-u8 initGame;
-u8 initMPGame;
-u8 initBGMap;
-Item noItem;
-int airWizardHealthDisplay;
-s16 awX, awY;
-bool quitGame;
-s8 currentSelection;
+extern u8 initGame;
+extern u8 initMPGame;
+extern u8 initBGMap;
+extern Item noItem;
+extern int airWizardHealthDisplay;
+extern s16 awX, awY;
+extern bool quitGame;
+extern s8 currentSelection;
 
 typedef struct _worldData {
-    u8 map[6][128*128];
-    u8 data[6][128*128];
-    
+    u8 map[6][128 * 128];
+    u8 data[6][128 * 128];
+
     u16 daytime;
     int day;
     u8 season;
     bool rain;
-    
+
     u8 compassData[6][3];
 } WorldData;
 
-WorldData worldData;
+extern WorldData worldData;
 
 extern u32 syncTickCount;
 
-//TODO: cleanup the order
-void addItemsToWorld(Item item, s8 level, int x, int y, int count);
-bool intersects(Entity e,int x0, int y0, int x1, int y1);
-int getEntities(Entity** result, s8 level, int x0, int y0, int x1, int y1);
+// TODO: cleanup the order
+extern void addItemsToWorld(Item item, s8 level, int x, int y, int count);
+extern bool intersects(Entity e, int x0, int y0, int x1, int y1);
+extern int getEntities(Entity **result, s8 level, int x0, int y0, int x1, int y1);
 
-//TODO: the move functions should probably be part of entity.c
-bool move(Entity* e, int xa, int ya);
-bool moveMob(Entity* e, int xa, int ya);
-void hurtEntity(Entity *e, int damage, int dir, u32 hurtColor, Entity *damager);
+// TODO: the move functions should probably be part of entity.c
+extern bool move(Entity *e, int xa, int ya);
+extern bool moveMob(Entity *e, int xa, int ya);
+extern void hurtEntity(Entity *e, int damage, int dir, u32 hurtColor, Entity *damager);
 
-void tickTile(s8 level, int x, int y);
-bool tileIsSolid(int tile, Entity * e);
+extern void tickTile(s8 level, int x, int y);
+extern bool tileIsSolid(int tile, Entity *e);
 
-s8 itemTileInteract(int tile, PlayerData *pd, Item *item, s8 level, int x, int y, int px, int py, int dir);
+extern s8 itemTileInteract(int tile, PlayerData *pd, Item *item, s8 level, int x, int y, int px, int py, int dir);
 
-void tickEntity(Entity* e);
+extern void tickEntity(Entity *e);
 
-void trySpawn(int count, int level);
+extern void trySpawn(int count, int level);
 
-int getTile(s8 level, int x, int y);
-void setTile(int id, s8 level, int x, int y);
-int getData(s8 level, int x, int y);
-void setData(int id, s8 level, int x, int y);
-u32 getTileColor(int tile);
+extern int getTile(s8 level, int x, int y);
+extern void setTile(int id, s8 level, int x, int y);
+extern int getData(s8 level, int x, int y);
+extern void setData(int id, s8 level, int x, int y);
+extern u32 getTileColor(int tile);
 
-bool intersectsEntity(int x, int y, int r, Entity* e);
+extern bool intersectsEntity(int x, int y, int r, Entity *e);
 
-bool EntityBlocksEntity(Entity* e1, Entity* e2);
-void EntityVsEntity(Entity* e1, Entity* e2);
-bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir);
-void entityTileInteract(Entity* e, int tile, s8 level, int x, int y);
+extern bool EntityBlocksEntity(Entity *e1, Entity *e2);
+extern void EntityVsEntity(Entity *e1, Entity *e2);
+extern bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir);
+extern void entityTileInteract(Entity *e, int tile, s8 level, int x, int y);
 
-void openCraftingMenu(PlayerData *pd, RecipeManager *rm, char *title);
-bool useEntity(PlayerData *pd, Entity* e);
+extern void openCraftingMenu(PlayerData *pd, RecipeManager *rm, char *title);
+extern bool useEntity(PlayerData *pd, Entity *e);
 
-bool isWater(s8 level, int xt, int yt);
+extern bool isWater(s8 level, int xt, int yt);
 
-void playerHurtTile(PlayerData *pd, int tile, s8 level, int xt, int yt, int damage, int dir);
-void playerEntityInteract(PlayerData *pd, Entity* e);
+extern void playerHurtTile(PlayerData *pd, int tile, s8 level, int xt, int yt, int damage, int dir);
+extern void playerEntityInteract(PlayerData *pd, Entity *e);
 
-bool dungeonActive();
-void enterDungeon(PlayerData *pd);
-void leaveDungeon(PlayerData *pd);
+extern bool dungeonActive();
+extern void enterDungeon(PlayerData *pd);
+extern void leaveDungeon(PlayerData *pd);
 
-void setMinimapVisible(PlayerData *pd, int level, int x, int y, bool visible);
-bool getMinimapVisible(PlayerData *pd, int level, int x, int y);
-u32 getMinimapColor(PlayerData *pd, int level, int x, int y);
-void initMinimapLevel(PlayerData *pd, int level);
-void updateLevel1Map();
+extern void setMinimapVisible(PlayerData *pd, int level, int x, int y, bool visible);
+extern bool getMinimapVisible(PlayerData *pd, int level, int x, int y);
+extern u32 getMinimapColor(PlayerData *pd, int level, int x, int y);
+extern void initMinimapLevel(PlayerData *pd, int level);
+extern void updateLevel1Map();
 
-void reloadColors();
+extern void reloadColors();

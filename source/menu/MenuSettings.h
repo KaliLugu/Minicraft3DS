@@ -1,4 +1,4 @@
 #pragma once
 
-void menuSettingsTick();
-void menuSettingsRender();
+extern void menuSettingsTick();
+extern void menuSettingsRender();

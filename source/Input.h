@@ -2,13 +2,15 @@
 
 #include <3ds.h>
 
-//only down and clicked need to be send, input is for config stuff
-typedef struct {
+// only down and clicked need to be send, input is for config stuff
+typedef struct
+{
     bool down, clicked;
     int input;
 } Key;
 
-typedef struct {
+typedef struct
+{
     Key k_null;
     Key k_up;
     Key k_down;
@@ -25,9 +27,9 @@ typedef struct {
     touchPosition k_touch;
 } Inputs;
 
-Inputs localInputs;
+extern Inputs localInputs;
 
-void tickKeys(Inputs *inputs, u32 held, u32 down);
-void resetKeys(Inputs *inputs);
-void resetClicked(Inputs *inputs);
-bool clicked(Key key);
+extern void tickKeys(Inputs *inputs, u32 held, u32 down);
+extern void resetKeys(Inputs *inputs);
+extern void resetClicked(Inputs *inputs);
+extern bool clicked(Key key);

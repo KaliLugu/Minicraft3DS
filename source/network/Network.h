@@ -9,39 +9,39 @@
 #define NETWORK_RECVBUFSIZE UDS_DEFAULT_RECVBUFSIZE
 
 #define NETWORK_MAXDATASIZE 1024
-#define NETWORK_SENDBUFFERSIZE ((NETWORK_MAXDATASIZE+256)*10)
+#define NETWORK_SENDBUFFERSIZE ((NETWORK_MAXDATASIZE + 256) * 10)
 
-#define NETWORK_STACKSIZE (8*1024)
+#define NETWORK_STACKSIZE (8 * 1024)
 
 #define NETWORK_MAXPLAYERS 8
 
-void *networkWriteBuffer;
+extern void *networkWriteBuffer;
 
-void networkInit();
-void networkExit();
+extern void networkInit();
+extern void networkExit();
 
-bool networkAvailable();
+extern bool networkAvailable();
 
-bool networkHost();
-void networkHostStopConnections();
-void networkScan();
-int networkGetScanCount();
-bool networkGetScanName(char *name, int pos);
-bool networkConnect(int pos);
-void networkDisconnect();
+extern bool networkHost();
+extern void networkHostStopConnections();
+extern void networkScan();
+extern int networkGetScanCount();
+extern bool networkGetScanName(char *name, int pos);
+extern bool networkConnect(int pos);
+extern void networkDisconnect();
 
-void networkStart();
+extern void networkStart();
 
-void networkUpdateStatus();
-bool networkConnected();
+extern void networkUpdateStatus();
+extern bool networkConnected();
 
-int networkGetNodeCount();
-u16 networkGetLocalNodeID();
-bool networkIsNodeConnected(u16 id);
-bool networkGetNodeName(u16 id, char *name);
+extern int networkGetNodeCount();
+extern u16 networkGetLocalNodeID();
+extern bool networkIsNodeConnected(u16 id);
+extern bool networkGetNodeName(u16 id, char *name);
 
-u16 networkGetExpectedSeqFrom(u16 id);
-bool networkSeqIsLowerThan(u16 firstID, u16 secondID);
+extern u16 networkGetExpectedSeqFrom(u16 id);
+extern bool networkSeqIsLowerThan(u16 firstID, u16 secondID);
 
-void networkSend(void *packet, size_t size);
-void networkSendWaitFlush();
+extern void networkSend(void *packet, size_t size);
+extern void networkSendWaitFlush();

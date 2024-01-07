@@ -42,10 +42,9 @@
 #define TILE_MUSHROOM_RED 35
 #define TILE_ICE 36
 
-
 #define MAX_TILE_ID 255
 #define MAX_TILE_ID_USED 36
 
-void tilesDataInit();
+extern void tilesDataInit();
 
-char* tileGetName(u8 id);
+extern char *tileGetName(u8 id);

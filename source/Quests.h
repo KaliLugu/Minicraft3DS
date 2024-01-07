@@ -1,25 +1,25 @@
 #pragma once
 
-#include <stdlib.h>
-#include <stdbool.h>
-#include "QuestsData.h"
-#include "Player.h"
 #include "Crafting.h"
+#include "Player.h"
+#include "QuestsData.h"
+#include <stdbool.h>
+#include <stdlib.h>
 
 #define NPC_MENU_TALK 0
 
-RecipeManager priestTrades;
-RecipeManager farmerTrades;
-RecipeManager dwarfTrades;
+extern RecipeManager priestTrades;
+extern RecipeManager farmerTrades;
+extern RecipeManager dwarfTrades;
 
-void initTrades();
-void freeTrades();
+extern void initTrades();
+extern void freeTrades();
 
-void initQuests(QuestlineManager *questManager);
-void resetQuests(QuestlineManager *questManager);
-void freeQuests(QuestlineManager *questManager);
+extern void initQuests(QuestlineManager *questManager);
+extern void resetQuests(QuestlineManager *questManager);
+extern void freeQuests(QuestlineManager *questManager);
 
-void resetNPCMenuData(NPC_MenuData *data);
-void openNPCMenu(PlayerData *pd, int npc);
-void tickNPCMenu(PlayerData *pd);
-void renderNPCMenu(NPC_MenuData *data);
+extern void resetNPCMenuData(NPC_MenuData *data);
+extern void openNPCMenu(PlayerData *pd, int npc);
+extern void tickNPCMenu(PlayerData *pd);
+extern void renderNPCMenu(NPC_MenuData *data);

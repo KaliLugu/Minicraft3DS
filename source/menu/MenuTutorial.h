@@ -1,5 +1,5 @@
 #pragma once
 
-void menuTutorialInit();
-void menuTutorialTick();
-void menuTutorialRender();
+extern void menuTutorialInit();
+extern void menuTutorialTick();
+extern void menuTutorialRender();

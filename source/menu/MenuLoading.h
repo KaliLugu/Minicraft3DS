@@ -1,4 +1,4 @@
 #pragma once
 
-void menuLoadingTick();
-void menuLoadingRender();
+extern void menuLoadingTick();
+extern void menuLoadingRender();

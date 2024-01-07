@@ -1,6 +1,6 @@
 #pragma once
-#include <stdarg.h>
 #include "Item.h"
+#include <stdarg.h>
 
 typedef struct _recipecost {
     int costItem;
@@ -13,28 +13,27 @@ typedef struct _recipe {
     int itemAmountLevel;
     s8 numOfCosts;
     Cost costs[6]; // Up to 6 items for costs
-    u8 order; // Used for stable sorting.
+    u8 order;      // Used for stable sorting.
 } Recipe;
 
 typedef struct _recipeManager {
     int size;
-    Recipe * recipes;
+    Recipe *recipes;
 } RecipeManager;
 
+extern RecipeManager workbenchRecipes;
+extern RecipeManager furnaceRecipes;
+extern RecipeManager ovenRecipes;
+extern RecipeManager anvilRecipes;
+extern RecipeManager loomRecipes;
+extern RecipeManager enchanterRecipes;
 
-RecipeManager workbenchRecipes;
-RecipeManager furnaceRecipes;
-RecipeManager ovenRecipes;
-RecipeManager anvilRecipes;
-RecipeManager loomRecipes;
-RecipeManager enchanterRecipes;
+extern Recipe defineRecipe(int item, int amountOrLevel, int numArgs, ...);
 
-Recipe defineRecipe(int item, int amountOrLevel, int numArgs, ...);
+extern void cloneRecipeManager(RecipeManager *from, RecipeManager *to);
+extern void checkCanCraftRecipes(RecipeManager *rm, Inventory *inv);
+extern void sortRecipes(RecipeManager *rm);
+extern bool craftItem(RecipeManager *rm, Recipe *r, Inventory *inv);
 
-void cloneRecipeManager(RecipeManager *from, RecipeManager *to);
-void checkCanCraftRecipes(RecipeManager * rm, Inventory * inv);
-void sortRecipes(RecipeManager * rm);
-bool craftItem(RecipeManager * rm, Recipe* r, Inventory* inv);
-
-void initRecipes();
-void freeRecipes();
+extern void initRecipes();
+extern void freeRecipes();

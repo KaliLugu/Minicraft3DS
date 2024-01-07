@@ -1,9 +1,11 @@
 #include "Network.h"
 
 #include "PacketHandler.h"
-#include <stdlib.h>
 #include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
+
+void *networkWriteBuffer;
 
 static bool udsRunning;
 
@@ -23,19 +25,19 @@ static udsConnectionStatus networkStatus;
 
 static u16 networkConnectedMask;
 
-//new code
-//structure in buffer is u16(seqID),u16(size),size(data), ...
+// new code
+// structure in buffer is u16(seqID),u16(size),size(data), ...
 static void *networkSendBuffer;
 static size_t networkSendBufferStartPos;
 static size_t networkSendBufferEndPos;
 static size_t networkSendBufferWrapPos;
 
 static u16 networkSeqSendNext;
-static u16 networkSeqSendConf[UDS_MAXNODES+1];
-static u16 networkSeqRecvLast[UDS_MAXNODES+1];
+static u16 networkSeqSendConf[UDS_MAXNODES + 1];
+static u16 networkSeqRecvLast[UDS_MAXNODES + 1];
 static void *networkAckBuffer;
 
-//async internal send/recieve handling
+// async internal send/recieve handling
 static Thread networkThread;
 static volatile bool networkRunThread;
 static LightLock sendBufferLock;
@@ -46,15 +48,15 @@ static void clearSendAckedBuffer();
 static bool sendAck(u16 target, u16 ack);
 
 static void networkThreadMain(void *arg) {
-    while(networkRunThread) {
-        if(udsRunning && isConnected) {
+    while (networkRunThread) {
+        if (udsRunning && isConnected) {
             networkUpdateStatus();
             networkHandleRecieve();
             networkHandleSend();
         }
-        
-        //TODO: Set meaningfull value, WARNING: Setting this near 1ms (1000*1000) will make everything super laggy, higher values actually work better!
-        svcSleepThread(10000 * 1000); 
+
+        // TODO: Set meaningfull value, WARNING: Setting this near 1ms (1000*1000) will make everything super laggy, higher values actually work better!
+        svcSleepThread(10000 * 1000);
     }
 }
 
@@ -65,7 +67,7 @@ void networkUpdateStatus() {
             return;
         }
     }*/
-    if(udsWaitConnectionStatusEvent(false, false)) {
+    if (udsWaitConnectionStatusEvent(false, false)) {
         udsGetConnectionStatus(&networkStatus);
     }
 }
@@ -74,162 +76,166 @@ static void networkHandleRecieve() {
     bool recieved = false;
     do {
         recieved = false;
-        
+
         size_t actualSize = 0;
         u16 sourceNetworkNodeID;
         u32 ackToSend = 0;
-        
+
         memset(networkBuffer, 0, networkBufferSize);
-        
+
         Result ret = udsPullPacket(&networkBindCtx, networkBuffer, networkBufferSize, &actualSize, &sourceNetworkNodeID);
-        if(R_FAILED(ret)) {
-            //TODO: what do?
-            
-        //actualSize will be 0 if no packet is available
-        } else if(actualSize) {
+        if (R_FAILED(ret)) {
+            // TODO: what do?
+
+            // actualSize will be 0 if no packet is available
+        } else if (actualSize) {
             void *readPointer = networkBuffer;
-            
-            //ack frame
-            if(actualSize==sizeof(u16)) {
-                networkSeqSendConf[sourceNetworkNodeID] = *((u16*) readPointer);
+
+            // ack frame
+            if (actualSize == sizeof(u16)) {
+                networkSeqSendConf[sourceNetworkNodeID] = *((u16 *)readPointer);
                 clearSendAckedBuffer();
-            //normal frame
+                // normal frame
             } else {
-                while(actualSize>0) {
-                    //read seqID and size
-                    u16 seqID = *((u16*) readPointer);
+                while (actualSize > 0) {
+                    // read seqID and size
+                    u16 seqID = *((u16 *)readPointer);
                     readPointer += sizeof(u16);
                     actualSize -= sizeof(u16);
-                    
-                    u16 size = *((u16*) readPointer);
+
+                    u16 size = *((u16 *)readPointer);
                     readPointer += sizeof(u16);
                     actualSize -= sizeof(u16);
-                    
-                    //if the seq id was expected handle the packet
+
+                    // if the seq id was expected handle the packet
                     u16 nextID = networkGetExpectedSeqFrom(sourceNetworkNodeID);
-                    if(seqID==nextID) {
+                    if (seqID == nextID) {
                         networkSeqRecvLast[sourceNetworkNodeID] = seqID;
                         ackToSend = seqID;
-                        
-                        //handle data - TODO: WARNING: Do not send sizeof(u16) packets or else they will get confused with this one
-                        if(size==sizeof(u16)) {
-                            networkConnectedMask = *((u16*) readPointer);
+
+                        // handle data - TODO: WARNING: Do not send sizeof(u16) packets or else they will get confused with this one
+                        if (size == sizeof(u16)) {
+                            networkConnectedMask = *((u16 *)readPointer);
                         } else {
                             processPacket(readPointer, size);
                         }
-                    } else if(networkSeqIsLowerThan(seqID, nextID)) {
+                    } else if (networkSeqIsLowerThan(seqID, nextID)) {
                         ackToSend = seqID;
                     }
                     readPointer += size;
                     actualSize -= size;
                 }
-                
-                if(ackToSend!=0) {
-                    if(sendAck(sourceNetworkNodeID, ackToSend)) {
+
+                if (ackToSend != 0) {
+                    if (sendAck(sourceNetworkNodeID, ackToSend)) {
                     }
                 }
             }
-            
+
             recieved = true;
         }
-    } while(recieved);
+    } while (recieved);
 }
 
 static void networkHandleSend() {
-    if(networkSendBufferStartPos!=networkSendBufferEndPos) {
+    if (networkSendBufferStartPos != networkSendBufferEndPos) {
         LightLock_Lock(&sendBufferLock);
-    
-        //determine send size
+
+        // determine send size
         size_t currentSize = 0;
-        while(networkSendBufferStartPos+currentSize<networkSendBufferWrapPos && networkSendBufferStartPos+currentSize!=networkSendBufferEndPos) {
-            //size of "header info" (seqid,size)
+        while (networkSendBufferStartPos + currentSize < networkSendBufferWrapPos && networkSendBufferStartPos + currentSize != networkSendBufferEndPos) {
+            // size of "header info" (seqid,size)
             size_t extraSize = sizeof(u16) + sizeof(u16);
-            //data size
-            extraSize += *((u16*) ((networkSendBuffer+networkSendBufferStartPos+currentSize) + sizeof(u16)));
-            
-            //if next packet can fit in frame include it
-            if(currentSize+extraSize < UDS_DATAFRAME_MAXSIZE) {
+            // data size
+            extraSize += *((u16 *)((networkSendBuffer + networkSendBufferStartPos + currentSize) + sizeof(u16)));
+
+            // if next packet can fit in frame include it
+            if (currentSize + extraSize < UDS_DATAFRAME_MAXSIZE) {
                 currentSize += extraSize;
             } else {
                 break;
             }
         }
-        
-        //send frame
-        if(currentSize>0) {
-            //TODO: Once we have our own custom mask, no longer broadcast, but send directly because bcast doesn't always reach everyone?
-            if(networkConnectedMask==0) {
-                //send frame
-                    Result ret = udsSendTo(UDS_BROADCAST_NETWORKNODEID, NETWORK_CHANNEL, UDS_SENDFLAG_Default, networkSendBuffer+networkSendBufferStartPos, currentSize);
-                    if(UDS_CHECK_SENDTO_FATALERROR(ret)) {
-                        //TODO: what do?
-                    } else if(R_FAILED(ret)) {
-                        //TODO: what do?
-                    }
+
+        // send frame
+        if (currentSize > 0) {
+            // TODO: Once we have our own custom mask, no longer broadcast, but send directly because bcast doesn't always reach everyone?
+            if (networkConnectedMask == 0) {
+                // send frame
+                Result ret = udsSendTo(UDS_BROADCAST_NETWORKNODEID, NETWORK_CHANNEL, UDS_SENDFLAG_Default, networkSendBuffer + networkSendBufferStartPos, currentSize);
+                if (UDS_CHECK_SENDTO_FATALERROR(ret)) {
+                    // TODO: what do?
+                } else if (R_FAILED(ret)) {
+                    // TODO: what do?
+                }
             } else {
-                for(int i=1; i<=UDS_MAXNODES; i++) {
-                    if(i!=networkGetLocalNodeID()/* && networkIsNodeConnected(i)*/ && networkConnectedMask & (1 << (i-1))) {
-                        //send frame
-                        Result ret = udsSendTo(i, NETWORK_CHANNEL, UDS_SENDFLAG_Default, networkSendBuffer+networkSendBufferStartPos, currentSize);
-                        if(UDS_CHECK_SENDTO_FATALERROR(ret)) {
-                            //TODO: what do?
-                        } else if(R_FAILED(ret)) {
-                            //TODO: what do?
+                for (int i = 1; i <= UDS_MAXNODES; i++) {
+                    if (i != networkGetLocalNodeID() /* && networkIsNodeConnected(i)*/ && networkConnectedMask & (1 << (i - 1))) {
+                        // send frame
+                        Result ret = udsSendTo(i, NETWORK_CHANNEL, UDS_SENDFLAG_Default, networkSendBuffer + networkSendBufferStartPos, currentSize);
+                        if (UDS_CHECK_SENDTO_FATALERROR(ret)) {
+                            // TODO: what do?
+                        } else if (R_FAILED(ret)) {
+                            // TODO: what do?
                         }
                     }
                 }
             }
         }
-        
+
         LightLock_Unlock(&sendBufferLock);
     }
 }
 
 static void clearSendAckedBuffer() {
-    //find last ack recieved from all com partners
+    // find last ack recieved from all com partners
     u16 ackID = 0;
-    for(int i=1; i<=UDS_MAXNODES; i++) {
-        if(i!=networkGetLocalNodeID()/* && networkIsNodeConnected(i)*/ && networkConnectedMask & (1 << (i-1))) {
-            if(networkSeqSendConf[i]==0) {
+    for (int i = 1; i <= UDS_MAXNODES; i++) {
+        if (i != networkGetLocalNodeID() /* && networkIsNodeConnected(i)*/ && networkConnectedMask & (1 << (i - 1))) {
+            if (networkSeqSendConf[i] == 0) {
                 ackID = 0;
                 return;
             }
-        
-            if(ackID==0) {
+
+            if (ackID == 0) {
                 ackID = networkSeqSendConf[i];
-            } else if(networkSeqSendConf[i]<100) {
-                if(ackID > networkSeqSendConf[i] && ackID<65535-100) ackID = networkSeqSendConf[i];
-            } else if(networkSeqSendConf[i]>65535-100) {
-                if(ackID > networkSeqSendConf[i] || ackID<100) ackID = networkSeqSendConf[i];
+            } else if (networkSeqSendConf[i] < 100) {
+                if (ackID > networkSeqSendConf[i] && ackID < 65535 - 100)
+                    ackID = networkSeqSendConf[i];
+            } else if (networkSeqSendConf[i] > 65535 - 100) {
+                if (ackID > networkSeqSendConf[i] || ackID < 100)
+                    ackID = networkSeqSendConf[i];
             } else {
-                if(ackID > networkSeqSendConf[i]) ackID = networkSeqSendConf[i];
+                if (ackID > networkSeqSendConf[i])
+                    ackID = networkSeqSendConf[i];
             }
         }
     }
-    if(ackID==0) return;
-    
+    if (ackID == 0)
+        return;
+
     LightLock_Lock(&sendBufferLock);
-    
-    //clear buffer of acknowledgt packets
-    while(networkSendBufferStartPos!=networkSendBufferEndPos) {
-        //find current seqid and size
-        u16 seqID = *((u16*) (networkSendBuffer+networkSendBufferStartPos));
-        u16 size = *((u16*) (networkSendBuffer+networkSendBufferStartPos+sizeof(u16)));
-        
-        if(seqID<=ackID || (ackID<100 && seqID>65535-100)) {
-            
-            size_t currentSize = sizeof(u16)*2 + size;
-            
-            //adjust buffer "pointers"
+
+    // clear buffer of acknowledgt packets
+    while (networkSendBufferStartPos != networkSendBufferEndPos) {
+        // find current seqid and size
+        u16 seqID = *((u16 *)(networkSendBuffer + networkSendBufferStartPos));
+        u16 size = *((u16 *)(networkSendBuffer + networkSendBufferStartPos + sizeof(u16)));
+
+        if (seqID <= ackID || (ackID < 100 && seqID > 65535 - 100)) {
+
+            size_t currentSize = sizeof(u16) * 2 + size;
+
+            // adjust buffer "pointers"
             networkSendBufferStartPos += currentSize;
-            if(networkSendBufferStartPos==networkSendBufferEndPos) {
+            if (networkSendBufferStartPos == networkSendBufferEndPos) {
                 networkSendBufferStartPos = 0;
                 networkSendBufferEndPos = 0;
                 networkSendBufferWrapPos = 0;
             }
-            
-            //wrap
-            if(networkSendBufferStartPos==networkSendBufferWrapPos) {
+
+            // wrap
+            if (networkSendBufferStartPos == networkSendBufferWrapPos) {
                 networkSendBufferStartPos = 0;
                 networkSendBufferWrapPos = networkSendBufferEndPos;
             }
@@ -242,11 +248,11 @@ static void clearSendAckedBuffer() {
 
 static bool sendAck(u16 target, u16 ack) {
     Result ret = udsSendTo(target, NETWORK_CHANNEL, UDS_SENDFLAG_Default, &ack, sizeof(u16));
-    if(UDS_CHECK_SENDTO_FATALERROR(ret)) {
-        //TODO: what do?
+    if (UDS_CHECK_SENDTO_FATALERROR(ret)) {
+        // TODO: what do?
         return false;
-    } else if(R_FAILED(ret)) {
-        //TODO: what do?
+    } else if (R_FAILED(ret)) {
+        // TODO: what do?
         return false;
     } else {
         return true;
@@ -255,11 +261,11 @@ static bool sendAck(u16 target, u16 ack) {
 
 void networkInit() {
     Result ret = udsInit(0x3000, NULL);
-    if(R_FAILED(ret)) {
+    if (R_FAILED(ret)) {
         udsRunning = false;
     } else {
         udsRunning = true;
-        
+
         scannedNetworksCount = 0;
         scannedNetworks = NULL;
         isConnected = false;
@@ -267,100 +273,102 @@ void networkInit() {
         networkConnectedMask = 0;
 
         networkWriteBuffer = malloc(NETWORK_MAXDATASIZE);
-        if(networkWriteBuffer==NULL) {
+        if (networkWriteBuffer == NULL) {
             networkExit();
             return;
         }
-        
-        networkBufferSize = 0x4000;        
+
+        networkBufferSize = 0x4000;
         networkBuffer = malloc(networkBufferSize);
-        if(networkBuffer==NULL) {
+        if (networkBuffer == NULL) {
             networkExit();
             return;
         }
-        
+
         networkSendBufferStartPos = 0;
         networkSendBufferEndPos = 0;
         networkSendBufferWrapPos = 0;
         networkSendBuffer = malloc(NETWORK_SENDBUFFERSIZE);
-        if(networkSendBuffer==NULL) {
+        if (networkSendBuffer == NULL) {
             networkExit();
             return;
         }
-        
+
         networkSeqSendNext = 1;
-        for(int i=0; i<UDS_MAXNODES+1; i++) {
+        for (int i = 0; i < UDS_MAXNODES + 1; i++) {
             networkSeqSendConf[i] = 0;
             networkSeqRecvLast[i] = 0;
         }
-        
-        networkAckBuffer = malloc(sizeof(u16)+sizeof(u16)+sizeof(u16));
-        if(networkAckBuffer==NULL) {
+
+        networkAckBuffer = malloc(sizeof(u16) + sizeof(u16) + sizeof(u16));
+        if (networkAckBuffer == NULL) {
             networkExit();
             return;
         }
-        
+
         LightLock_Init(&sendBufferLock);
-        
+
         s32 prio = 0;
         svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-        
-        //NOTE: It is important the networkThread is prioritized over the main thread (so substract 2) or else nothing will work
+
+        // NOTE: It is important the networkThread is prioritized over the main thread (so substract 2) or else nothing will work
         networkRunThread = true;
-        networkThread = threadCreate(networkThreadMain, NULL, NETWORK_STACKSIZE, prio-1, -2, false);
+        networkThread = threadCreate(networkThreadMain, NULL, NETWORK_STACKSIZE, prio - 1, -2, false);
     }
 }
 
 void networkExit() {
-    //Additionally to shutting down the service, clear any left over memory!
-    if(udsRunning) {
+    // Additionally to shutting down the service, clear any left over memory!
+    if (udsRunning) {
         udsRunning = false;
-        
-        if(networkRunThread) {
+
+        if (networkRunThread) {
             networkRunThread = false;
             threadJoin(networkThread, U64_MAX);
             threadFree(networkThread);
         }
-        
-        //cleanup any dynamically reserved memory
-        if(scannedNetworks!=NULL) free(scannedNetworks);
+
+        // cleanup any dynamically reserved memory
+        if (scannedNetworks != NULL)
+            free(scannedNetworks);
         scannedNetworks = NULL;
-        
-        if(networkWriteBuffer!=NULL) free(networkWriteBuffer);
+
+        if (networkWriteBuffer != NULL)
+            free(networkWriteBuffer);
         networkWriteBuffer = NULL;
-        
-        if(networkBuffer!=NULL) free(networkBuffer);
+
+        if (networkBuffer != NULL)
+            free(networkBuffer);
         networkBuffer = NULL;
-        
-        if(networkSendBuffer!=NULL) free(networkSendBuffer);
+
+        if (networkSendBuffer != NULL)
+            free(networkSendBuffer);
         networkSendBuffer = NULL;
-        
-        if(networkAckBuffer!=NULL) free(networkAckBuffer);
+
+        if (networkAckBuffer != NULL)
+            free(networkAckBuffer);
         networkAckBuffer = NULL;
-        
+
         networkDisconnect();
-        
+
         udsExit();
     }
 }
-
-
 
 bool networkAvailable() {
     return udsRunning;
 }
 
-
-
 bool networkHost() {
-    if(udsRunning && !isConnected) {
+    if (udsRunning && !isConnected) {
         udsGenerateDefaultNetworkStruct(&networkStruct, NETWORK_WLANCOMMID, 0, NETWORK_MAXPLAYERS);
-        
-        Result ret = udsCreateNetwork(&networkStruct, NETWORK_PASSPHRASE, strlen(NETWORK_PASSPHRASE)+1, &networkBindCtx, NETWORK_CHANNEL, NETWORK_RECVBUFSIZE);
-        if(R_FAILED(ret)) {
+
+        Result ret = udsCreateNetwork(&networkStruct, NETWORK_PASSPHRASE, strlen(NETWORK_PASSPHRASE) + 1, &networkBindCtx, NETWORK_CHANNEL, NETWORK_RECVBUFSIZE);
+        if (R_FAILED(ret)) {
             return false;
         } else {
-            if(udsWaitConnectionStatusEvent(false, false)) {}
+            if (udsWaitConnectionStatusEvent(false, false)) {
+            }
             udsGetConnectionStatus(&networkStatus);
             udsSetNewConnectionsBlocked(false, true, false);
             isConnected = true;
@@ -377,24 +385,25 @@ void networkHostStopConnections() {
 }
 
 void networkScan() {
-    if(udsRunning) {
-        //reset values from last scan
-        if(scannedNetworks!=NULL) free(scannedNetworks);
+    if (udsRunning) {
+        // reset values from last scan
+        if (scannedNetworks != NULL)
+            free(scannedNetworks);
         scannedNetworks = NULL;
         scannedNetworksCount = 0;
-        
-        //scan
+
+        // scan
         memset(networkBuffer, 0, networkBufferSize);
         Result ret = udsScanBeacons(networkBuffer, networkBufferSize, &scannedNetworks, &scannedNetworksCount, NETWORK_WLANCOMMID, 0, NULL, isConnected);
-        if(R_FAILED(ret)) {
-            //TODO: what do?
+        if (R_FAILED(ret)) {
+            // TODO: what do?
             scannedNetworksCount = 0;
         }
     }
 }
 
 int networkGetScanCount() {
-    if(udsRunning) {
+    if (udsRunning) {
         return scannedNetworksCount;
     } else {
         return 0;
@@ -402,12 +411,13 @@ int networkGetScanCount() {
 }
 
 bool networkGetScanName(char *name, int pos) {
-    if(udsRunning) {
-        if(pos<0 || pos>=scannedNetworksCount) return false;
-        
+    if (udsRunning) {
+        if (pos < 0 || pos >= scannedNetworksCount)
+            return false;
+
         Result ret = udsGetNodeInfoUsername(&(scannedNetworks[pos].nodes[0]), name);
-        if(R_FAILED(ret)) {
-            //TODO: what do?
+        if (R_FAILED(ret)) {
+            // TODO: what do?
             return false;
         }
         return true;
@@ -416,14 +426,16 @@ bool networkGetScanName(char *name, int pos) {
 }
 
 bool networkConnect(int pos) {
-    if(udsRunning && !isConnected) {
-        if(pos<0 || pos>=scannedNetworksCount) return false;
-        
-        Result ret = udsConnectNetwork(&scannedNetworks[pos].network, NETWORK_PASSPHRASE, strlen(NETWORK_PASSPHRASE)+1, &networkBindCtx, UDS_BROADCAST_NETWORKNODEID, UDSCONTYPE_Client, NETWORK_CHANNEL, NETWORK_RECVBUFSIZE);
-        if(R_FAILED(ret)) {
+    if (udsRunning && !isConnected) {
+        if (pos < 0 || pos >= scannedNetworksCount)
+            return false;
+
+        Result ret = udsConnectNetwork(&scannedNetworks[pos].network, NETWORK_PASSPHRASE, strlen(NETWORK_PASSPHRASE) + 1, &networkBindCtx, UDS_BROADCAST_NETWORKNODEID, UDSCONTYPE_Client, NETWORK_CHANNEL, NETWORK_RECVBUFSIZE);
+        if (R_FAILED(ret)) {
             return false;
         } else {
-            if(udsWaitConnectionStatusEvent(false, false)) {}
+            if (udsWaitConnectionStatusEvent(false, false)) {
+            }
             udsGetConnectionStatus(&networkStatus);
             isConnected = true;
             isServer = false;
@@ -435,61 +447,59 @@ bool networkConnect(int pos) {
 }
 
 void networkDisconnect() {
-    //For clients this just means disconnect, for the server it means destroy the network
-    if(udsRunning && isConnected) {
+    // For clients this just means disconnect, for the server it means destroy the network
+    if (udsRunning && isConnected) {
         isConnected = false;
-        
+
         LightLock_Lock(&sendBufferLock);
-        //reset send buffer
+        // reset send buffer
         networkSendBufferStartPos = 0;
         networkSendBufferEndPos = 0;
         networkSendBufferWrapPos = 0;
-        
-        //reset ack status
+
+        // reset ack status
         networkSeqSendNext = 1;
-        for(int i=0; i<UDS_MAXNODES+1; i++) {
+        for (int i = 0; i < UDS_MAXNODES + 1; i++) {
             networkSeqSendConf[i] = 0;
             networkSeqRecvLast[i] = 0;
         }
         LightLock_Unlock(&sendBufferLock);
-        
-        //With new changes citra now crashes HOST with "cannot be a router if we are not a host" when exiting game with more than 2 people
-        svcSleepThread(220000 * 1000); //HACK: prevent citra crash (>20*networkthreadsleep) (wait unti no more stuff gets send)
-        
-        //TODO
-        if(isServer) {
-            //TODO: Clients need to cleanup too, how can I tell they got disconnected
+
+        // With new changes citra now crashes HOST with "cannot be a router if we are not a host" when exiting game with more than 2 people
+        svcSleepThread(220000 * 1000); // HACK: prevent citra crash (>20*networkthreadsleep) (wait unti no more stuff gets send)
+
+        // TODO
+        if (isServer) {
+            // TODO: Clients need to cleanup too, how can I tell they got disconnected
             udsDestroyNetwork();
         } else {
             udsDisconnectNetwork();
         }
         udsUnbind(&networkBindCtx);
-        
+
         isServer = false;
     }
 }
 
-
 void networkStart() {
-    //TODO: This sends the node_bitmask from server to everyone else, because it is uncorrect on some clients?
-    if(udsRunning && isConnected && isServer) {
+    // TODO: This sends the node_bitmask from server to everyone else, because it is uncorrect on some clients?
+    if (udsRunning && isConnected && isServer) {
         void *buffer = networkWriteBuffer;
-        
-        *((u16*) buffer) = networkStatus.node_bitmask;
+
+        *((u16 *)buffer) = networkStatus.node_bitmask;
         networkConnectedMask = networkStatus.node_bitmask;
-        
+
         networkSend(networkWriteBuffer, sizeof(u16));
         networkSendWaitFlush();
     }
 }
 
-
 bool networkConnected() {
     return isConnected;
-} 
+}
 
 int networkGetNodeCount() {
-    if(udsRunning && isConnected) {
+    if (udsRunning && isConnected) {
         return networkStatus.total_nodes;
     } else {
         return 0;
@@ -497,7 +507,7 @@ int networkGetNodeCount() {
 }
 
 u16 networkGetLocalNodeID() {
-    if(udsRunning && isConnected) {
+    if (udsRunning && isConnected) {
         return networkStatus.cur_NetworkNodeID;
     } else {
         return 0;
@@ -505,21 +515,21 @@ u16 networkGetLocalNodeID() {
 }
 
 bool networkIsNodeConnected(u16 id) {
-    if(udsRunning && isConnected) {
-        return networkStatus.node_bitmask & (1 << (id-1));
+    if (udsRunning && isConnected) {
+        return networkStatus.node_bitmask & (1 << (id - 1));
     } else {
         return false;
     }
 }
 
 bool networkGetNodeName(u16 id, char *name) {
-    if(udsRunning && isConnected && networkIsNodeConnected(id)) {
+    if (udsRunning && isConnected && networkIsNodeConnected(id)) {
         udsNodeInfo nodeInfo;
         udsGetNodeInformation(id, &nodeInfo);
-        
+
         Result ret = udsGetNodeInfoUsername(&nodeInfo, name);
-        if(R_FAILED(ret)) {
-            //TODO: what do?
+        if (R_FAILED(ret)) {
+            // TODO: what do?
             return false;
         }
         return true;
@@ -530,7 +540,7 @@ bool networkGetNodeName(u16 id, char *name) {
 u16 networkGetExpectedSeqFrom(u16 id) {
     u16 nextID = networkSeqRecvLast[id];
     nextID += 1;
-    if(nextID==0) {
+    if (nextID == 0) {
         nextID = 1;
     }
     return nextID;
@@ -538,84 +548,83 @@ u16 networkGetExpectedSeqFrom(u16 id) {
 
 bool networkSeqIsLowerThan(u16 firstID, u16 secondID) {
     if (secondID < 100) {
-        return (firstID < secondID) || (firstID > 65536-100);
-    } else if (secondID > 65536-100) {
+        return (firstID < secondID) || (firstID > 65536 - 100);
+    } else if (secondID > 65536 - 100) {
         return (firstID < secondID) && (firstID > 100);
     } else {
         return (firstID < secondID);
     }
 }
 
-
 static int fitInSendBuffer(size_t size) {
-    //add "header" length
-    size += sizeof(u16)*2;
-    
-    //we have no wrap currently
-    if(networkSendBufferStartPos<=networkSendBufferEndPos) {
-        //and can fit without wrap
-        if(networkSendBufferEndPos+size<NETWORK_SENDBUFFERSIZE) {
+    // add "header" length
+    size += sizeof(u16) * 2;
+
+    // we have no wrap currently
+    if (networkSendBufferStartPos <= networkSendBufferEndPos) {
+        // and can fit without wrap
+        if (networkSendBufferEndPos + size < NETWORK_SENDBUFFERSIZE) {
             networkSendBufferEndPos += size;
             networkSendBufferWrapPos = networkSendBufferEndPos;
-            
-            return networkSendBufferEndPos-size;
-        //we need to wrap
+
+            return networkSendBufferEndPos - size;
+            // we need to wrap
         } else {
-            if(size<networkSendBufferStartPos) {
+            if (size < networkSendBufferStartPos) {
                 networkSendBufferEndPos = size;
-                
+
                 return 0;
             }
         }
-    //we have wrap currently
+        // we have wrap currently
     } else {
         int available = networkSendBufferStartPos - networkSendBufferEndPos - 1;
-        if(available>size) {
+        if (available > size) {
             networkSendBufferEndPos += size;
-            
-            return networkSendBufferEndPos-size;
+
+            return networkSendBufferEndPos - size;
         }
     }
-    
+
     return -1;
 }
 
 void networkSend(void *packet, size_t size) {
-    //search for fit in buffer (and BLOCK until free space is found)
+    // search for fit in buffer (and BLOCK until free space is found)
     LightLock_Lock(&sendBufferLock);
     int pos = fitInSendBuffer(size);
-    while(pos==-1) {
+    while (pos == -1) {
         LightLock_Unlock(&sendBufferLock);
-        svcSleepThread(4500 * 1000); //TODO: Set meaningfull value
+        svcSleepThread(4500 * 1000); // TODO: Set meaningfull value
         LightLock_Lock(&sendBufferLock);
-        
+
         pos = fitInSendBuffer(size);
     }
-    
-    //fit found -> space is allready "reserved" -> write packet to buffer
+
+    // fit found -> space is allready "reserved" -> write packet to buffer
     void *writePointer = networkSendBuffer + pos;
-    
-    //write seq number
-    *((u16*) writePointer) = networkSeqSendNext;
+
+    // write seq number
+    *((u16 *)writePointer) = networkSeqSendNext;
     networkSeqSendNext++;
-    if(networkSeqSendNext==0) {
+    if (networkSeqSendNext == 0) {
         networkSeqSendNext = 1;
     }
     writePointer += sizeof(u16);
-    
-    //write size
-    *((u16*) writePointer) = (u16) size;
+
+    // write size
+    *((u16 *)writePointer) = (u16)size;
     writePointer += sizeof(u16);
-    
-    //write data
+
+    // write data
     memcpy(writePointer, packet, size);
     writePointer += size;
-    
+
     LightLock_Unlock(&sendBufferLock);
 }
 
 void networkSendWaitFlush() {
-    while(networkSendBufferStartPos!=networkSendBufferEndPos) {
+    while (networkSendBufferStartPos != networkSendBufferEndPos) {
         svcSleepThread(4500 * 1000);
     }
 }

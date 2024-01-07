@@ -5,7 +5,7 @@
 
 void tickEntityArrow(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityArrow(Entity* parent, int itemID, s8 xa, s8 ya, int level) {
+Entity newEntityArrow(Entity *parent, int itemID, s8 xa, s8 ya, int level) {
     Entity e;
     e.type = ENTITY_ARROW;
     e.level = level;
@@ -20,17 +20,18 @@ Entity newEntityArrow(Entity* parent, int itemID, s8 xa, s8 ya, int level) {
     e.yr = 2;
     e.canPass = false;
     e.canSwim = true;
-    
+
     e.tickFunction = &tickEntityArrow;
-    
+
     return e;
 }
 
 void tickEntityArrow(Entity *e, PlayerData *nearestPlayer) {
     e->arrow.age++;
     if (e->arrow.age >= 260 || !move(e, e->arrow.xa, e->arrow.ya)) {
-        //only drop arrows shot by player
-        if(e->arrow.parent->type == ENTITY_PLAYER) addItemsToWorld(newItem(e->arrow.itemID,1), e->level, e->x+4, e->y+4, 1);
+        // only drop arrows shot by player
+        if (e->arrow.parent->type == ENTITY_PLAYER)
+            addItemsToWorld(newItem(e->arrow.itemID, 1), e->level, e->x + 4, e->y + 4, 1);
         removeEntityFromList(e, e->level, &eManager);
         return;
     }

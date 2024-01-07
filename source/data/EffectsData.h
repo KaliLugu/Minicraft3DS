@@ -10,8 +10,8 @@
 #define EFFECTS_MAX 6
 #define EFFECTS_DURATION_INFINITE 4294967295
 
-void effectsDataInit();
+extern void effectsDataInit();
 
-char* effectGetName(int id);
-int effectGetIconX(int id);
-int effectGetIconY(int id);
+extern char *effectGetName(int id);
+extern int effectGetIconX(int id);
+extern int effectGetIconY(int id);

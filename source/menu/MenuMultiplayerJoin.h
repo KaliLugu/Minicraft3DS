@@ -1,4 +1,4 @@
 #pragma once
 
-void menuMultiplayerJoinTick();
-void menuMultiplayerJoinRender();
+extern void menuMultiplayerJoinTick();
+extern void menuMultiplayerJoinRender();
