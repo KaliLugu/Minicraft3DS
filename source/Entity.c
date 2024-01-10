@@ -12,7 +12,7 @@ void addEntityToList(Entity e, EntityManager *em) {
     ++em->lastSlot[e.level];
 }
 
-void removeEntityFromList(Entity *e, int level, EntityManager *em) {
+void removeEntityFromList(Entity *e, uByte level, EntityManager *em) {
     int i;
     if (em->entities[level][e->slotNum].type == ENTITY_TEXTPARTICLE)
         free(em->entities[level][e->slotNum].textParticle.text);

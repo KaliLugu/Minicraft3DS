@@ -5,7 +5,7 @@
 
 void tickEntityZombie(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityZombie(int lvl, int x, int y, int level) {
+Entity newEntityZombie(int lvl, int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_ZOMBIE;
     e.level = level;

@@ -5,8 +5,8 @@
 #include "../Render.h"
 #include "../render/TextureManager.h"
 
-u8 pageNum = 0;
-u8 maxPageNum = 6;
+uByte pageNum = 0;
+uByte maxPageNum = 6;
 
 char pageText[18];
 
@@ -52,24 +52,24 @@ void menuTutorialTick() {
     }
 }
 
-u32 biasedCirclePad(u32 in) {
-    if (in & KEY_CPAD_UP)
-        return KEY_CPAD_UP;
-    else if (in & KEY_CPAD_DOWN)
-        return KEY_CPAD_DOWN;
-    else if (in & KEY_CPAD_LEFT)
-        return KEY_CPAD_LEFT;
-    else if (in & KEY_CPAD_RIGHT)
-        return KEY_CPAD_RIGHT;
+sInt biasedCirclePad(sInt in) {
+    if (in & I_SL_UP)
+        return I_SL_UP;
+    else if (in & I_SL_DOWN)
+        return I_SL_DOWN;
+    else if (in & I_SL_LEFT)
+        return I_SL_LEFT;
+    else if (in & I_SL_RIGHT)
+        return I_SL_RIGHT;
     else
         return (in & -in);
 }
 
-u32 biasedMenuXY(u32 in) {
-    if (in & KEY_X)
-        return KEY_X;
-    else if (in & KEY_Y)
-        return KEY_Y;
+sInt biasedMenuXY(sInt in) {
+    if (in & I_X)
+        return I_X;
+    else if (in & I_Y)
+        return I_Y;
     else
         return (in & -in);
 }

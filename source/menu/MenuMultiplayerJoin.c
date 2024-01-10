@@ -4,8 +4,6 @@
 #include "../Menu.h"
 #include "../Render.h"
 
-#include "../network/Network.h"
-
 int menuScanTimer = 0;
 
 void menuMultiplayerJoinTick() {

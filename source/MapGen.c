@@ -7,7 +7,7 @@ bool hasNPC;
 int w = 0;
 int h = 0;
 
-u8 randomTile[] = {0, 0, 0, 0, 0, 0, 0, 1, 1, 2};
+uByte randomTile[] = {0, 0, 0, 0, 0, 0, 0, 1, 1, 2};
 int randomTileSize = 10;
 
 float nextFloat() {
@@ -68,7 +68,7 @@ double *Noise(int width, int height, int featureSize) {
 }
 
 // TODO: Will need to reset entity manager if generation is retried
-void createAndValidateTopMap(int w, int h, int level, u8 *map, u8 *data) {
+void createAndValidateTopMap(int w, int h, uByte level, uByte *map, uByte *data) {
     do {
         // reset Entities
         (&eManager)->lastSlot[level] = 0;
@@ -95,7 +95,7 @@ void createAndValidateTopMap(int w, int h, int level, u8 *map, u8 *data) {
     } while (true);
 }
 
-void createAndValidateUndergroundMap(int w, int h, int depthLevel, int level, u8 *map, u8 *data) {
+void createAndValidateUndergroundMap(int w, int h, int depthLevel, uByte level, uByte *map, uByte *data) {
     do {
         // reset Entities
         (&eManager)->lastSlot[level] = 0;
@@ -133,7 +133,7 @@ void createAndValidateUndergroundMap(int w, int h, int depthLevel, int level, u8
     } while (true);
 }
 
-void createAndValidateDungeonMap(int w, int h, int level, u8 *map, u8 *data) {
+void createAndValidateDungeonMap(int w, int h, uByte level, uByte *map, uByte *data) {
     do {
         // reset Entities
         (&eManager)->lastSlot[level] = 0;
@@ -154,7 +154,7 @@ void createAndValidateDungeonMap(int w, int h, int level, u8 *map, u8 *data) {
     } while (true);
 }
 
-void createAndValidateSkyMap(int w, int h, int level, u8 *map, u8 *data) {
+void createAndValidateSkyMap(int w, int h, uByte level, uByte *map, uByte *data) {
     do {
         // reset Entities
         (&eManager)->lastSlot[level] = 0;
@@ -175,7 +175,7 @@ void createAndValidateSkyMap(int w, int h, int level, u8 *map, u8 *data) {
     } while (true);
 }
 
-void createTopMap(int w, int h, int level, u8 *map, u8 *data) {
+void createTopMap(int w, int h, uByte level, uByte *map, uByte *data) {
     double *mnoise1 = Noise(w, h, 16);
     double *mnoise2 = Noise(w, h, 16);
     double *mnoise3 = Noise(w, h, 16);
@@ -305,7 +305,7 @@ void createTopMap(int w, int h, int level, u8 *map, u8 *data) {
     return;
 }
 
-void createUndergroundMap(int w, int h, int depthLevel, int level, u8 *map, u8 *data) {
+void createUndergroundMap(int w, int h, int depthLevel, uByte level, uByte *map, uByte *data) {
     double *mnoise1 = Noise(w, h, 16);
     double *mnoise2 = Noise(w, h, 16);
     double *mnoise3 = Noise(w, h, 16);
@@ -464,7 +464,7 @@ void createUndergroundMap(int w, int h, int depthLevel, int level, u8 *map, u8 *
     free(noise2);
 }
 
-void createDungeonMap(int w, int h, int level, u8 *map, u8 *data) {
+void createDungeonMap(int w, int h, uByte level, uByte *map, uByte *data) {
     hasNPC = false;
 
     int i, x, y;
@@ -516,7 +516,7 @@ void createDungeonMap(int w, int h, int level, u8 *map, u8 *data) {
     map[w / 2 - 1 + (h / 2 - 1) * w] = TILE_DUNGEON_WALL;
 }
 
-void createSkyMap(int w, int h, int level, u8 *map, u8 *data) {
+void createSkyMap(int w, int h, uByte level, uByte *map, uByte *data) {
     double *noise1 = Noise(w, h, 8);
     double *noise2 = Noise(w, h, 8);
     int x, y;
@@ -582,7 +582,7 @@ void createSkyMap(int w, int h, int level, u8 *map, u8 *data) {
 }
 
 //"Subgenerators"
-void findFeatureLocation(int fw, int fh, int *accepted, int aLength, int maxTries, int w, int h, u8 *map, u8 *data) {
+void findFeatureLocation(int fw, int fh, int *accepted, int aLength, int maxTries, int w, int h, uByte *map, uByte *data) {
     int leastNonFitting = fw * fh;
     int tries;
 
@@ -623,7 +623,7 @@ void findFeatureLocation(int fw, int fh, int *accepted, int aLength, int maxTrie
     }
 }
 
-void createVillageHouse(int hid, int x, int y, int hw, int hh, int ex, int ey, int w, int h, int level, u8 *map, u8 *data) {
+void createVillageHouse(int hid, int x, int y, int hw, int hh, int ex, int ey, int w, int h, uByte level, uByte *map, uByte *data) {
     // create wall and floor
     int xp = x;
     int yp = y;
@@ -661,7 +661,7 @@ void createVillageHouse(int hid, int x, int y, int hw, int hh, int ex, int ey, i
     addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, ((x + hw / 2) << 4) + loffx, ((y + hh / 2) << 4) + loffy, level), &eManager);
 }
 
-void createVillage(int w, int h, int level, u8 *map, u8 *data) {
+void createVillage(int w, int h, uByte level, uByte *map, uByte *data) {
     int vw = 17;
     int vh = 17;
     int accepted[] = {TILE_GRASS};
@@ -739,7 +739,7 @@ void createVillage(int w, int h, int level, u8 *map, u8 *data) {
     createVillageHouse(2, hx, hy, hw, hh, ex, ey, w, h, level, map, data);
 }
 
-void createDwarfHouse(int w, int h, int level, u8 *map, u8 *data) {
+void createDwarfHouse(int w, int h, uByte level, uByte *map, uByte *data) {
     int vw = 7;
     int vh = 7;
     int accepted[] = {TILE_ROCK};
@@ -773,7 +773,7 @@ void createDwarfHouse(int w, int h, int level, u8 *map, u8 *data) {
     addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, (x + vw - 1 - 1) << 4, (y + 1 + 3) << 4, level), &eManager);
 }
 
-void createDungeonRoom(int w, int h, bool dragon, int level, u8 *map, u8 *data) {
+void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte *data) {
     int tries;
 
     for (tries = 0; tries < 100; ++tries) {

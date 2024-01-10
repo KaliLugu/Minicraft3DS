@@ -1,9 +1,13 @@
 #pragma once
 #include "audio.h"
+#include "dtypes.h"
 #include "graphics.h"
+#include "input.h"
+#include "network.h"
+#include "platform.h"
 
-// TODO: why is thie deplicate required from graphics.h?
-typedef void (*DrawCallback)(int screen, int width, int height);
+typedef bool (*TickCallback)();
 
-extern void initEngine(DrawCallback cb);
+extern void initEngine(PacketHandler ph);
+extern void runMainLoop(TickCallback tickCB, DrawCallback drawCB);
 extern void exitEngine();

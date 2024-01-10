@@ -68,23 +68,27 @@ static void reloadTiles(Texture tiles[], int size) {
     for (int x = 0; x < 512 / size; x++) {
         for (int y = 0; y < 512 / size; y++) {
             int index = x + y * (512 / size);
-            createTexture(tiles + index, imageIcons, x * size, iHeight - size - y * size, x * size + size, iHeight - size - y * size + size);
+            freeTexture(tiles[index]);
+            tiles[index] = createTexture(imageIcons, x * size, iHeight - size - y * size, x * size + size, iHeight - size - y * size + size);
         }
     }
 }
 
 void textureManagerReload() {
-    createFullTexture(&bottomBGFull, imageBottombg);
+    freeTexture(bottomBGFull);
+    bottomBGFull = createFullTexture(imageBottombg);
 
     for (int i = 0; i < 6; i++) {
-        createFullTexture(minimap + i, imageMinimap[i]);
+        freeTexture(minimap[i]);
+        minimap[i] = createFullTexture(imageMinimap[i]);
     }
 
     int fiHeight = imageHeight(imageFont);
     for (int i = 0; i < (256 / 8) * 2; i++) {
         int x = i % (256 / 8);
         int y = i / (256 / 8);
-        createTexture(font + i, imageFont, x * 8, fiHeight - 8 - y * 8, x * 8 + 8, fiHeight - 8 - y * 8 + 8);
+        freeTexture(font[i]);
+        font[i] = createTexture(imageFont, x * 8, fiHeight - 8 - y * 8, x * 8 + 8, fiHeight - 8 - y * 8 + 8);
     }
 
     reloadTiles(tiles8, 8);
@@ -96,7 +100,8 @@ void textureManagerReload() {
     for (int x = 0; x < 736 / 16; x++) {
         for (int y = 0; y < 160 / 16; y++) {
             int index = x + y * (736 / 16);
-            createTexture(playerTiles + index, imagePlayerSprites, x * 16, piHeight - 16 - y * 16, x * 16 + 16, piHeight - 16 - y * 16 + 16);
+            freeTexture(playerTiles[index]);
+            playerTiles[index] = createTexture(imagePlayerSprites, x * 16, piHeight - 16 - y * 16, x * 16 + 16, piHeight - 16 - y * 16 + 16);
         }
     }
 

@@ -1,7 +1,19 @@
-#include "../engine.h"
 #ifdef __3DS__
-#include "audio.h"
+#include "../engine.h"
+
+#include <3ds.h>
 #include <stdio.h>
+
+struct _sound {
+    s16 *samples;
+    u32 count;
+};
+
+struct _music {
+    u32 size;
+    u32 pos;
+    char *name;
+};
 
 #define SOUND_CHANNEL_MIN 15
 #define SOUND_CHANNEL_MAX 23
@@ -13,10 +25,10 @@
 ndspWaveBuf *channelBuf;
 
 // music stream data
-s16 *musicBuffer1;
-s16 *musicBuffer2;
-s16 *musicBufferCurrent;
-u32 musicBufferCurrentSamples;
+sShort *musicBuffer1;
+sShort *musicBuffer2;
+sShort *musicBufferCurrent;
+sInt musicBufferCurrentSamples;
 ndspWaveBuf *streamBuffer1;
 ndspWaveBuf *streamBuffer2;
 ndspWaveBuf *streamBufferCurrent;
@@ -43,7 +55,7 @@ void musicStreamThreadMain(void *arg) {
             }
 
             // load next buffer
-            u32 bufferSize = MUSIC_STREAM_BUFFER_SIZE;
+            sInt bufferSize = MUSIC_STREAM_BUFFER_SIZE;
             if (currentMusic->size - currentMusic->pos < bufferSize) {
                 bufferSize = currentMusic->size - currentMusic->pos;
             }
@@ -87,7 +99,7 @@ void initAudio() {
 
     // start streaming thread (with lower priority (->higher value) than main and importantly network thread)
     runMusicThread = true;
-    s32 prio = 0;
+    sInt prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
     musicThread = threadCreate(musicStreamThreadMain, NULL, 1024, prio + 1, -2, false);
 }
@@ -118,7 +130,7 @@ void exitAudio() {
 }
 
 Sound loadSound(char *name) {
-    Sound sound = linearAlloc(sizeof(_3ds_sound));
+    Sound sound = linearAlloc(sizeof(_sound));
 
     FILE *file = fopen(name, "rb");
     if (file != NULL) {
@@ -160,7 +172,7 @@ void unloadSound(Sound sound) {
 }
 
 Music loadMusic(char *name) {
-    Music music = linearAlloc(sizeof(_3ds_music));
+    Music music = linearAlloc(sizeof(_music));
 
     FILE *file = fopen(name, "rb");
     if (file != NULL) {
@@ -183,7 +195,7 @@ void playMusic(Music music) {
     music->pos = 0;
 
     // load first buffer
-    u32 bufferSize = MUSIC_STREAM_BUFFER_SIZE;
+    sInt bufferSize = MUSIC_STREAM_BUFFER_SIZE;
     if (music->size - music->pos < bufferSize) {
         bufferSize = music->size - music->pos;
     }

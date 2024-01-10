@@ -2,7 +2,7 @@
 
 static char *_tileNames[MAX_TILE_ID + 1];
 
-static void _tileRegister(u8 id, char *name) {
+static void _tileRegister(int id, char *name) {
     _tileNames[id] = name;
 }
 
@@ -48,6 +48,6 @@ void tilesDataInit() {
     _tileRegister(TILE_ICE, "Ice");
 }
 
-char *tileGetName(u8 id) {
+char *tileGetName(int id) {
     return _tileNames[id];
 }

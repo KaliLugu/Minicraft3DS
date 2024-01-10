@@ -9,7 +9,7 @@ void assignInventory(Entity *e) {
     eManager.nextInv++;
 }
 
-Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, int level) {
+Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_FURNITURE;
     e.level = level;

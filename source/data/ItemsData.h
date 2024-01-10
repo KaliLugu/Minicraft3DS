@@ -1,6 +1,6 @@
 #pragma once
 
-#include <3ds.h>
+#include <stdbool.h>
 
 // NOTE: Items 0-6, 28-50, 101-1000 are for unstackable (tools, furniture) items
 #define ITEM_NULL 0
@@ -90,8 +90,8 @@
 
 extern void itemsDataInit();
 
-extern char *itemGetName(s16 id, s16 countLevel);
-extern char *itemGetNameWithCount(s16 id, s16 countLevel);
-extern int itemGetIconX(s16 id, s16 countLevel);
-extern int itemGetIconY(s16 id, s16 countLevel);
-extern bool itemIsSingle(s16 id, s16 countLevel);
+extern char *itemGetName(int id, int countLevel);
+extern char *itemGetNameWithCount(int id, int countLevel);
+extern int itemGetIconX(int id, int countLevel);
+extern int itemGetIconY(int id, int countLevel);
+extern bool itemIsSingle(int id, int countLevel);

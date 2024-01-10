@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../engine/graphics.h"
-#include <3ds.h>
 
 extern void renderText(char *msg, int x, int y);
 extern void renderTextCentered(char *text, int y, int width);

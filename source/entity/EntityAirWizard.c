@@ -5,7 +5,7 @@
 
 void tickEntityAirWizard(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityAirWizard(int x, int y, int level) {
+Entity newEntityAirWizard(int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_AIRWIZARD;
     e.level = level;

@@ -4,8 +4,6 @@
 #include "../Menu.h"
 #include "../Render.h"
 
-#include "../network/Network.h"
-
 #include "MenuLoadGame.h"
 
 void menuMultiplayerHostTick() {
@@ -35,7 +33,7 @@ void menuMultiplayerHostRender(int screen, int width, int height) {
         int j = 0;
         int lastj = 0;
         for (int i = 0; i < networkGetNodeCount(); i++) {
-            for (j = lastj + 1; j <= UDS_MAXNODES; j++) {
+            for (j = lastj + 1; j <= NETWORK_MAXNODES; j++) {
                 if (networkIsNodeConnected(j)) {
                     char *text = malloc((50 + 8 + 1) * sizeof(char));
                     memset(text, 0, (50 + 8 + 1) * sizeof(char));

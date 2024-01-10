@@ -1,6 +1,6 @@
 #pragma once
 
-#include <3ds.h>
+#include <stdbool.h>
 
 typedef struct _questline {
     int currentQuest;
@@ -13,7 +13,7 @@ typedef struct _questlineManager {
 } QuestlineManager;
 
 typedef struct _npcMenuData {
-    u8 currentNPC;
+    uByte currentNPC;
 
     int currentNPCMenu;
     int currentNPCVal;

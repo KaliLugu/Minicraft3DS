@@ -12,5 +12,5 @@ extern void bakeLights();
 extern void freeLightBakes();
 
 extern void renderLightsToStencil(PlayerData *pd, bool force, bool invert, bool rplayer);
-extern void renderLight(int x, int y, Texture *texture);
+extern void renderLight(int x, int y, Texture texture);
 extern void resetStencil();

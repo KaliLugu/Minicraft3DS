@@ -26,10 +26,9 @@ bool entityIsImportant(Entity *e) {
     }
 }
 
-s16 calculateImportantEntites(EntityManager *eManager, int level) {
-    int i;
-    s16 count = 0;
-    for (i = 0; i < eManager->lastSlot[level]; ++i) {
+sShort calculateImportantEntites(EntityManager *eManager, uByte level) {
+    sShort count = 0;
+    for (int i = 0; i < eManager->lastSlot[level]; i++) {
         if (entityIsImportant(&eManager->entities[level][i])) {
             count++;
         }
@@ -121,10 +120,10 @@ bool saveFileCopy(char *target, char *source) {
 
 // internal save methods
 void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
-    fwrite(&inv->lastSlot, sizeof(s16), 1, file); // write amount of items in inventory;
+    fwrite(&inv->lastSlot, sizeof(sShort), 1, file); // write amount of items in inventory;
     for (int j = 0; j < inv->lastSlot; ++j) {
-        fwrite(&(inv->items[j].id), sizeof(s16), 1, file);         // write ID of item
-        fwrite(&(inv->items[j].countLevel), sizeof(s16), 1, file); // write count/level of item
+        fwrite(&(inv->items[j].id), sizeof(sShort), 1, file);         // write ID of item
+        fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
         if (inv->items[j].id == ITEM_CHEST) {
             int invIndex = inv->items[j].chestPtr - eManager->invs;
             fwrite(&invIndex, sizeof(int), 1, file);
@@ -133,39 +132,39 @@ void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
 }
 
 void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
-    fwrite(&e->type, sizeof(s16), 1, file); // write entity's type ID
-    fwrite(&e->x, sizeof(s16), 1, file);    // write entity's x coordinate
-    fwrite(&e->y, sizeof(s16), 1, file);    // write entity's y coordinate
+    fwrite(&e->type, sizeof(sShort), 1, file); // write entity's type ID
+    fwrite(&e->x, sizeof(sShort), 1, file);    // write entity's x coordinate
+    fwrite(&e->y, sizeof(sShort), 1, file);    // write entity's y coordinate
     switch (e->type) {
     case ENTITY_AIRWIZARD:
-        fwrite(&e->wizard.health, sizeof(s16), 1, file);
+        fwrite(&e->wizard.health, sizeof(sShort), 1, file);
         break;
     case ENTITY_ZOMBIE:
     case ENTITY_SKELETON:
     case ENTITY_KNIGHT:
     case ENTITY_SLIME:
-        fwrite(&e->hostile.health, sizeof(s16), 1, file);
-        fwrite(&e->hostile.lvl, sizeof(s8), 1, file);
+        fwrite(&e->hostile.health, sizeof(sShort), 1, file);
+        fwrite(&e->hostile.lvl, sizeof(sByte), 1, file);
         break;
     case ENTITY_ITEM:
-        fwrite(&e->entityItem.item.id, sizeof(s16), 1, file);
-        fwrite(&e->entityItem.item.countLevel, sizeof(s16), 1, file);
-        fwrite(&e->entityItem.age, sizeof(s16), 1, file);
+        fwrite(&e->entityItem.item.id, sizeof(sShort), 1, file);
+        fwrite(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
+        fwrite(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
     case ENTITY_FURNITURE:
-        fwrite(&e->entityFurniture.itemID, sizeof(s16), 1, file);
+        fwrite(&e->entityFurniture.itemID, sizeof(sShort), 1, file);
         int invIndex = e->entityFurniture.inv - eManager->invs;
         fwrite(&invIndex, sizeof(int), 1, file);
         break;
     case ENTITY_PASSIVE:
-        fwrite(&e->passive.health, sizeof(s16), 1, file);
-        fwrite(&e->passive.mtype, sizeof(u8), 1, file);
+        fwrite(&e->passive.health, sizeof(sShort), 1, file);
+        fwrite(&e->passive.mtype, sizeof(uByte), 1, file);
         break;
     case ENTITY_DRAGON:
-        fwrite(&e->dragon.health, sizeof(s16), 1, file);
+        fwrite(&e->dragon.health, sizeof(sShort), 1, file);
         break;
     case ENTITY_NPC:
-        fwrite(&e->npc.type, sizeof(u8), 1, file);
+        fwrite(&e->npc.type, sizeof(uByte), 1, file);
         break;
     }
 }
@@ -180,7 +179,7 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     fwrite(&version, sizeof(int), 1, file);
 
     // Inventory Data
-    fwrite(&eManager->nextInv, sizeof(s16), 1, file); // write amount of inventories.
+    fwrite(&eManager->nextInv, sizeof(sShort), 1, file); // write amount of inventories.
     for (i = 0; i < eManager->nextInv; ++i) {
         saveInventory(&(eManager->invs[i]), eManager, file);
     }
@@ -188,7 +187,7 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     // Entity Data
     for (i = 0; i < 5; ++i) { // for every level (except dungeon of course)
         int amount = calculateImportantEntites(eManager, i);
-        fwrite(&amount, sizeof(s16), 1, file); // read amount of entities in level.
+        fwrite(&amount, sizeof(sShort), 1, file); // read amount of entities in level.
         for (j = 0; j < eManager->lastSlot[i]; ++j) {
             if (!entityIsImportant(&eManager->entities[i][j]))
                 continue;
@@ -198,18 +197,18 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     }
 
     // Day/season Data
-    fwrite(&worldData->daytime, sizeof(u16), 1, file);
+    fwrite(&worldData->daytime, sizeof(uShort), 1, file);
     fwrite(&worldData->day, sizeof(int), 1, file);
-    fwrite(&worldData->season, sizeof(u8), 1, file);
+    fwrite(&worldData->season, sizeof(uByte), 1, file);
     fwrite(&worldData->rain, sizeof(bool), 1, file);
 
     // Compass Data
-    fwrite(worldData->compassData, sizeof(u8), 6 * 3, file); // x,y of choosen stair and count per level
+    fwrite(worldData->compassData, sizeof(uByte), 6 * 3, file); // x,y of choosen stair and count per level
 
     // Map Data
     // Don't write or load dungeon, so only first 5 levels not 6
-    fwrite(worldData->map, sizeof(u8), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
-    fwrite(worldData->data, sizeof(u8), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
+    fwrite(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
+    fwrite(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
 
     fclose(file);
 }
@@ -227,32 +226,32 @@ void savePlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     fwrite(&player->score, sizeof(int), 1, file);
     fwrite(&player->isSpawned, sizeof(bool), 1, file);
     fwrite(&player->entity.p.hasWonSaved, sizeof(bool), 1, file);
-    fwrite(&player->entity.p.health, sizeof(s16), 1, file);
-    fwrite(&player->entity.x, sizeof(s16), 1, file);
-    fwrite(&player->entity.y, sizeof(s16), 1, file);
-    fwrite(&player->entity.level, sizeof(s8), 1, file);
+    fwrite(&player->entity.p.health, sizeof(sShort), 1, file);
+    fwrite(&player->entity.x, sizeof(sShort), 1, file);
+    fwrite(&player->entity.y, sizeof(sShort), 1, file);
+    fwrite(&player->entity.level, sizeof(sByte), 1, file);
 
     saveInventory(&(player->inventory), eManager, file);
 
     // Sprite info
     fwrite(&(player->sprite.choosen), sizeof(bool), 1, file);
-    fwrite(&(player->sprite.legs), sizeof(u8), 1, file);
-    fwrite(&(player->sprite.body), sizeof(u8), 1, file);
-    fwrite(&(player->sprite.arms), sizeof(u8), 1, file);
-    fwrite(&(player->sprite.head), sizeof(u8), 1, file);
-    fwrite(&(player->sprite.eyes), sizeof(u8), 1, file);
-    fwrite(&(player->sprite.accs), sizeof(u8), 1, file);
+    fwrite(&(player->sprite.legs), sizeof(uByte), 1, file);
+    fwrite(&(player->sprite.body), sizeof(uByte), 1, file);
+    fwrite(&(player->sprite.arms), sizeof(uByte), 1, file);
+    fwrite(&(player->sprite.head), sizeof(uByte), 1, file);
+    fwrite(&(player->sprite.eyes), sizeof(uByte), 1, file);
+    fwrite(&(player->sprite.accs), sizeof(uByte), 1, file);
 
     // Effect Data
     int esize = EFFECTS_MAX;
     fwrite(&esize, sizeof(int), 1, file);
     for (i = 0; i < EFFECTS_MAX; i++) {
-        fwrite(&(player->effects[i].level), sizeof(u8), 1, file);
-        fwrite(&(player->effects[i].time), sizeof(u32), 1, file);
+        fwrite(&(player->effects[i].level), sizeof(uByte), 1, file);
+        fwrite(&(player->effects[i].time), sizeof(sInt), 1, file);
     }
 
     // Minimap Data
-    fwrite(player->minimapData, sizeof(u8), 128 * 128, file); // Minimap, visibility data 16KB
+    fwrite(player->minimapData, sizeof(uByte), 128 * 128, file); // Minimap, visibility data 16KB
 
     // Quest Data
     fwrite(&(player->questManager.size), sizeof(int), 1, file);
@@ -266,11 +265,11 @@ void savePlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
 
 // internal load methods
 void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int version) {
-    fread(&(inv->lastSlot), sizeof(s16), 1, file); // read amount of items in inventory;
+    fread(&(inv->lastSlot), sizeof(sShort), 1, file); // read amount of items in inventory;
     for (int j = 0; j < inv->lastSlot; ++j) {
-        fread(&(inv->items[j].id), sizeof(s16), 1, file);         // write ID of item
-        fread(&(inv->items[j].countLevel), sizeof(s16), 1, file); // write count/level of item
-        if (version <= 1) {                                       // read legacy value
+        fread(&(inv->items[j].id), sizeof(sShort), 1, file);         // write ID of item
+        fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
+        if (version <= 1) {                                          // read legacy value
             bool onlyOne;
             fread(&onlyOne, sizeof(bool), 1, file);
         }
@@ -285,76 +284,76 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
     }
 }
 
-void loadEntity(Entity *e, int level, int j, EntityManager *eManager, FILE *file, int version) {
-    s16 type;
-    s16 x;
-    s16 y;
+void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *file, int version) {
+    sShort type;
+    sShort x;
+    sShort y;
 
-    s16 health;
+    sShort health;
     int lvl;
 
-    s16 itemID;
+    sShort itemID;
     int invIndex;
 
-    fread(&type, sizeof(s16), 1, file); // read entity's type ID
-    fread(&x, sizeof(s16), 1, file);    // read entity's x coordinate
-    fread(&y, sizeof(s16), 1, file);    // read entity's y coordinate
+    fread(&type, sizeof(sShort), 1, file); // read entity's type ID
+    fread(&x, sizeof(sShort), 1, file);    // read entity's x coordinate
+    fread(&y, sizeof(sShort), 1, file);    // read entity's y coordinate
     switch (type) {
     case ENTITY_AIRWIZARD:
         *e = newEntityAirWizard(x, y, level);
-        fread(&e->wizard.health, sizeof(s16), 1, file);
+        fread(&e->wizard.health, sizeof(sShort), 1, file);
         break;
     case ENTITY_SLIME:
-        fread(&health, sizeof(s16), 1, file);
-        fread(&lvl, sizeof(s8), 1, file);
+        fread(&health, sizeof(sShort), 1, file);
+        fread(&lvl, sizeof(sByte), 1, file);
         *e = newEntitySlime(lvl, x, y, level);
         e->hostile.health = health;
         break;
     case ENTITY_ZOMBIE:
-        fread(&health, sizeof(s16), 1, file);
-        fread(&lvl, sizeof(s8), 1, file);
+        fread(&health, sizeof(sShort), 1, file);
+        fread(&lvl, sizeof(sByte), 1, file);
         *e = newEntityZombie(lvl, x, y, level);
         e->hostile.health = health;
         break;
     case ENTITY_SKELETON:
-        fread(&health, sizeof(s16), 1, file);
-        fread(&lvl, sizeof(s8), 1, file);
+        fread(&health, sizeof(sShort), 1, file);
+        fread(&lvl, sizeof(sByte), 1, file);
         *e = newEntitySkeleton(lvl, x, y, level);
         e->hostile.health = health;
         break;
     case ENTITY_KNIGHT:
-        fread(&health, sizeof(s16), 1, file);
-        fread(&lvl, sizeof(s8), 1, file);
+        fread(&health, sizeof(sShort), 1, file);
+        fread(&lvl, sizeof(sByte), 1, file);
         *e = newEntityKnight(lvl, x, y, level);
         e->hostile.health = health;
         break;
     case ENTITY_ITEM:
         *e = newEntityItem(newItem(0, 0), x, y, level);
-        fread(&e->entityItem.item.id, sizeof(s16), 1, file);
-        fread(&e->entityItem.item.countLevel, sizeof(s16), 1, file);
-        fread(&e->entityItem.age, sizeof(s16), 1, file);
+        fread(&e->entityItem.item.id, sizeof(sShort), 1, file);
+        fread(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
+        fread(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
     case ENTITY_FURNITURE:
-        fread(&itemID, sizeof(s16), 1, file);
+        fread(&itemID, sizeof(sShort), 1, file);
         fread(&invIndex, sizeof(int), 1, file);
 
         *e = newEntityFurniture(itemID, &eManager->invs[invIndex], x, y, level);
         break;
     case ENTITY_PASSIVE:
         *e = newEntityPassive(0, x, y, level);
-        fread(&e->passive.health, sizeof(s16), 1, file);
-        fread(&e->passive.mtype, sizeof(u8), 1, file);
+        fread(&e->passive.health, sizeof(sShort), 1, file);
+        fread(&e->passive.mtype, sizeof(uByte), 1, file);
         break;
     case ENTITY_GLOWWORM:
         *e = newEntityGlowworm(x, y, level);
         break;
     case ENTITY_DRAGON:
         *e = newEntityDragon(x, y, level);
-        fread(&e->dragon.health, sizeof(s16), 1, file);
+        fread(&e->dragon.health, sizeof(sShort), 1, file);
         break;
     case ENTITY_NPC:
         *e = newEntityNPC(0, x, y, level);
-        fread(&e->npc.type, sizeof(u8), 1, file);
+        fread(&e->npc.type, sizeof(uByte), 1, file);
         break;
     }
     e->type = type;
@@ -373,32 +372,32 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     fread(&version, sizeof(int), 1, file);
 
     // Inventory Data
-    fread(&eManager->nextInv, sizeof(s16), 1, file);
+    fread(&eManager->nextInv, sizeof(sShort), 1, file);
     for (i = 0; i < eManager->nextInv; ++i) {
         loadInventory(&(eManager->invs[i]), eManager, file, version);
     }
 
     // Entity Data
     for (i = 0; i < 5; ++i) {
-        fread(&eManager->lastSlot[i], sizeof(s16), 1, file); // read amount of entities in level.
+        fread(&eManager->lastSlot[i], sizeof(sShort), 1, file); // read amount of entities in level.
         for (j = 0; j < eManager->lastSlot[i]; ++j) {
             loadEntity(&eManager->entities[i][j], i, j, eManager, file, version);
         }
     }
 
     // Day/season Data
-    fread(&worldData->daytime, sizeof(u16), 1, file);
+    fread(&worldData->daytime, sizeof(uShort), 1, file);
     fread(&worldData->day, sizeof(int), 1, file);
-    fread(&worldData->season, sizeof(u8), 1, file);
+    fread(&worldData->season, sizeof(uByte), 1, file);
     fread(&worldData->rain, sizeof(bool), 1, file);
 
     // Compass Data
-    fread(worldData->compassData, sizeof(u8), 6 * 3, file); // x,y of choosen stair and count per level
+    fread(worldData->compassData, sizeof(uByte), 6 * 3, file); // x,y of choosen stair and count per level
 
     // Map Data
     // Don't write or load dungeon, so only first 5 levels not 6
-    fread(worldData->map, sizeof(u8), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
-    fread(worldData->data, sizeof(u8), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
+    fread(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
+    fread(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
 
     fclose(file);
 }
@@ -416,35 +415,35 @@ void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     fread(&player->score, sizeof(int), 1, file);
     fread(&player->isSpawned, sizeof(bool), 1, file);
     fread(&player->entity.p.hasWonSaved, sizeof(bool), 1, file);
-    fread(&player->entity.p.health, sizeof(s16), 1, file);
-    fread(&player->entity.x, sizeof(s16), 1, file);
-    fread(&player->entity.y, sizeof(s16), 1, file);
-    fread(&player->entity.level, sizeof(s8), 1, file);
+    fread(&player->entity.p.health, sizeof(sShort), 1, file);
+    fread(&player->entity.x, sizeof(sShort), 1, file);
+    fread(&player->entity.y, sizeof(sShort), 1, file);
+    fread(&player->entity.level, sizeof(sByte), 1, file);
 
     loadInventory(&(player->inventory), eManager, file, version);
 
     // Sprite info
     fread(&(player->sprite.choosen), sizeof(bool), 1, file);
-    fread(&(player->sprite.legs), sizeof(u8), 1, file);
-    fread(&(player->sprite.body), sizeof(u8), 1, file);
-    fread(&(player->sprite.arms), sizeof(u8), 1, file);
-    fread(&(player->sprite.head), sizeof(u8), 1, file);
-    fread(&(player->sprite.eyes), sizeof(u8), 1, file);
+    fread(&(player->sprite.legs), sizeof(uByte), 1, file);
+    fread(&(player->sprite.body), sizeof(uByte), 1, file);
+    fread(&(player->sprite.arms), sizeof(uByte), 1, file);
+    fread(&(player->sprite.head), sizeof(uByte), 1, file);
+    fread(&(player->sprite.eyes), sizeof(uByte), 1, file);
     if (version >= 2)
-        fread(&(player->sprite.accs), sizeof(s8), 1, file);
+        fread(&(player->sprite.accs), sizeof(sByte), 1, file);
 
     // Effect Data
     if (version >= 2) {
         int esize;
         fread(&esize, sizeof(int), 1, file);
         for (i = 0; i < esize; i++) {
-            fread(&(player->effects[i].level), sizeof(u8), 1, file);
-            fread(&(player->effects[i].time), sizeof(u32), 1, file);
+            fread(&(player->effects[i].level), sizeof(uByte), 1, file);
+            fread(&(player->effects[i].time), sizeof(sInt), 1, file);
         }
     }
 
     // Minimap Data
-    fread(player->minimapData, sizeof(u8), 128 * 128, file); // Minimap, visibility data 16KB
+    fread(player->minimapData, sizeof(uByte), 128 * 128, file); // Minimap, visibility data 16KB
 
     // Quest Data
     fread(&(player->questManager.size), sizeof(int), 1, file);
@@ -568,7 +567,7 @@ bool loadWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
     return true;
 }
 
-s8 checkFileNameForErrors(char *filename) {
+int checkFileNameForErrors(char *filename) {
     int length = strlen(filename);
     if (length < 1)
         return 1; // Error: Length cannot be 0.

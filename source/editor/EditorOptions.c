@@ -13,7 +13,7 @@ int editorOptionsSelection;
 bool editorOptionsChangeName;
 char editorOrigFileName[256];
 char editorCurrentFileName[256];
-s8 editorErrorFileName = 0;
+int editorErrorFileName = 0;
 
 bool editorAreYouSure;
 bool editorAreYouSureSave;
@@ -45,7 +45,7 @@ void editorOptionsTick() {
         }
 
         menuTickKeyboard(editorCurrentFileName, 24);
-        if (localInputs.k_touch.px > 0 || localInputs.k_touch.py > 0) {
+        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
             editorErrorFileName = 0;
         }
         // normal menu
@@ -131,7 +131,7 @@ void editorOptionsRenderTop(int screen, int width, int height) {
     } else {
         for (int i = 2; i >= 0; --i) {
             char *msg = editorOptions[i];
-            u32 color = 0x7F7F7FFF;
+            Color color = 0x7F7F7FFF;
             if (i == editorOptionsSelection)
                 color = 0xFFFFFFFF;
             renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 56, color);

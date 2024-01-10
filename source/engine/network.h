@@ -1,30 +1,28 @@
 #pragma once
-
-#include <3ds.h>
+#include "dtypes.h"
+#include <stdbool.h>
+#include <stddef.h>
 
 #define NETWORK_WLANCOMMID 0x11441850
 #define NETWORK_PASSPHRASE "minicraft3dsLP"
 #define NETWORK_CHANNEL 1
 
-#define NETWORK_RECVBUFSIZE UDS_DEFAULT_RECVBUFSIZE
-
-#define NETWORK_MAXDATASIZE 1024
-#define NETWORK_SENDBUFFERSIZE ((NETWORK_MAXDATASIZE + 256) * 10)
-
-#define NETWORK_STACKSIZE (8 * 1024)
-
 #define NETWORK_MAXPLAYERS 8
+#define NETWORK_MAXNODES 16
+#define NETWORK_MAXDATASIZE 1024
+
+typedef void (*PacketHandler)(void *packet, size_t size);
 
 extern void *networkWriteBuffer;
 
-extern void networkInit();
-extern void networkExit();
+extern void initNetwork(PacketHandler ph);
+extern void exitNetwork();
 
 extern bool networkAvailable();
 
 extern bool networkHost();
 extern void networkHostStopConnections();
-extern void networkScan();
+extern bool networkScan();
 extern int networkGetScanCount();
 extern bool networkGetScanName(char *name, int pos);
 extern bool networkConnect(int pos);
@@ -36,12 +34,12 @@ extern void networkUpdateStatus();
 extern bool networkConnected();
 
 extern int networkGetNodeCount();
-extern u16 networkGetLocalNodeID();
-extern bool networkIsNodeConnected(u16 id);
-extern bool networkGetNodeName(u16 id, char *name);
+extern int networkGetLocalNodeID();
+extern bool networkIsNodeConnected(int id);
+extern bool networkGetNodeName(int id, char *name);
 
-extern u16 networkGetExpectedSeqFrom(u16 id);
-extern bool networkSeqIsLowerThan(u16 firstID, u16 secondID);
+extern int networkGetExpectedSeqFrom(int id);
+extern bool networkSeqIsLowerThan(int firstID, int secondID);
 
 extern void networkSend(void *packet, size_t size);
 extern void networkSendWaitFlush();

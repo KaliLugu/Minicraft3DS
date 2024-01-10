@@ -1,5 +1,6 @@
 #include "PacketHandler.h"
 
+#include "../engine/network.h"
 #include "Synchronizer.h"
 #include <stdlib.h>
 
@@ -12,22 +13,22 @@ static void *writeBool(void *buffer, size_t *size, bool value) {
     return buffer + sizeof(bool);
 }
 
-static void *writeU8(void *buffer, size_t *size, u8 value) {
-    *((u8 *)buffer) = value;
-    *(size) += sizeof(u8);
-    return buffer + sizeof(u8);
+static void *writeUByte(void *buffer, size_t *size, uByte value) {
+    *((uByte *)buffer) = value;
+    *(size) += sizeof(uByte);
+    return buffer + sizeof(uByte);
 }
 
-static void *writeU16(void *buffer, size_t *size, u16 value) {
-    *((u16 *)buffer) = value;
-    *(size) += sizeof(u16);
-    return buffer + sizeof(u16);
+static void *writeUShort(void *buffer, size_t *size, uShort value) {
+    *((uShort *)buffer) = value;
+    *(size) += sizeof(uShort);
+    return buffer + sizeof(uShort);
 }
 
-static void *writeU32(void *buffer, size_t *size, u32 value) {
-    *((u32 *)buffer) = value;
-    *(size) += sizeof(u32);
-    return buffer + sizeof(u32);
+static void *writeSInt(void *buffer, size_t *size, sInt value) {
+    *((sInt *)buffer) = value;
+    *(size) += sizeof(sInt);
+    return buffer + sizeof(sInt);
 }
 
 static void *writeSizeT(void *buffer, size_t *size, size_t value) {
@@ -42,22 +43,22 @@ static void *readBool(void *buffer, size_t *size, bool *value) {
     return buffer + sizeof(bool);
 }
 
-static void *readU8(void *buffer, size_t *size, u8 *value) {
-    *value = *((u8 *)buffer);
-    *(size) -= sizeof(u8);
-    return buffer + sizeof(u8);
+static void *readUByte(void *buffer, size_t *size, uByte *value) {
+    *value = *((uByte *)buffer);
+    *(size) -= sizeof(uByte);
+    return buffer + sizeof(uByte);
 }
 
-static void *readU16(void *buffer, size_t *size, u16 *value) {
-    *value = *((u16 *)buffer);
-    *(size) -= sizeof(u16);
-    return buffer + sizeof(u16);
+static void *readUShort(void *buffer, size_t *size, uShort *value) {
+    *value = *((uShort *)buffer);
+    *(size) -= sizeof(uShort);
+    return buffer + sizeof(uShort);
 }
 
-static void *readU32(void *buffer, size_t *size, u32 *value) {
-    *value = *((u32 *)buffer);
-    *(size) -= sizeof(u32);
-    return buffer + sizeof(u32);
+static void *readSInt(void *buffer, size_t *size, sInt *value) {
+    *value = *((sInt *)buffer);
+    *(size) -= sizeof(sInt);
+    return buffer + sizeof(sInt);
 }
 
 static void *readSizeT(void *buffer, size_t *size, size_t *value) {
@@ -75,16 +76,16 @@ void processPacket(void *packet, size_t size) {
 
         // find player index based on network node id
         // and set player uuid in synchronizer
-        u32 seed;
-        u32 playerCount = 1;
+        sInt seed;
+        sInt playerCount = 1;
         int playerIndex = 0;
 
-        buffer = readU32(buffer, &size, &seed);
-        buffer = readU32(buffer, &size, &playerCount);
+        buffer = readSInt(buffer, &size, &seed);
+        buffer = readSInt(buffer, &size, &playerCount);
         for (int i = 0; i < playerCount; i++) {
-            u16 nodeID;
+            uShort nodeID;
 
-            buffer = readU16(buffer, &size, &nodeID);
+            buffer = readUShort(buffer, &size, &nodeID);
 
             if (nodeID == networkGetLocalNodeID()) {
                 playerIndex = i;
@@ -106,12 +107,12 @@ void processPacket(void *packet, size_t size) {
     case PACKET_START_FILEHEADER: {
         void *data = packetGetDataStart(packet);
 
-        u8 type;
-        u8 id;
+        uByte type;
+        uByte id;
         size_t fsize;
 
-        data = readU8(data, &size, &type);
-        data = readU8(data, &size, &id);
+        data = readUByte(data, &size, &type);
+        data = readUByte(data, &size, &id);
         data = readSizeT(data, &size, &fsize);
 
         recvFile = fopen("tmpTransfer.bin", "wb");
@@ -140,13 +141,13 @@ void processPacket(void *packet, size_t size) {
         break;
     }
     case PACKET_START_ID: {
-        u8 playerID = packetGetSender(packet);
-        u32 uid;
+        uByte playerID = packetGetSender(packet);
+        sInt uid;
 
         void *data = packetGetDataStart(packet);
         size_t dsize = packetGetDataSize(size);
 
-        data = readU32(data, &dsize, &uid);
+        data = readSInt(data, &dsize, &uid);
 
         synchronizerSetPlayerUID(playerID, uid);
         synchronizerSendIfReady();
@@ -174,37 +175,37 @@ void processPacket(void *packet, size_t size) {
     }
 }
 
-u8 packetGetID(void *packet) {
-    return *((u8 *)packet);
+uByte packetGetID(void *packet) {
+    return *((uByte *)packet);
 }
 
-u8 packetGetSender(void *packet) {
-    return *((u8 *)packet + sizeof(u8));
+uByte packetGetSender(void *packet) {
+    return *((uByte *)packet + sizeof(uByte));
 }
 
-u32 packetGetTurn(void *packet) {
-    return *((u32 *)(packet + sizeof(u8) + sizeof(u8)));
+sInt packetGetTurn(void *packet) {
+    return *((sInt *)(packet + sizeof(uByte) + sizeof(uByte)));
 }
 
 void *packetGetDataStart(void *packet) {
-    return packet + sizeof(u8) + sizeof(u8) + sizeof(u32);
+    return packet + sizeof(uByte) + sizeof(uByte) + sizeof(sInt);
 }
 
 size_t packetGetDataSize(size_t size) {
-    return size - sizeof(u8) - sizeof(u8) - sizeof(u32);
+    return size - sizeof(uByte) - sizeof(uByte) - sizeof(sInt);
 }
 
-size_t writeStartPacket(void *buffer, u32 seed) {
+size_t writeStartPacket(void *buffer, sInt seed) {
     size_t size = 0;
-    buffer = writeU8(buffer, &size, PACKET_START);
-    buffer = writeU8(buffer, &size, 0);
-    buffer = writeU32(buffer, &size, 0);
+    buffer = writeUByte(buffer, &size, PACKET_START);
+    buffer = writeUByte(buffer, &size, 0);
+    buffer = writeSInt(buffer, &size, 0);
 
-    buffer = writeU32(buffer, &size, seed);
-    buffer = writeU32(buffer, &size, (u32)networkGetNodeCount());
-    for (int i = 1; i <= UDS_MAXNODES; i++) {
+    buffer = writeSInt(buffer, &size, seed);
+    buffer = writeSInt(buffer, &size, (sInt)networkGetNodeCount());
+    for (int i = 1; i <= NETWORK_MAXNODES; i++) {
         if (networkIsNodeConnected(i)) {
-            buffer = writeU16(buffer, &size, (u16)i);
+            buffer = writeUShort(buffer, &size, (uShort)i);
         }
     }
 
@@ -213,21 +214,21 @@ size_t writeStartPacket(void *buffer, u32 seed) {
 
 size_t writeStartRequestPacket(void *buffer) {
     size_t size = 0;
-    buffer = writeU8(buffer, &size, PACKET_START_REQUEST_IDS);
-    buffer = writeU8(buffer, &size, 0);
-    buffer = writeU32(buffer, &size, 0);
+    buffer = writeUByte(buffer, &size, PACKET_START_REQUEST_IDS);
+    buffer = writeUByte(buffer, &size, 0);
+    buffer = writeSInt(buffer, &size, 0);
 
     return size;
 }
 
-size_t writeInputPacket(void *buffer, Inputs *inputs, u8 playerID, u32 turnNumber) {
+size_t writeInputPacket(void *buffer, Inputs *inputs, uByte playerID, sInt turnNumber) {
     size_t size = 0;
-    buffer = writeU8(buffer, &size, PACKET_TURN_INPUT);
-    buffer = writeU8(buffer, &size, playerID);
-    buffer = writeU32(buffer, &size, turnNumber);
+    buffer = writeUByte(buffer, &size, PACKET_TURN_INPUT);
+    buffer = writeUByte(buffer, &size, playerID);
+    buffer = writeSInt(buffer, &size, turnNumber);
 
-    buffer = writeU16(buffer, &size, inputs->k_touch.px);
-    buffer = writeU16(buffer, &size, inputs->k_touch.py);
+    buffer = writeSInt(buffer, &size, inputs->k_touchX);
+    buffer = writeSInt(buffer, &size, inputs->k_touchY);
 
     buffer = writeBool(buffer, &size, inputs->k_up.down);
     buffer = writeBool(buffer, &size, inputs->k_up.clicked);
@@ -258,10 +259,10 @@ size_t writeInputPacket(void *buffer, Inputs *inputs, u8 playerID, u32 turnNumbe
 }
 
 bool readInputPacketData(void *buffer, size_t size, Inputs *inputs) {
-    buffer = readU16(buffer, &size, &(inputs->k_touch.px));
+    buffer = readSInt(buffer, &size, &(inputs->k_touchX));
     if (size <= 0)
         return false;
-    buffer = readU16(buffer, &size, &(inputs->k_touch.py));
+    buffer = readSInt(buffer, &size, &(inputs->k_touchY));
     if (size <= 0)
         return false;
 
@@ -315,7 +316,7 @@ bool readInputPacketData(void *buffer, size_t size, Inputs *inputs) {
     return size == 0;
 }
 
-void sendFile(FILE *file, u8 fileType, u8 id) {
+void sendFile(FILE *file, uByte fileType, uByte id) {
     fseek(file, 0, SEEK_END);   // seek to end of file
     size_t fsize = ftell(file); // get current file pointer
     fseek(file, 0, SEEK_SET);   // seek back to beginning of file
@@ -323,11 +324,11 @@ void sendFile(FILE *file, u8 fileType, u8 id) {
     // send file header
     void *buffer = networkWriteBuffer;
     size_t size = 0;
-    buffer = writeU8(buffer, &size, PACKET_START_FILEHEADER);
-    buffer = writeU8(buffer, &size, 0);
-    buffer = writeU32(buffer, &size, 0);
-    buffer = writeU8(buffer, &size, fileType);
-    buffer = writeU8(buffer, &size, id);
+    buffer = writeUByte(buffer, &size, PACKET_START_FILEHEADER);
+    buffer = writeUByte(buffer, &size, 0);
+    buffer = writeSInt(buffer, &size, 0);
+    buffer = writeUByte(buffer, &size, fileType);
+    buffer = writeUByte(buffer, &size, id);
     buffer = writeSizeT(buffer, &size, fsize);
     networkSend(networkWriteBuffer, size);
 
@@ -335,9 +336,9 @@ void sendFile(FILE *file, u8 fileType, u8 id) {
     while (fsize > 0) {
         buffer = networkWriteBuffer;
         size = 0;
-        buffer = writeU8(buffer, &size, PACKET_START_FILEDATA);
-        buffer = writeU8(buffer, &size, 0);
-        buffer = writeU32(buffer, &size, 0);
+        buffer = writeUByte(buffer, &size, PACKET_START_FILEDATA);
+        buffer = writeUByte(buffer, &size, 0);
+        buffer = writeSInt(buffer, &size, 0);
 
         // read file data
         size_t towrite = NETWORK_MAXDATASIZE - size;
@@ -354,26 +355,26 @@ void sendFile(FILE *file, u8 fileType, u8 id) {
     }
 }
 
-void sendIDPacket(u8 playerID, u32 uid) {
+void sendIDPacket(uByte playerID, sInt uid) {
     void *buffer = networkWriteBuffer;
     size_t size = 0;
 
-    buffer = writeU8(buffer, &size, PACKET_START_ID);
-    buffer = writeU8(buffer, &size, playerID);
-    buffer = writeU32(buffer, &size, 0);
+    buffer = writeUByte(buffer, &size, PACKET_START_ID);
+    buffer = writeUByte(buffer, &size, playerID);
+    buffer = writeSInt(buffer, &size, 0);
 
-    buffer = writeU32(buffer, &size, uid);
+    buffer = writeSInt(buffer, &size, uid);
 
     networkSend(networkWriteBuffer, size);
 }
 
-void sendStartReadyPacket(u8 playerID) {
+void sendStartReadyPacket(uByte playerID) {
     void *buffer = networkWriteBuffer;
     size_t size = 0;
 
-    buffer = writeU8(buffer, &size, PACKET_START_READY);
-    buffer = writeU8(buffer, &size, playerID);
-    buffer = writeU32(buffer, &size, 0);
+    buffer = writeUByte(buffer, &size, PACKET_START_READY);
+    buffer = writeUByte(buffer, &size, playerID);
+    buffer = writeSInt(buffer, &size, 0);
 
     networkSend(networkWriteBuffer, size);
 }
@@ -382,9 +383,9 @@ void sendStartSyncPacket() {
     void *buffer = networkWriteBuffer;
     size_t size = 0;
 
-    buffer = writeU8(buffer, &size, PACKET_TURN_START);
-    buffer = writeU8(buffer, &size, 0);
-    buffer = writeU32(buffer, &size, 0);
+    buffer = writeUByte(buffer, &size, PACKET_TURN_START);
+    buffer = writeUByte(buffer, &size, 0);
+    buffer = writeSInt(buffer, &size, 0);
 
     networkSend(networkWriteBuffer, size);
 }

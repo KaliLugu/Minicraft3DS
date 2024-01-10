@@ -1,7 +1,5 @@
 #pragma once
 
-#include <3ds.h>
-
 #define TILE_NULL 255
 #define TILE_GRASS 0
 #define TILE_TREE 1
@@ -47,4 +45,4 @@
 
 extern void tilesDataInit();
 
-extern char *tileGetName(u8 id);
+extern char *tileGetName(int id);

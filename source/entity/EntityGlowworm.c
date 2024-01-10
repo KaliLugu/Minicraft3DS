@@ -5,7 +5,7 @@
 
 void tickEntityGlowworm(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityGlowworm(int x, int y, int level) {
+Entity newEntityGlowworm(int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_GLOWWORM;
     e.level = level;

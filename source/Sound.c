@@ -15,11 +15,11 @@ Music music_floor1_night;
 Music music_floor23;
 Music music_floor4;
 
-u8 soundListenerLevel;
+int soundListenerLevel;
 int soundListenerX;
 int soundListenerY;
 
-void playSoundPositioned(Sound snd, s8 level, int x, int y) {
+void playSoundPositioned(Sound snd, uByte level, int x, int y) {
     if (level != soundListenerLevel)
         return;
     int xd = soundListenerX - x;
@@ -30,14 +30,14 @@ void playSoundPositioned(Sound snd, s8 level, int x, int y) {
     playSound(snd);
 }
 
-void setListenerPosition(s8 level, int x, int y) {
+void setListenerPosition(uByte level, int x, int y) {
     soundListenerLevel = level;
     soundListenerX = x;
     soundListenerY = y;
 }
 
-void updateMusic(int lvl, int time) {
-    switch (lvl) {
+void updateMusic(uByte level, int time) {
+    switch (level) {
     case 0:
         playMusic(music_floor0);
         break;

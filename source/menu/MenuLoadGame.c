@@ -4,7 +4,6 @@
 #include "../Menu.h"
 #include "../Render.h"
 
-#include <3ds.h>
 #include <dirent.h>
 #include <stdio.h>
 
@@ -14,9 +13,9 @@
 char fileNames[1000][256];
 int fileScore[1000];
 bool fileWin[1000];
-s16 worldFileCount = 0;
+int worldFileCount = 0;
 bool enteringName = false;
-s8 errorFileName = 0;
+int errorFileName = 0;
 
 int loadGameTarget;
 
@@ -151,7 +150,7 @@ void menuLoadGameTick() {
         }
 
         menuTickKeyboard(fileNames[worldFileCount], 24);
-        if (localInputs.k_touch.px > 0 || localInputs.k_touch.py > 0) {
+        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
             errorFileName = 0;
         }
     }

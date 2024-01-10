@@ -102,14 +102,14 @@ char guiText2[] = "A S D F G H J K L";
 char guiText3[] = "Z X C V B N M";
 char guiText4[] = " SPACE  BACKSPACE";
 
-s8 touchDelay = 0;
+int touchDelay = 0;
 bool isTouching = false;
 int touchX = 0, touchY = 0, touchW = 0, touchH = 0;
 
 void menuTickKeyboard(char *string, int maxLength) {
-    if ((localInputs.k_touch.px != 0 || localInputs.k_touch.py != 0) && touchDelay == 0) {
+    if ((localInputs.k_touchX != 0 || localInputs.k_touchY != 0) && touchDelay == 0) {
         if (!isTouching) {
-            int xVal = localInputs.k_touch.px, yVal = localInputs.k_touch.py;
+            int xVal = localInputs.k_touchX, yVal = localInputs.k_touchY;
             int strLength = strlen(string);
             if (yVal >= 60 && yVal < 80) { // 0 to 9
                 if (xVal >= 4 && xVal < 4 + 16) {
@@ -308,7 +308,7 @@ void menuTickKeyboard(char *string, int maxLength) {
                 isTouching = true;
             }
         }
-    } else if (localInputs.k_touch.px == 0 || localInputs.k_touch.py == 0) {
+    } else if (localInputs.k_touchX == 0 || localInputs.k_touchY == 0) {
         isTouching = false;
     }
     if (touchDelay > 0)

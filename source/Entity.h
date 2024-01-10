@@ -1,5 +1,6 @@
 #pragma once
 #include "Crafting.h"
+#include "engine/engine.h"
 #include <stdlib.h>
 
 // Entity types
@@ -31,20 +32,20 @@ typedef struct _plrd PlayerData; // in order to not include Player.h and cause a
 
 typedef struct
 {
-    s8 ax;
-    s8 ay;
-    u8 dir;
-    s8 health;
-    s8 stamina;
-    s8 staminaRecharge;
-    s8 staminaRechargeDelay;
-    s8 attackTimer;
-    u8 spawnTrigger;
+    sByte ax;
+    sByte ay;
+    uByte dir;
+    sByte health;
+    sByte stamina;
+    sByte staminaRecharge;
+    sByte staminaRechargeDelay;
+    sByte attackTimer;
+    uByte spawnTrigger;
     bool isDead;
     bool hasWon;
     bool hasWonSaved;
-    s8 endTimer;
-    s16 walkDist;
+    sByte endTimer;
+    sShort walkDist;
     bool isCarrying;
     bool isSwimming;
     int swimTimer;
@@ -60,60 +61,60 @@ typedef struct
     float xx;
     float yy;
     float zz;
-    s16 age;
+    sShort age;
     Item item;
 } EntityItem;
 
 typedef struct
 {
-    s16 itemID;
+    sShort itemID;
     bool active;
-    s8 r;           // light radius for lantern.
+    sByte r;        // light radius for lantern.
     Inventory *inv; // Points to chest inventory.
 } EntityFurniture;
 
 typedef struct
 {
-    u8 mtype;
-    s8 xa;
-    s8 ya;
-    s16 health;
-    s8 dir;
-    s8 randWalkTime;
-    s8 walkDist;
+    uByte mtype;
+    sByte xa;
+    sByte ya;
+    sShort health;
+    sByte dir;
+    sByte randWalkTime;
+    sByte walkDist;
 } PassiveMob;
 
 typedef struct
 {
-    s8 xa;
-    s8 ya;
-    s16 health;
-    s8 dir;
-    s8 lvl;
-    s8 randWalkTime;
-    s8 walkDist;
-    s8 randAttackTime;
-    u32 color;
+    sByte xa;
+    sByte ya;
+    sShort health;
+    sByte dir;
+    sByte lvl;
+    sByte randWalkTime;
+    sByte walkDist;
+    sByte randAttackTime;
+    Color color;
 } HostileMob;
 
 typedef struct
 {
-    s8 xa;
-    s8 ya;
-    s16 health;
-    s8 randWalkTime;
-    s8 walkDist;
-    s8 dir;
+    sByte xa;
+    sByte ya;
+    sShort health;
+    sByte randWalkTime;
+    sByte walkDist;
+    sByte dir;
     int attackDelay;
     int attackTime;
     int attackType;
-    s8 spriteAdjust;
+    sByte spriteAdjust;
 } AirWizard;
 
 typedef struct
 {
     Entity *parent;
-    s16 age;
+    sShort age;
     float xa;
     float ya;
     float xx;
@@ -123,20 +124,20 @@ typedef struct
 typedef struct
 {
     Entity *parent;
-    s16 age;
-    s16 itemID;
-    s8 xa;
-    s8 ya;
+    sShort age;
+    sShort itemID;
+    sByte xa;
+    sByte ya;
 } Arrow;
 
 typedef struct
 {
-    s8 xa;
-    s8 ya;
-    s16 health;
-    s8 randWalkTime;
-    s8 walkDist;
-    s8 dir;
+    sByte xa;
+    sByte ya;
+    sShort health;
+    sByte randWalkTime;
+    sByte walkDist;
+    sByte dir;
     int attackDelay;
     int attackTime;
     int attackType;
@@ -146,8 +147,8 @@ typedef struct
 typedef struct
 {
     Entity *parent;
-    u8 type;
-    s16 age;
+    uByte type;
+    sShort age;
     float xa;
     float ya;
     float xx;
@@ -156,15 +157,15 @@ typedef struct
 
 typedef struct
 {
-    s8 xa;
-    s8 ya;
-    s8 randWalkTime;
-    s8 waitTime;
+    sByte xa;
+    sByte ya;
+    sByte randWalkTime;
+    sByte waitTime;
 } Glowworm;
 
 typedef struct
 {
-    u8 type;
+    uByte type;
 } NPC;
 
 typedef struct
@@ -175,26 +176,26 @@ typedef struct
     float xx;
     float yy;
     float zz;
-    s16 age;
+    sShort age;
     char *text;
-    int color;
+    Color color;
 } TextParticleEntity;
 
 typedef struct
 {
-    s16 age;
+    sShort age;
 } SmashParticleEntity;
 
 struct Entity {
-    s16 x;
-    s16 y;
-    s16 type;
+    sShort x;
+    sShort y;
+    sShort type;
 
-    s8 xKnockback, yKnockback;
-    u8 xr, yr;
-    u8 level;
-    s8 hurtTime;
-    s16 slotNum; // Read-only. Do not mess with this.
+    sByte xKnockback, yKnockback;
+    uByte xr, yr;
+    uByte level;
+    sByte hurtTime;
+    sShort slotNum; // Read-only. Do not mess with this.
     bool canPass;
     bool canSwim;
     // TODO: unify stuff like health, dir, ... in a Mob struct
@@ -227,32 +228,32 @@ struct Entity {
 typedef struct
 {
     Entity entities[6][1000];
-    s16 lastSlot[6];
+    sShort lastSlot[6];
     Inventory invs[300];
-    s16 nextInv;
+    sShort nextInv;
 } EntityManager;
 
 extern EntityManager eManager;
 extern Entity nullEntity;
 
-extern Entity newEntityItem(Item item, int x, int y, int level);
-extern Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, int level);
-extern Entity newEntityPassive(int type, int x, int y, int level);
-extern Entity newEntityZombie(int lvl, int x, int y, int level);
-extern Entity newEntitySkeleton(int lvl, int x, int y, int level);
-extern Entity newEntityKnight(int lvl, int x, int y, int level);
-extern Entity newEntitySlime(int lvl, int x, int y, int level);
-extern Entity newEntityAirWizard(int x, int y, int level);
+extern Entity newEntityItem(Item item, int x, int y, uByte level);
+extern Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, uByte level);
+extern Entity newEntityPassive(int type, int x, int y, uByte level);
+extern Entity newEntityZombie(int lvl, int x, int y, uByte level);
+extern Entity newEntitySkeleton(int lvl, int x, int y, uByte level);
+extern Entity newEntityKnight(int lvl, int x, int y, uByte level);
+extern Entity newEntitySlime(int lvl, int x, int y, uByte level);
+extern Entity newEntityAirWizard(int x, int y, uByte level);
 extern Entity newEntitySpark(Entity *parent, float xa, float ya);
-extern Entity newEntityDragon(int x, int y, int level);
-extern Entity newEntityDragonFire(Entity *parent, u8 type, int x, int y, float xa, float ya);
-extern Entity newEntityMagicPillar(int x, int y, int level);
-extern Entity newEntityArrow(Entity *parent, int itemID, s8 xa, s8 ya, int level);
-extern Entity newEntityGlowworm(int x, int y, int level);
-extern Entity newEntityNPC(int type, int x, int y, int level);
+extern Entity newEntityDragon(int x, int y, uByte level);
+extern Entity newEntityDragonFire(Entity *parent, uByte type, int x, int y, float xa, float ya);
+extern Entity newEntityMagicPillar(int x, int y, uByte level);
+extern Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uByte level);
+extern Entity newEntityGlowworm(int x, int y, uByte level);
+extern Entity newEntityNPC(int type, int x, int y, uByte level);
 
-extern Entity newParticleText(char *str, u32 color, int xa, int ya, int level);
-extern Entity newParticleSmash(int xa, int ya, int level);
+extern Entity newParticleText(char *str, Color color, int xa, int ya, uByte level);
+extern Entity newParticleSmash(int xa, int ya, uByte level);
 
 extern void addEntityToList(Entity e, EntityManager *em);
-extern void removeEntityFromList(Entity *e, int level, EntityManager *em);
+extern void removeEntityFromList(Entity *e, uByte level, EntityManager *em);

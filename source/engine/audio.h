@@ -1,7 +1,11 @@
 #pragma once
+#include "dtypes.h"
 
-#include "3ds/audio.h"
-#include "switch/audio.h"
+typedef struct _sound _sound;
+typedef _sound *Sound;
+
+typedef struct _music _music;
+typedef _music *Music;
 
 extern void initAudio();
 extern void exitAudio();

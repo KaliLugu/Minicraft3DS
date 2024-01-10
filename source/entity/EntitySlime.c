@@ -5,7 +5,7 @@
 
 void tickEntitySlime(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntitySlime(int lvl, int x, int y, int level) {
+Entity newEntitySlime(int lvl, int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_SLIME;
     e.level = level;

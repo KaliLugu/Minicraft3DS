@@ -6,7 +6,7 @@
 
 void tickEntityItem(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityItem(Item item, int x, int y, int level) {
+Entity newEntityItem(Item item, int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_ITEM;
     e.level = level;

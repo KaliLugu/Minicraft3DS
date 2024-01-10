@@ -1,5 +1,6 @@
-#include <3ds.h>
 #include <ctype.h>
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +15,6 @@
 #include "Render.h"
 #include "SaveLoad.h"
 #include "engine/engine.h"
-#include "network/Network.h"
 #include "network/PacketHandler.h"
 #include "network/Synchronizer.h"
 #include "render/TextureManager.h"
@@ -78,6 +78,30 @@ void setupBGMap() {
     initBGMap = 0;
 }
 
+bool tick() {
+    if (quitGame)
+        return false;
+
+    if (initGame > 0 && --initGame == 0)
+        setupGame();
+    if (initMPGame > 0 && --initMPGame == 0)
+        setupGameServer();
+    if (initBGMap > 0 && --initBGMap == 0)
+        setupBGMap();
+
+    if (currentMenu == MENU_NONE) {
+        tickGame();
+    } else {
+        // input scanning ingame is handled by the synchronizer
+        scanInputs();
+        tickKeys(&localInputs);
+
+        tickMenu(currentMenu);
+    }
+
+    return true;
+}
+
 void draw(int screen, int width, int height) {
     if (currentMenu == MENU_NONE) {
         renderGame(screen, width, height);
@@ -89,33 +113,29 @@ void draw(int screen, int width, int height) {
 char debugText[34];
 char bossHealthText[34];
 int main() {
-    cfguInit();
-    CFGU_GetSystemModel(&MODEL_3DS);
+    initEngine(&processPacket);
+
     FILE *file;
     shouldRenderDebug = false;
     if ((file = fopen("settings.bin", "r"))) {
         fread(&shouldRenderDebug, sizeof(bool), 1, file);
-        fread(&shouldSpeedup, sizeof(bool), 1, file);
-        osSetSpeedupEnable(shouldSpeedup);
+        bool speedUp = false;
+        fread(&speedUp, sizeof(bool), 1, file);
+        setSpeedUp(speedUp);
         fclose(file);
     }
-
-    initEngine(&draw);
-
-    networkInit();
-    romfsInit();
 
     srand(time(NULL));
 
     // load or create localUID
     if ((file = fopen("m3ds_uid.bin", "rb"))) {
-        fread(&localUID, sizeof(u32), 1, file);
+        fread(&localUID, sizeof(sInt), 1, file);
         fclose(file);
     } else {
-        localUID = (((u32)(rand() % 256)) << 24) | (((u32)(rand() % 256)) << 16) | (((u32)(rand() % 256)) << 8) | (((u32)(rand() % 256)));
+        localUID = (((sInt)(rand() % 256)) << 24) | (((sInt)(rand() % 256)) << 16) | (((sInt)(rand() % 256)) << 8) | (((sInt)(rand() % 256)));
 
         if ((file = fopen("m3ds_uid.bin", "wb"))) {
-            fwrite(&localUID, sizeof(u32), 1, file);
+            fwrite(&localUID, sizeof(sInt), 1, file);
             fclose(file);
         }
     }
@@ -138,33 +158,33 @@ int main() {
     }
 
     /* Default inputs (also located in MenuSettingsRebind.c) */
-    localInputs.k_up.input = KEY_DUP | KEY_CPAD_UP | KEY_CSTICK_UP;
-    localInputs.k_down.input = KEY_DDOWN | KEY_CPAD_DOWN | KEY_CSTICK_DOWN;
-    localInputs.k_left.input = KEY_DLEFT | KEY_CPAD_LEFT | KEY_CSTICK_LEFT;
-    localInputs.k_right.input = KEY_DRIGHT | KEY_CPAD_RIGHT | KEY_CSTICK_RIGHT;
-    localInputs.k_attack.input = KEY_A | KEY_B | KEY_L | KEY_ZR;
-    localInputs.k_menu.input = KEY_X | KEY_Y | KEY_R | KEY_ZL;
-    localInputs.k_pause.input = KEY_START;
-    localInputs.k_accept.input = KEY_A;
-    localInputs.k_decline.input = KEY_B;
-    localInputs.k_delete.input = KEY_X;
-    localInputs.k_menuNext.input = KEY_R;
-    localInputs.k_menuPrev.input = KEY_L;
+    localInputs.k_up.input = I_DP_UP | I_SL_UP | I_SR_UP;
+    localInputs.k_down.input = I_DP_DOWN | I_SL_DOWN | I_SR_DOWN;
+    localInputs.k_left.input = I_DP_LEFT | I_SL_LEFT | I_SR_LEFT;
+    localInputs.k_right.input = I_DP_RIGHT | I_SL_RIGHT | I_SR_RIGHT;
+    localInputs.k_attack.input = I_A | I_B | I_L | I_ZR;
+    localInputs.k_menu.input = I_X | I_Y | I_R | I_ZL;
+    localInputs.k_pause.input = I_START_PLUS;
+    localInputs.k_accept.input = I_A;
+    localInputs.k_decline.input = I_B;
+    localInputs.k_delete.input = I_X;
+    localInputs.k_menuNext.input = I_R;
+    localInputs.k_menuPrev.input = I_L;
 
     /* If btnSave exists, then use that. */
     if ((file = fopen("btnSave.bin", "rb"))) {
-        fread(&(localInputs.k_up.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_down.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_left.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_right.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_attack.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_menu.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_pause.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_accept.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_decline.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_delete.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_menuNext.input), sizeof(int), 1, file);
-        fread(&(localInputs.k_menuPrev.input), sizeof(int), 1, file);
+        fread(&(localInputs.k_up.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_down.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_left.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_right.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_attack.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_menu.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_pause.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_accept.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_decline.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_delete.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_menuNext.input), sizeof(sInt), 1, file);
+        fread(&(localInputs.k_menuPrev.input), sizeof(sInt), 1, file);
         fclose(file);
     }
 
@@ -183,29 +203,8 @@ int main() {
     initPlayers();
     initRecipes();
     initTrades();
-    while (aptMainLoop()) {
-        if (quitGame)
-            break;
 
-        if (initGame > 0 && --initGame == 0)
-            setupGame();
-        if (initMPGame > 0 && --initMPGame == 0)
-            setupGameServer();
-        if (initBGMap > 0 && --initBGMap == 0)
-            setupBGMap();
-
-        if (currentMenu == MENU_NONE) {
-            tickGame();
-        } else {
-            // input scanning ingame is handled by the synchronizer
-            hidScanInput();
-            tickKeys(&localInputs, hidKeysHeld(), hidKeysDown());
-
-            tickMenu(currentMenu);
-        }
-
-        drawGraphics();
-    }
+    runMainLoop(&tick, &draw);
 
     stopMusic();
 
@@ -224,9 +223,6 @@ int main() {
 
     freeSounds();
 
-    romfsExit();
-    networkExit();
     exitEngine();
-    cfguExit();
     return 0;
 }

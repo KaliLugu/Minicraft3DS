@@ -11,9 +11,9 @@ typedef struct _recipe {
     bool canCraft;
     int itemResult;
     int itemAmountLevel;
-    s8 numOfCosts;
+    int numOfCosts;
     Cost costs[6]; // Up to 6 items for costs
-    u8 order;      // Used for stable sorting.
+    int order;     // Used for stable sorting.
 } Recipe;
 
 typedef struct _recipeManager {

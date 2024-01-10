@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Player.h"
-#include "Network.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,19 +16,19 @@
 
 extern void processPacket(void *packet, size_t size);
 
-extern u8 packetGetID(void *packet);
-extern u8 packetGetSender(void *packet);
-extern u32 packetGetTurn(void *packet);
+extern uByte packetGetID(void *packet);
+extern uByte packetGetSender(void *packet);
+extern sInt packetGetTurn(void *packet);
 extern void *packetGetDataStart(void *packet);
 extern size_t packetGetDataSize(size_t size);
 
-extern size_t writeStartPacket(void *buffer, u32 seed);
+extern size_t writeStartPacket(void *buffer, sInt seed);
 extern size_t writeStartRequestPacket(void *buffer);
 
-extern size_t writeInputPacket(void *buffer, Inputs *inputs, u8 playerID, u32 turnNumber);
+extern size_t writeInputPacket(void *buffer, Inputs *inputs, uByte playerID, sInt turnNumber);
 extern bool readInputPacketData(void *buffer, size_t size, Inputs *inputs);
 
-extern void sendFile(FILE *file, u8 fileType, u8 id);
-extern void sendIDPacket(u8 playerID, u32 uid);
-extern void sendStartReadyPacket(u8 playerID);
+extern void sendFile(FILE *file, uByte fileType, uByte id);
+extern void sendIDPacket(uByte playerID, sInt uid);
+extern void sendStartReadyPacket(uByte playerID);
 extern void sendStartSyncPacket();

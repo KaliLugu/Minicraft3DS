@@ -5,7 +5,7 @@
 
 void tickEntityArrow(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityArrow(Entity *parent, int itemID, s8 xa, s8 ya, int level) {
+Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uByte level) {
     Entity e;
     e.type = ENTITY_ARROW;
     e.level = level;

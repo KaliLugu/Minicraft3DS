@@ -16,8 +16,8 @@ int editorLevel;
 int editorMode;
 
 bool editorTouchDragging;
-s16 editorTouchXLast;
-s16 editorTouchYLast;
+sShort editorTouchXLast;
+sShort editorTouchYLast;
 
 int editorTile;
 
@@ -41,7 +41,7 @@ void editorTilesInit() {
 
 void editorTilesTick() {
     // update mode (only when not currently drawing/dragging/...)
-    if (localInputs.k_touch.px <= 0 && localInputs.k_touch.py <= 0) {
+    if (localInputs.k_touchX <= 0 && localInputs.k_touchY <= 0) {
         editorMode = EDITOR_MODE_SCROLL;
         if (localInputs.k_up.down) {
             editorMode = EDITOR_MODE_PAINT;
@@ -63,26 +63,26 @@ void editorTilesTick() {
 
     // painting tiles
     if (editorMode == EDITOR_MODE_PAINT) {
-        if (localInputs.k_touch.px > 0 || localInputs.k_touch.py > 0) {
-            int tilePosX = (editorX + localInputs.k_touch.px / 2) >> 4;
-            int tilePosY = (editorY + localInputs.k_touch.py / 2) >> 4;
+        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
+            int tilePosX = (editorX + localInputs.k_touchX / 2) >> 4;
+            int tilePosY = (editorY + localInputs.k_touchY / 2) >> 4;
 
             setTile(editorTile, editorLevel, tilePosX, tilePosY);
         }
         // picking tiles
     } else if (editorMode == EDITOR_MODE_PICK) {
-        if (localInputs.k_touch.px > 0 || localInputs.k_touch.py > 0) {
-            int tilePosX = (editorX + localInputs.k_touch.px / 2) >> 4;
-            int tilePosY = (editorY + localInputs.k_touch.py / 2) >> 4;
+        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
+            int tilePosX = (editorX + localInputs.k_touchX / 2) >> 4;
+            int tilePosY = (editorY + localInputs.k_touchY / 2) >> 4;
 
             editorTile = getTile(editorLevel, tilePosX, tilePosY);
         }
         // dragging the map
     } else if (editorMode == EDITOR_MODE_SCROLL) {
-        if (localInputs.k_touch.px > 0 || localInputs.k_touch.py > 0) {
+        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
             if (editorTouchDragging) {
-                s16 moveX = (editorTouchXLast - localInputs.k_touch.px) / 2;
-                s16 moveY = (editorTouchYLast - localInputs.k_touch.py) / 2;
+                sShort moveX = (editorTouchXLast - localInputs.k_touchX) / 2;
+                sShort moveY = (editorTouchYLast - localInputs.k_touchY) / 2;
 
                 editorX += moveX;
                 editorY += moveY;
@@ -98,16 +98,16 @@ void editorTilesTick() {
             } else {
                 editorTouchDragging = true;
             }
-            editorTouchXLast = localInputs.k_touch.px;
-            editorTouchYLast = localInputs.k_touch.py;
+            editorTouchXLast = localInputs.k_touchX;
+            editorTouchYLast = localInputs.k_touchY;
         } else {
             editorTouchDragging = false;
         }
         // choosing tiles from all possible
     } else if (editorMode == EDITOR_MODE_CHOOSE) {
-        if (localInputs.k_touch.px > 0 || localInputs.k_touch.py > 0) {
+        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
             if (editorTouchDragging) {
-                s16 moveY = (editorTouchYLast - localInputs.k_touch.py) / 2;
+                sShort moveY = (editorTouchYLast - localInputs.k_touchY) / 2;
 
                 editorChooseOffset += moveY;
 
@@ -116,17 +116,17 @@ void editorTilesTick() {
                 if (editorChooseOffset > (MAX_TILE_ID_USED + 5) / 6 * 24 - (240 / 2 - 24))
                     editorChooseOffset = (MAX_TILE_ID_USED + 5) / 6 * 24 - (240 / 2 - 24);
             } else {
-                if (localInputs.k_touch.px > (24 * 2) * 6) {
+                if (localInputs.k_touchX > (24 * 2) * 6) {
                     editorTouchDragging = true;
                 } else {
-                    int touchTile = (localInputs.k_touch.px / (24 * 2)) + ((localInputs.k_touch.py + editorChooseOffset * 2) / (24 * 2)) * 6;
+                    int touchTile = (localInputs.k_touchX / (24 * 2)) + ((localInputs.k_touchY + editorChooseOffset * 2) / (24 * 2)) * 6;
                     if (touchTile >= 0 && touchTile <= MAX_TILE_ID_USED) {
                         editorTile = touchTile;
                     }
                 }
             }
-            editorTouchXLast = localInputs.k_touch.px;
-            editorTouchYLast = localInputs.k_touch.py;
+            editorTouchXLast = localInputs.k_touchX;
+            editorTouchYLast = localInputs.k_touchY;
         } else {
             editorTouchDragging = false;
         }

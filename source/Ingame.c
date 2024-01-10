@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "Render.h"
 #include "SaveLoad.h"
-#include "network/Network.h"
+#include "engine/engine.h"
 #include "network/Synchronizer.h"
 #include "render/TextureManager.h"
 
@@ -18,11 +18,9 @@ bool stallAreYouSure;
 
 // generates stairs up and creates compass data
 void generatePass2() {
-    int level, x, y;
-
-    for (level = 0; level < 5; ++level) {
-        for (x = 0; x < 128; ++x) {
-            for (y = 0; y < 128; ++y) {
+    for (uByte level = 0; level < 5; level++) {
+        for (int x = 0; x < 128; x++) {
+            for (int y = 0; y < 128; y++) {
 
                 // generate stairs up matching stairs down
                 switch (worldData.map[level][x + y * 128]) {
@@ -170,8 +168,7 @@ void syncedTick() {
     updateMusic(getLocalPlayer()->entity.level, worldData.daytime);
 
     // for every active level
-    s8 level;
-    for (level = 0; level < 6; level++) {
+    for (uByte level = 0; level < 6; level++) {
         bool hasPlayer = false;
         for (i = 0; i < playerCount; i++) {
             if (players[i].entity.level == level) {
@@ -202,7 +199,7 @@ void syncedTick() {
     }
 
     // for every active level
-    for (level = 0; level < 6; level++) {
+    for (uByte level = 0; level < 6; level++) {
         if (level == 5 && !dungeonActive())
             continue;
 
@@ -249,8 +246,8 @@ void tickGame() {
                 stallAreYouSure = false;
 
             // scan local inputs, because synchronizer only updates them when not stalled
-            hidScanInput();
-            tickKeys(&localInputs, hidKeysHeld(), hidKeysDown());
+            scanInputs();
+            tickKeys(&localInputs);
 
             if (localInputs.k_accept.clicked) {
                 if (stallAreYouSure) {
@@ -361,7 +358,7 @@ void renderGame(int screen, int width, int height) {
 
     if (screen == 10) {
         if (!players[playerLocalID].mapShouldRender) {
-            drawTexture(&bottomBGFull, 0, 0);
+            drawTexture(bottomBGFull, 0, 0);
             renderGui(getLocalPlayer());
         } else {
             renderZoomedMap(getLocalPlayer());

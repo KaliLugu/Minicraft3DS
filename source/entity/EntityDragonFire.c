@@ -5,7 +5,7 @@
 
 void tickEntityDragonFire(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityDragonFire(Entity *parent, u8 type, int x, int y, float xa, float ya) {
+Entity newEntityDragonFire(Entity *parent, uByte type, int x, int y, float xa, float ya) {
     Entity e;
     e.type = ENTITY_DRAGONPROJECTILE;
     e.level = parent->level;

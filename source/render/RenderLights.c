@@ -62,17 +62,17 @@ void bakeLights() {
     bakeLight(glowwormLightBakeImage, 12, 12, 9);
     bakeLight(glowwormBigLightBakeImage, 12, 12, 11);
 
-    createFullTexture(&playerLightBake, playerLightBakeImage);
-    createFullTexture(&lanternLightBake, lanternLightBakeImage);
-    createFullTexture(&glowwormLightBake, glowwormLightBakeImage);
-    createFullTexture(&glowwormBigLightBake, glowwormBigLightBakeImage);
+    playerLightBake = createFullTexture(playerLightBakeImage);
+    lanternLightBake = createFullTexture(lanternLightBakeImage);
+    glowwormLightBake = createFullTexture(glowwormLightBakeImage);
+    glowwormBigLightBake = createFullTexture(glowwormBigLightBakeImage);
 }
 
 void freeLightBakes() {
-    freeTexture(&playerLightBake);
-    freeTexture(&lanternLightBake);
-    freeTexture(&glowwormLightBake);
-    freeTexture(&glowwormBigLightBake);
+    freeTexture(playerLightBake);
+    freeTexture(lanternLightBake);
+    freeTexture(glowwormLightBake);
+    freeTexture(glowwormBigLightBake);
 
     freeImage(playerLightBakeImage);
     freeImage(lanternLightBakeImage);
@@ -85,23 +85,23 @@ void renderLightsToStencil(PlayerData *pd, bool force, bool invert, bool rplayer
         setDrawMode(DM_MODIFY_SCISSOR);
 
         if (pd->activeItem->id == ITEM_LANTERN)
-            renderLight(pd->entity.x, pd->entity.y, &lanternLightBake);
+            renderLight(pd->entity.x, pd->entity.y, lanternLightBake);
         else if (rplayer)
-            renderLight(pd->entity.x, pd->entity.y, &playerLightBake);
+            renderLight(pd->entity.x, pd->entity.y, playerLightBake);
 
         int i;
         for (i = 0; i < eManager.lastSlot[pd->entity.level]; ++i) {
             Entity e = eManager.entities[pd->entity.level][i];
             if (e.type == ENTITY_FURNITURE) {
                 if (e.entityFurniture.itemID == ITEM_LANTERN && e.x > pd->entity.x - 160 && e.y > pd->entity.y - 125 && e.x < pd->entity.x + 160 && e.y < pd->entity.y + 125)
-                    renderLight(e.x, e.y, &lanternLightBake);
+                    renderLight(e.x, e.y, lanternLightBake);
             } else if (e.type == ENTITY_GLOWWORM && e.x > pd->entity.x - 160 && e.y > pd->entity.y - 125 && e.x < pd->entity.x + 160 && e.y < pd->entity.y + 125) { // TODO could be made smaller becuase of smaller light radius
                 if (rand() % 10 == 0)
                     continue;
                 else if (rand() % 100 == 0)
-                    renderLight(e.x + 20, e.y + 19, &glowwormBigLightBake);
+                    renderLight(e.x + 20, e.y + 19, glowwormBigLightBake);
                 else
-                    renderLight(e.x + 20, e.y + 19, &glowwormLightBake);
+                    renderLight(e.x + 20, e.y + 19, glowwormLightBake);
             }
         }
 
@@ -117,7 +117,7 @@ void renderLightsToStencil(PlayerData *pd, bool force, bool invert, bool rplayer
                         if ((x + y) % 2 == 0)
                             continue;
                     }
-                    renderLight((x << 4) + 8, (y << 4) + 8, &playerLightBake);
+                    renderLight((x << 4) + 8, (y << 4) + 8, playerLightBake);
                 }
             }
         }
@@ -126,7 +126,7 @@ void renderLightsToStencil(PlayerData *pd, bool force, bool invert, bool rplayer
     }
 }
 
-void renderLight(int x, int y, Texture *texture) {
+void renderLight(int x, int y, Texture texture) {
     drawTextureAt(texture, (x - (textureWidth(texture) / 2.0f) - offsetX) * 2, (y - (textureHeight(texture) / 2.0f) - offsetY) * 2, 2, 2, 0, 0xFFFFFFFF, 0);
 }
 

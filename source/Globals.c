@@ -5,16 +5,13 @@
 
 char versionText[34] = "Version 1.5.2";
 char fpsstr[34];
-u8 currentMenu = 0;
+uByte currentMenu = 0;
 
-u32 localUID;
+sInt localUID;
 
 int loadedtp;
 
-u8 MODEL_3DS;
-
 bool shouldRenderDebug;
-bool shouldSpeedup;
 
 Image imageIcons;
 Image imagePlayerSprites;
@@ -23,18 +20,18 @@ Image imageBottombg;
 Image imageMinimap[6];
 
 char currentFileName[256];
-u8 initGame;
-u8 initMPGame;
-u8 initBGMap;
+uByte initGame;
+uByte initMPGame;
+uByte initBGMap;
 Item noItem;
 int airWizardHealthDisplay;
-s16 awX, awY;
+sShort awX, awY;
 bool quitGame;
-s8 currentSelection;
+int currentSelection;
 
 WorldData worldData;
 
-void addItemsToWorld(Item item, s8 level, int x, int y, int count) {
+void addItemsToWorld(Item item, uByte level, int x, int y, int count) {
     int i;
     for (i = 0; i < count; ++i)
         addEntityToList(newEntityItem(item, x, y, level), &eManager);
@@ -44,7 +41,7 @@ bool intersects(Entity e, int x0, int y0, int x1, int y1) {
     return !(e.x + e.xr < x0 || e.y + e.yr < y0 || e.x - e.xr > x1 || e.y - e.yr > y1);
 }
 
-int getEntities(Entity **result, s8 level, int x0, int y0, int x1, int y1) {
+int getEntities(Entity **result, uByte level, int x0, int y0, int x1, int y1) {
     int i, last = 0;
     for (i = 0; i < eManager.lastSlot[level]; ++i) {
         Entity *e = &eManager.entities[level][i];
@@ -163,7 +160,7 @@ bool moveMob(Entity *e, int xa, int ya) {
     return move(e, xa, ya);
 }
 
-void hurtEntity(Entity *e, int damage, int dir, u32 hurtColor, Entity *damager) {
+void hurtEntity(Entity *e, int damage, int dir, Color hurtColor, Entity *damager) {
     if (e->type == ENTITY_PLAYER) {
         playerDamage(e->p.data, damage, dir, hurtColor, damager);
         return;
@@ -175,7 +172,7 @@ void hurtEntity(Entity *e, int damage, int dir, u32 hurtColor, Entity *damager) 
     // strength effect of players
     if (damager != NULL && damager->type == ENTITY_PLAYER) {
         if (playerEffectActive(damager->p.data, EFFECT_STRENGTH)) {
-            u8 slevel = playerEffectGetLevel(damager->p.data, EFFECT_STRENGTH);
+            uByte slevel = playerEffectGetLevel(damager->p.data, EFFECT_STRENGTH);
             damage *= 1.0 + 0.5 * slevel;
         }
     }
@@ -653,7 +650,7 @@ Color getTileColor(int tile) {
     }
 }
 
-s8 itemTileInteract(int tile, PlayerData *pd, Item *item, s8 level, int x, int y, int px, int py, int dir) {
+int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, int y, int px, int py, int dir) {
 
     // Furniture items
     if (item->id > 27 && item->id < 51) {
@@ -880,7 +877,7 @@ s8 itemTileInteract(int tile, PlayerData *pd, Item *item, s8 level, int x, int y
     return 0;
 }
 
-void tickTile(s8 level, int x, int y) {
+void tickTile(uByte level, int x, int y) {
     int tile = getTile(level, x, y);
     int data = getData(level, x, y);
 
@@ -1016,7 +1013,7 @@ void tickEntity(Entity *e) {
     }
 }
 
-void trySpawn(int count, int level) {
+void trySpawn(int count, uByte level) {
     int i, j;
     for (i = 0; i < count; i++) {
         if (eManager.lastSlot[level] > 900)
@@ -1078,13 +1075,13 @@ void trySpawn(int count, int level) {
     }
 }
 
-int getTile(s8 level, int x, int y) {
+int getTile(uByte level, int x, int y) {
     if (x < 0 || y < 0 || x > 128 || y > 128)
         return -1;
     return worldData.map[level][x + y * 128];
 }
 
-void setTile(int id, s8 level, int x, int y) {
+void setTile(int id, uByte level, int x, int y) {
     if (x < 0 || y < 0 || x > 128 || y > 128)
         return;
     worldData.map[level][x + y * 128] = id;
@@ -1093,26 +1090,26 @@ void setTile(int id, s8 level, int x, int y) {
     setPixel(imageMinimap[level], x, y, getMinimapColor(getLocalPlayer(), level, x, y));
 }
 
-int getData(s8 level, int x, int y) {
+int getData(uByte level, int x, int y) {
     if (x < 0 || y < 0 || x > 128 || y > 128)
         return -1;
     return worldData.data[level][x + y * 128];
 }
 
-void setData(int id, s8 level, int x, int y) {
+void setData(int id, uByte level, int x, int y) {
     if (x < 0 || y < 0 || x > 128 || y > 128)
         return;
     worldData.data[level][x + y * 128] = id;
 }
 
-void addSmashParticles(s8 level, int x, int y, int damage) {
+void addSmashParticles(uByte level, int x, int y, int damage) {
     char hurtText[11];
     sprintf(hurtText, "%d", damage);
     addEntityToList(newParticleText(hurtText, 0xFF0000FF, x, y, level), &eManager);
     addEntityToList(newParticleSmash(x, y, level), &eManager);
 }
 
-void damageAndBreakTile(s8 level, int xt, int yt, int damage, int maxDamage, int replaceTile, int numItems, ...) {
+void damageAndBreakTile(uByte level, int xt, int yt, int damage, int maxDamage, int replaceTile, int numItems, ...) {
     int i;
 
     // damage indicator
@@ -1137,7 +1134,7 @@ void damageAndBreakTile(s8 level, int xt, int yt, int damage, int maxDamage, int
     }
 }
 
-void playerHurtTile(PlayerData *pd, int tile, s8 level, int xt, int yt, int damage, int dir) {
+void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int damage, int dir) {
     if (TESTGODMODE)
         damage = 99;
 
@@ -1252,7 +1249,7 @@ void playerHurtTile(PlayerData *pd, int tile, s8 level, int xt, int yt, int dama
     }
 }
 
-void switchLevel(PlayerData *pd, s8 change) {
+void switchLevel(PlayerData *pd, int change) {
     pd->entity.level += change;
     if (pd->entity.level > 4)
         pd->entity.level = 0;
@@ -1305,7 +1302,7 @@ void playerEntityInteract(PlayerData *pd, Entity *e) {
     }
 }
 
-void entityTileInteract(Entity *e, int tile, s8 level, int x, int y) {
+void entityTileInteract(Entity *e, int tile, uByte level, int x, int y) {
     switch (tile) {
     case TILE_STAIRS_DOWN:
         if (e->type == ENTITY_PLAYER) {
@@ -1415,7 +1412,7 @@ bool useEntity(PlayerData *pd, Entity *e) {
     return false;
 }
 
-bool isWater(s8 level, int xt, int yt) {
+bool isWater(uByte level, int xt, int yt) {
     return getTile(level, xt, yt) == TILE_WATER;
 }
 
@@ -1471,7 +1468,7 @@ void leaveDungeon(PlayerData *pd) {
     }
 }
 
-void setMinimapVisible(PlayerData *pd, int level, int x, int y, bool visible) {
+void setMinimapVisible(PlayerData *pd, uByte level, int x, int y, bool visible) {
     if (visible) {
         pd->minimapData[x + y * 128] = pd->minimapData[x + y * 128] | (1 << level);
     } else {
@@ -1482,26 +1479,23 @@ void setMinimapVisible(PlayerData *pd, int level, int x, int y, bool visible) {
         setPixel(imageMinimap[level], x, y, getMinimapColor(pd, level, x, y));
 }
 
-bool getMinimapVisible(PlayerData *pd, int level, int x, int y) {
+bool getMinimapVisible(PlayerData *pd, uByte level, int x, int y) {
     return (pd->minimapData[x + y * 128] & (1 << level)) > 0;
 }
 
-u32 getMinimapColor(PlayerData *pd, int level, int x, int y) {
+Color getMinimapColor(PlayerData *pd, uByte level, int x, int y) {
     if (getMinimapVisible(pd, level, x, y) || (pd->entity.level == 0 && level == 1))
         return getTileColor(worldData.map[level][x + y * 128]);
     else
         return getTileColor(worldData.map[level][x + y * 128]) & 0xFFFFFF00;
 }
 
-void initMinimapLevel(PlayerData *pd, int level) {
-    int x;
-    int y;
-
+void initMinimapLevel(PlayerData *pd, uByte level) {
     if (pd != getLocalPlayer())
         return;
 
-    for (x = 0; x < 128; ++x) {
-        for (y = 0; y < 128; ++y) {
+    for (int x = 0; x < 128; ++x) {
+        for (int y = 0; y < 128; ++y) {
             /* Minimaps */
             setPixel(imageMinimap[level], x, y, getMinimapColor(pd, level, x, y));
         }

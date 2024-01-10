@@ -4,7 +4,6 @@
 #include "../Menu.h"
 #include "../Render.h"
 
-#include <3ds.h>
 #include <dirent.h>
 #include <stdio.h>
 
@@ -12,8 +11,8 @@
 
 char tpFileNames[1000][256];
 char tpFileComment[1000][60];
-s16 tpFileCount = 0;
-s8 isLoadingTP = 0;
+int tpFileCount = 0;
+int isLoadingTP = 0;
 
 void readTPFiles() {
     memset(&tpFileNames, 0, sizeof(tpFileNames));     // reset tp fileNames

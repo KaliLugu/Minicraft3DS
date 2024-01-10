@@ -11,7 +11,7 @@ void renderText(char *msg, int x, int y) {
     for (int i = 0; i < strlen(msg); ++i) {
         int ix = strchr(fontChars, toupper((unsigned char)msg[i])) - fontChars;
         if (ix >= 0)
-            drawTextureAt(font + ix, (x + i * 8) * 2, y * 2, 2, 2, 0, 0xFFFFFFFF, 0);
+            drawTextureAt(font[ix], (x + i * 8) * 2, y * 2, 2, 2, 0, 0xFFFFFFFF, 0);
     }
 }
 
@@ -25,7 +25,7 @@ void renderTextColor(char *msg, int x, int y, Color color) {
     for (int i = 0; i < strlen(msg); ++i) {
         int ix = strchr(fontChars, toupper((unsigned char)msg[i])) - fontChars;
         if (ix >= 0)
-            drawTextureAt(font + ix, (x + i * 8) * 2, y * 2, 2, 2, 0, color, 1);
+            drawTextureAt(font[ix], (x + i * 8) * 2, y * 2, 2, 2, 0, color, 1);
     }
 }
 
@@ -40,9 +40,9 @@ void renderTextColorSpecial(char *msg, int x, int y, Color color, Color color2) 
             sOver = true;
         if (ix >= 0) {
             if (sOver)
-                drawTextureAt(font + ix, (x + i * 8) * 2, y * 2, 2, 2, 0, color2, 1);
+                drawTextureAt(font[ix], (x + i * 8) * 2, y * 2, 2, 2, 0, color2, 1);
             else
-                drawTextureAt(font + ix, (x + i * 8) * 2, y * 2, 2, 2, 0, color, 1);
+                drawTextureAt(font[ix], (x + i * 8) * 2, y * 2, 2, 2, 0, color, 1);
         }
     }
 }

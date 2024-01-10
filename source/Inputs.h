@@ -1,12 +1,12 @@
 #pragma once
 
-#include <3ds.h>
+#include "engine/engine.h"
 
 // only down and clicked need to be send, input is for config stuff
 typedef struct
 {
     bool down, clicked;
-    int input;
+    sInt input;
 } Key;
 
 typedef struct
@@ -24,12 +24,12 @@ typedef struct
     Key k_delete;
     Key k_menuNext;
     Key k_menuPrev;
-    touchPosition k_touch;
+    sInt k_touchX;
+    sInt k_touchY;
 } Inputs;
 
 extern Inputs localInputs;
 
-extern void tickKeys(Inputs *inputs, u32 held, u32 down);
+extern void tickKeys(Inputs *inputs);
 extern void resetKeys(Inputs *inputs);
 extern void resetClicked(Inputs *inputs);
-extern bool clicked(Key key);

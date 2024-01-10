@@ -2,7 +2,7 @@
 
 #include "../Data.h"
 
-Entity newEntityMagicPillar(int x, int y, int level) {
+Entity newEntityMagicPillar(int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_MAGIC_PILLAR;
     e.level = level;

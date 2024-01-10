@@ -19,7 +19,7 @@ void freePlayers() {
     }
 }
 
-void playerInitMiniMapData(u8 *minimapData) {
+void playerInitMiniMapData(uByte *minimapData) {
     int i;
     for (i = 0; i < 128 * 128; ++i) {
         minimapData[i] = 0;
@@ -143,18 +143,18 @@ void freePlayer(PlayerData *pd) {
     freeQuests(&(pd->questManager));
 }
 
-PlayerData *getNearestPlayer(s8 level, s16 x, s16 y) {
-    int nearest = -1;
-    unsigned int nearestDist = UINT_MAX;
+PlayerData *getNearestPlayer(uByte level, int x, int y) {
+    sInt nearest = -1;
+    sInt nearestDist = INT_MAX;
 
     for (int i = 0; i < playerCount; i++) {
         if (players[i].entity.level != level)
             continue;
 
-        int xdif = players[i].entity.x - x;
-        int ydif = players[i].entity.y - y;
+        sInt xdif = players[i].entity.x - x;
+        sInt ydif = players[i].entity.y - y;
 
-        unsigned int dist = xdif * xdif + ydif * ydif;
+        sInt dist = xdif * xdif + ydif * ydif;
         if (dist < nearestDist) {
             nearest = i;
             nearestDist = dist;
@@ -181,7 +181,7 @@ bool _playerUseItemEat(PlayerData *pd, int energy, int health) {
     return false;
 }
 
-bool _playerUseItemScroll(PlayerData *pd, int effect, u8 level, u32 time) {
+bool _playerUseItemScroll(PlayerData *pd, int effect, uByte level, sInt time) {
     if (!playerEffectActive(pd, effect)) {
         playerEffectApply(pd, effect, level, time);
         --(pd->activeItem->countLevel);
@@ -386,7 +386,7 @@ void playerAttack(PlayerData *pd) {
 
     // interacting with tiles
     if (xt >= 0 && yt >= 0 && xt < 128 && yt < 128) {
-        s8 itract = itemTileInteract(getTile(pd->entity.level, xt, yt), pd, pd->activeItem, pd->entity.level, xt, yt, pd->entity.x, pd->entity.y, pd->entity.p.dir);
+        int itract = itemTileInteract(getTile(pd->entity.level, xt, yt), pd, pd->activeItem, pd->entity.level, xt, yt, pd->entity.x, pd->entity.y, pd->entity.p.dir);
         if (itract > 0) {
             if (itract == 2)
                 pd->entity.p.isCarrying = false;
@@ -594,7 +594,7 @@ void playerHeal(PlayerData *pd, int amount) {
     addEntityToList(newParticleText(healText, 0xFF00FF00, pd->entity.x, pd->entity.y, pd->entity.level), &eManager);
 }
 
-void playerDamage(PlayerData *pd, int damage, int dir, u32 hurtColor, Entity *damager) {
+void playerDamage(PlayerData *pd, int damage, int dir, Color hurtColor, Entity *damager) {
     if (TESTGODMODE)
         return;
     if (pd->entity.hurtTime > 0)
@@ -602,7 +602,7 @@ void playerDamage(PlayerData *pd, int damage, int dir, u32 hurtColor, Entity *da
 
     // damage reducing effects
     if (playerEffectActive(pd, EFFECT_SHIELDING)) {
-        u8 level = playerEffectGetLevel(pd, EFFECT_SHIELDING);
+        uByte level = playerEffectGetLevel(pd, EFFECT_SHIELDING);
         damage -= level;
     }
     if (damage <= 0)
@@ -702,7 +702,7 @@ bool playerEffectActive(PlayerData *pd, int effect) {
     return pd->effects[effect].level != 0;
 }
 
-void playerEffectApply(PlayerData *pd, int effect, u8 level, u32 time) {
+void playerEffectApply(PlayerData *pd, int effect, uByte level, sInt time) {
     if (level == 0 || time == 0)
         return;
 
@@ -726,10 +726,10 @@ void playerEffectRemove(PlayerData *pd, int effect) {
     pd->effects[effect].time = 0;
 }
 
-u8 playerEffectGetLevel(PlayerData *pd, int effect) {
+uByte playerEffectGetLevel(PlayerData *pd, int effect) {
     return pd->effects[effect].level;
 }
 
-u32 playerEffectGetTime(PlayerData *pd, int effect) {
+sInt playerEffectGetTime(PlayerData *pd, int effect) {
     return pd->effects[effect].time;
 }

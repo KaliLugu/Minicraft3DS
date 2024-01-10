@@ -4,8 +4,6 @@
 #include "../Menu.h"
 #include "../Render.h"
 
-#include "../network/Network.h"
-
 #include "MenuLoadGame.h"
 
 char gameOptions[][24] = {"Singleplayer", "Host Game", "Join Game", "Back"};
@@ -38,9 +36,10 @@ void menuChooseGameTick() {
             }
             break;
         case 2:
-            networkScan();
-            currentMenu = MENU_MULTIPLAYER_JOIN;
-            currentSelection = 0;
+            if (networkScan()) {
+                currentMenu = MENU_MULTIPLAYER_JOIN;
+                currentSelection = 0;
+            }
             break;
         case 3:
             currentMenu = MENU_TITLE;
@@ -63,7 +62,7 @@ void menuChooseGameRender(int screen, int width, int height) {
 
         for (int i = 3; i >= 0; --i) {
             char *msg = gameOptions[i];
-            u32 color = 0x7F7F7FFF;
+            Color color = 0x7F7F7FFF;
             if (i == currentSelection)
                 color = 0xFFFFFFFF;
             renderTextColor(msg, ((width / 2 - (strlen(msg) * 8)) / 2) + 1, ((8 + i) * 10 - 16) + 1, 0x000000FF);

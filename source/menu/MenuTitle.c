@@ -63,7 +63,7 @@ void menuTitleRender(int screen, int width, int height) {
 
         for (int i = 5; i >= 0; --i) {
             char *msg = options[i];
-            u32 color = 0x7F7F7FFF;
+            Color color = 0x7F7F7FFF;
             if (i == currentSelection)
                 color = 0xFFFFFFFF;
             renderTextColor(msg, ((200 - (strlen(msg) * 8)) / 2) + 1, (i * 10 + 55) + 1, 0x000000FF);
@@ -86,26 +86,26 @@ void menuTitleRender(int screen, int width, int height) {
 
             break;
         case 2: // "How To Play"
+            renderTextColor("Learn the basics", (160 - (16 * 8)) / 2, 12, 0xFFFF7FFF);
             startX = 72;
-            startY = 54;
+            startY = 54 + 8;
             renderTile16(startX, startY, 6, 13, 0); // C-PAD
             startX = 72;
-            startY = 37;
+            startY = 37 + 8;
             renderTile16(startX, startY - 16, 1, 7, 0); // Player
             renderTile16(startX, startY, 7, 13, 0);     // C-PAD up
             startX = 72;
-            startY = 71;
+            startY = 71 + 8;
             renderTile16(startX, startY + 16, 0, 7, 0); // Player
             renderTile16(startX, startY, 9, 13, 0);     // C-PAD down
             startX = 39;
-            startY = 54;
+            startY = 54 + 8;
             renderTile16(startX, startY, 3, 7, 1);       // Player
             renderTile16(startX + 16, startY, 8, 13, 0); // C-PAD left
             startX = 89;
-            startY = 54;
+            startY = 54 + 8;
             renderTile16(startX + 16, startY, 3, 7, 0); // Player
             renderTile16(startX, startY, 10, 13, 0);    // C-PAD right
-            renderTextColor("Learn the basics", (160 - (16 * 8)) / 2, 12, 0xFFFF7FFF);
             break;
         case 3: // "Settings"
             renderTextColor("Modify the game", (160 - (15 * 8)) / 2, 12, 0xFFFF7FFF);

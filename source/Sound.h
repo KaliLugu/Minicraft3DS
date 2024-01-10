@@ -1,10 +1,10 @@
 #pragma once
 #include "engine/engine.h"
 
-extern void playSoundPositioned(Sound snd, s8 level, int x, int y);
-extern void setListenerPosition(s8 level, int x, int y);
+extern void playSoundPositioned(Sound snd, uByte level, int x, int y);
+extern void setListenerPosition(uByte level, int x, int y);
 
-extern void updateMusic(int lvl, int time);
+extern void updateMusic(uByte level, int time);
 
 extern void loadSounds();
 extern void freeSounds();

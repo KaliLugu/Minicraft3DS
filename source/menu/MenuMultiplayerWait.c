@@ -4,8 +4,6 @@
 #include "../Menu.h"
 #include "../Render.h"
 
-#include "../network/Network.h"
-
 void menuMultiplayerWaitTick() {
     if (localInputs.k_decline.clicked) {
         networkDisconnect();

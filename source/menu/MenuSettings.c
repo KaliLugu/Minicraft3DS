@@ -12,14 +12,14 @@ char setOptions[][24] = {"Rebind Buttons", "Texture packs", "Debug Text:    ", "
 void menuSettingsTick() {
     if (localInputs.k_up.clicked) {
         --currentSelection;
-        if (currentSelection == 3 && !((MODEL_3DS & 6) != 0))
+        if (currentSelection == 3 && !canSpeedUp())
             --currentSelection;
         if (currentSelection < 0)
             currentSelection = 4;
     }
     if (localInputs.k_down.clicked) {
         ++currentSelection;
-        if (currentSelection == 3 && !((MODEL_3DS & 6) != 0))
+        if (currentSelection == 3 && !canSpeedUp())
             ++currentSelection;
         if (currentSelection > 4)
             currentSelection = 0;
@@ -44,16 +44,16 @@ void menuSettingsTick() {
             shouldRenderDebug = !shouldRenderDebug; // toggle option
             break;
         case 3:
-            if ((MODEL_3DS & 6) != 0) {         // detect if user is using a New 3DS
-                shouldSpeedup = !shouldSpeedup; // toggle option
-                osSetSpeedupEnable(shouldSpeedup);
+            if (canSpeedUp()) { // detect if user is using a New 3DS
+                setSpeedUp(!isSpeedUp());
             }
             break;
         case 4:
             if (true) {
                 FILE *fset = fopen("settings.bin", "wb");
                 fwrite(&shouldRenderDebug, sizeof(bool), 1, fset);
-                fwrite(&shouldSpeedup, sizeof(bool), 1, fset);
+                bool speedUp = isSpeedUp();
+                fwrite(&speedUp, sizeof(bool), 1, fset);
                 fclose(fset);
             }
             currentMenu = MENU_TITLE;
@@ -71,7 +71,7 @@ void menuSettingsRender(int screen, int width, int height) {
         renderText("Settings", (width / 2 - (8 * 8)) / 2, 15);
         for (int i = 4; i >= 0; --i) {
             char *msg = setOptions[i];
-            u32 color = 0x7F7F7FFF;
+            Color color = 0x7F7F7FFF;
             if (i == currentSelection)
                 color = 0xFFFFFFFF;
             if (i == 2) {
@@ -81,8 +81,8 @@ void menuSettingsRender(int screen, int width, int height) {
                     renderTextColor("Off", (width / 2 + 9 * 8) / 2, (8 + i) * 16 - 95, 0xDF0000FF);
             } else if (i == 3) {
 
-                if ((MODEL_3DS & 6) != 0) { // detect if user is using a New 3DS
-                    if (shouldSpeedup)
+                if (canSpeedUp()) { // detect if user is using a New 3DS
+                    if (isSpeedUp())
                         renderTextColor("On", (width / 2 + 11 * 8) / 2, (8 + i) * 16 - 95, 0x00DF00FF);
                     else
                         renderTextColor("Off", (width / 2 + 11 * 8) / 2, (8 + i) * 16 - 95, 0xDF0000FF);

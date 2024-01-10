@@ -5,7 +5,7 @@
 
 void tickEntityKnight(Entity *e, PlayerData *nearestPlayer);
 
-Entity newEntityKnight(int lvl, int x, int y, int level) {
+Entity newEntityKnight(int lvl, int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_KNIGHT;
     e.level = level;

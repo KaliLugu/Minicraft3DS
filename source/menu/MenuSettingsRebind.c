@@ -6,22 +6,22 @@
 
 char keybOptions[][24] = {"Exit and Save", "Exit and Don't save", "Reset to default"};
 
-int keys[] = {
-    KEY_A, KEY_B, KEY_X, KEY_Y,
-    KEY_CPAD_UP, KEY_CPAD_DOWN, KEY_CPAD_LEFT, KEY_CPAD_RIGHT,
-    KEY_DUP, KEY_DDOWN, KEY_DLEFT, KEY_DRIGHT,
-    KEY_CSTICK_UP, KEY_CSTICK_DOWN, KEY_CSTICK_LEFT, KEY_CSTICK_RIGHT,
-    KEY_L, KEY_R, KEY_ZL, KEY_ZR,
-    KEY_START, KEY_SELECT};
+sInt keys[] = {
+    I_A, I_B, I_X, I_Y,
+    I_SL_UP, I_SL_DOWN, I_SL_LEFT, I_SL_RIGHT,
+    I_DP_UP, I_DP_DOWN, I_DP_LEFT, I_DP_RIGHT,
+    I_SR_UP, I_SR_DOWN, I_SR_LEFT, I_SR_RIGHT,
+    I_L, I_R, I_ZL, I_ZR,
+    I_START_PLUS, I_SELECT_MINUS};
 
-int keyProp[12] = {[0 ... 11] = 0};
+sInt keyProp[12] = {[0 ... 11] = 0};
 bool left = false;
 bool selBut = false;
 bool bindOpt = false;
-s8 errorBut = -1;
-s8 curSaveSel = 0;
+int errorBut = -1;
+int curSaveSel = 0;
 
-void switchGameBut(bool left, int buttonID) {
+void switchGameBut(bool left, sInt buttonID) {
     int id;
     for (id = 0; id < 7; ++id) {
         if (keyProp[id] & buttonID) {
@@ -46,7 +46,7 @@ void switchGameBut(bool left, int buttonID) {
         keyProp[0] ^= buttonID;
 }
 
-void switchMenuBut(bool left, int buttonID) {
+void switchMenuBut(bool left, sInt buttonID) {
     int id;
     for (id = 0; id < 12; ++id) {
         if (id > 3 && id < 7)
@@ -77,7 +77,7 @@ void switchMenuBut(bool left, int buttonID) {
         keyProp[0] ^= buttonID;
 }
 
-s8 checkPropButtons() {
+int checkPropButtons() {
     if (keyProp[0] == 0)
         return 0;
     if (keyProp[1] == 0)
@@ -105,7 +105,7 @@ s8 checkPropButtons() {
     return -1;
 }
 
-char *getButtonFunctionGame(int key) {
+char *getButtonFunctionGame(sInt key) {
     if (keyProp[0] & key)
         return "Move up";
     if (keyProp[1] & key)
@@ -123,7 +123,7 @@ char *getButtonFunctionGame(int key) {
     return "Nothing";
 }
 
-char *getButtonFunctionMenu(int key) {
+char *getButtonFunctionMenu(sInt key) {
     if (keyProp[0] & key)
         return "Up";
     if (keyProp[1] & key)
@@ -235,7 +235,7 @@ void menuSettingsRebindTick() {
                     localInputs.k_menuPrev.input = keyProp[11];
 
                     FILE *fs = fopen("btnSave.bin", "wb");
-                    fwrite(keyProp, sizeof(int), 12, fs);
+                    fwrite(keyProp, sizeof(sInt), 12, fs);
                     fclose(fs);
 
                     currentSelection = 0;
@@ -251,18 +251,18 @@ void menuSettingsRebindTick() {
                 errorBut = -1;
                 break;
             case 2: // reset defaults
-                keyProp[0] = KEY_DUP | KEY_CPAD_UP | KEY_CSTICK_UP;
-                keyProp[1] = KEY_DDOWN | KEY_CPAD_DOWN | KEY_CSTICK_DOWN;
-                keyProp[2] = KEY_DLEFT | KEY_CPAD_LEFT | KEY_CSTICK_LEFT;
-                keyProp[3] = KEY_DRIGHT | KEY_CPAD_RIGHT | KEY_CSTICK_RIGHT;
-                keyProp[4] = KEY_A | KEY_B | KEY_L | KEY_ZR;
-                keyProp[5] = KEY_X | KEY_Y | KEY_R | KEY_ZL;
-                keyProp[6] = KEY_START;
-                keyProp[7] = KEY_A;
-                keyProp[8] = KEY_B;
-                keyProp[9] = KEY_X;
-                keyProp[10] = KEY_R;
-                keyProp[11] = KEY_L;
+                keyProp[0] = I_DP_UP | I_SL_UP | I_SR_UP;
+                keyProp[1] = I_DP_DOWN | I_SL_DOWN | I_SR_DOWN;
+                keyProp[2] = I_DP_LEFT | I_SL_LEFT | I_SR_LEFT;
+                keyProp[3] = I_DP_RIGHT | I_SL_RIGHT | I_SR_RIGHT;
+                keyProp[4] = I_A | I_B | I_L | I_ZR;
+                keyProp[5] = I_X | I_Y | I_R | I_ZL;
+                keyProp[6] = I_START_PLUS;
+                keyProp[7] = I_A;
+                keyProp[8] = I_B;
+                keyProp[9] = I_X;
+                keyProp[10] = I_R;
+                keyProp[11] = I_L;
                 bindOpt = false;
                 errorBut = -1;
                 break;
@@ -318,7 +318,7 @@ void menuSettingsRebindRender(int screen, int width, int height) {
             renderTextColor("Save changes?", (width / 2 - 13 * 8) / 2, 16, 0xAFAF00FF);
             for (int i = 2; i >= 0; --i) {
                 char *msg = keybOptions[i];
-                u32 color = 0x4F4F4FFF;
+                Color color = 0x4F4F4FFF;
                 if (i == curSaveSel)
                     color = 0xFFFFFFFF;
                 renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 46, color);

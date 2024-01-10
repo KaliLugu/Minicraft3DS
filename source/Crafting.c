@@ -82,7 +82,7 @@ Cost newCost(int i, int c) {
     return nc;
 }
 
-u8 curPlace = 0;
+uByte curPlace = 0;
 Recipe defineRecipe(int item, int amountOrLevel, int numArgs, ...) {
     Recipe r;
     r.itemResult = item;

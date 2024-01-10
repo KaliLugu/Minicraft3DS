@@ -2,7 +2,7 @@
 #include "render/RenderTiles.h"
 #include "render/TextureManager.h"
 
-extern u32 syncTickCount;
+extern int syncTickCount;
 
 int offsetX, offsetY;
 
@@ -17,21 +17,21 @@ void renderTitle(int x, int y) {
     }
 }
 
-void renderButtonIcon(u32 keyIcon, int x, int y) {
+void renderButtonIcon(sInt keyIcon, int x, int y) {
     switch (keyIcon) {
     case CIRCLEPAD:
         renderTile16(x, y, 6, 13, 0);
         break;
-    case KEY_CPAD_UP:
+    case I_SL_UP:
         renderTile16(x, y, 7, 13, 0);
         break;
-    case KEY_CPAD_LEFT:
+    case I_SL_LEFT:
         renderTile16(x, y, 8, 13, 0);
         break;
-    case KEY_CPAD_DOWN:
+    case I_SL_DOWN:
         renderTile16(x, y, 9, 13, 0);
         break;
-    case KEY_CPAD_RIGHT:
+    case I_SL_RIGHT:
         renderTile16(x, y, 10, 13, 0);
         break;
 
@@ -39,63 +39,63 @@ void renderButtonIcon(u32 keyIcon, int x, int y) {
     case CSTICK:
         renderTile16(x, y, 11, 13, 0);
         break;
-    case KEY_CSTICK_UP:
+    case I_SR_UP:
         renderTile16(x, y, 12, 13, 0);
         break;
-    case KEY_CSTICK_LEFT:
+    case I_SR_LEFT:
         renderTile16(x, y, 13, 13, 0);
         break;
-    case KEY_CSTICK_DOWN:
+    case I_SR_DOWN:
         renderTile16(x, y, 14, 13, 0);
         break;
-    case KEY_CSTICK_RIGHT:
+    case I_SR_RIGHT:
         renderTile16(x, y, 15, 13, 0);
         break;
 
-    case KEY_A:
+    case I_A:
         renderTile16(x, y, 0, 14, 0);
         break;
-    case KEY_B:
+    case I_B:
         renderTile16(x, y, 1, 14, 0);
         break;
-    case KEY_X:
+    case I_X:
         renderTile16(x, y, 2, 14, 0);
         break;
-    case KEY_Y:
+    case I_Y:
         renderTile16(x, y, 3, 14, 0);
         break;
-    case KEY_DUP:
+    case I_DP_UP:
         renderTile16(x, y, 4, 14, 0);
         break;
-    case KEY_DLEFT:
+    case I_DP_LEFT:
         renderTile16(x, y, 5, 14, 0);
         break;
-    case KEY_DDOWN:
+    case I_DP_DOWN:
         renderTile16(x, y, 6, 14, 0);
         break;
-    case KEY_DRIGHT:
+    case I_DP_RIGHT:
         renderTile16(x, y, 7, 14, 0);
         break;
-    case KEY_START:
+    case I_START_PLUS:
         renderTile16(x - 8, y, 8, 14, 0);
         renderTile16(x + 8, y, 9, 14, 0);
         break;
-    case KEY_SELECT:
+    case I_SELECT_MINUS:
         renderTile16(x - 8, y, 10, 14, 0);
         renderTile16(x + 8, y, 11, 14, 0);
         break;
-    case KEY_L:
+    case I_L:
         renderTile16(x, y, 12, 14, 0);
         break;
-    case KEY_R:
+    case I_R:
         renderTile16(x, y, 13, 14, 0);
         break;
 
         /* New 3DS only */
-    case KEY_ZL:
+    case I_ZL:
         renderTile16(x, y, 14, 14, 0);
         break;
-    case KEY_ZR:
+    case I_ZR:
         renderTile16(x, y, 15, 14, 0);
         break;
     }
@@ -105,7 +105,7 @@ int getFrame(int a, int b, int s) {
     return (a == s) ? 0 : ((a < b - 1) ? 1 : 2);
 }
 
-void renderFrame(int x1, int y1, int x2, int y2, u32 bgColor) {
+void renderFrame(int x1, int y1, int x2, int y2, Color bgColor) {
     int startX = x1;
     int startY = y1;
     drawRect((x1 << 4) + 4 - (offsetX << 1),
@@ -131,7 +131,7 @@ void renderZoomedMap(PlayerData *pd) {
     int my = pd->mapScrollY;
     if (pd->mapZoomLevel == 2)
         mx = 32;
-    drawTextureAt(minimap + pd->entity.level, mx, my, pd->mapZoomLevel, pd->mapZoomLevel, 0, 0xFFFFFFFF, 0); // zoomed map
+    drawTextureAt(minimap[pd->entity.level], mx, my, pd->mapZoomLevel, pd->mapZoomLevel, 0, 0xFFFFFFFF, 0); // zoomed map
 
     // Airwizard on zoomed map
     if (pd->entity.level == 0) {
@@ -178,7 +178,7 @@ void renderGui(PlayerData *pd) {
     }
 
     // minimap
-    drawTexture(minimap + pd->entity.level, 10, 102);
+    drawTexture(minimap[pd->entity.level], 10, 102);
 
     // active item
     renderItemWithTextCentered(pd->activeItem, 160, 33);
@@ -249,8 +249,8 @@ void renderPlayer(PlayerData *pd, float scale) {
     }
 
     // find index offset based on walk state
-    u32 walkDist = pd->entity.p.walkDist;
-    u8 walkingOffset = (walkDist >> 4) % 2;
+    sShort walkDist = pd->entity.p.walkDist;
+    uByte walkingOffset = (walkDist >> 4) % 2;
     if (pd->entity.p.dir == 2 || pd->entity.p.dir == 3) {
         walkingOffset = (walkDist >> 4) % 4;
         if (walkingOffset == 2)
@@ -322,7 +322,7 @@ void renderPlayer(PlayerData *pd, float scale) {
     }
 }
 
-void renderWeather(u8 level, int xScroll, int yScroll) {
+void renderWeather(uByte level, int xScroll, int yScroll) {
     if (level == 1) {
         if (worldData.season == 3) {
             int xp = -128 + ((syncTickCount >> 2) - xScroll * 2) % 128;
@@ -593,17 +593,15 @@ void renderEntity(Entity *e, int x, int y) {
     }
 }
 
-void renderEntities(u8 level, int x, int y, EntityManager *em) {
-    int i;
-    for (i = 0; i < em->lastSlot[level]; ++i) {
+void renderEntities(uByte level, int x, int y, EntityManager *em) {
+    for (int i = 0; i < em->lastSlot[level]; ++i) {
         Entity e = em->entities[level][i];
         if (e.x > x - 200 && e.y > y - 125 && e.x < x + 200 && e.y < y + 125)
             renderEntity(&e, e.x, e.y);
     }
 }
 
-void renderItemList(Inventory *inv, int xo, int yo, int x1, int y1,
-                    int selected) {
+void renderItemList(Inventory *inv, int xo, int yo, int x1, int y1, int selected) {
     // If lastSlot is 0, then there are no items are in the inventory.
     bool drawCursor = true;
     if (selected < 0) {

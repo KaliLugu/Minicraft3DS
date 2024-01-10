@@ -4,7 +4,7 @@
 
 void tickParticleSmash(Entity *e, PlayerData *nearestPlayer);
 
-Entity newParticleSmash(int x, int y, int level) {
+Entity newParticleSmash(int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_SMASHPARTICLE;
     e.level = level;

@@ -14,7 +14,7 @@ static bool tur = false;
 static bool tdl = false;
 static bool tdr = false;
 
-inline void tileRender(int xp, int yp, Texture *tile, int tileSize, u8 bits, float angle, Color color, float blend, float scale) {
+inline void tileRender(int xp, int yp, Texture tile, int tileSize, int bits, float angle, Color color, float blend, float scale) {
     xp -= offsetX;
     yp -= offsetY;
     int scaleX = 2, scaleY = 2;
@@ -28,37 +28,37 @@ inline void tileRender(int xp, int yp, Texture *tile, int tileSize, u8 bits, flo
     drawTextureAt(tile, xp << 1, yp << 1, scaleX * scale, scaleY * scale, angle, color, blend);
 }
 
-void renderTile8Rotated(int xp, int yp, int xTile, int yTile, u8 bits, float angle) {
+void renderTile8Rotated(int xp, int yp, int xTile, int yTile, int bits, float angle) {
     int index = xTile + yTile * (512 / 8);
-    tileRender(xp, yp, tiles8 + index, 8, bits, angle, 0xFFFFFFFF, 0, 1);
+    tileRender(xp, yp, tiles8[index], 8, bits, angle, 0xFFFFFFFF, 0, 1);
 }
 
-void renderTile16(int xp, int yp, int xTile, int yTile, u8 bits) {
+void renderTile16(int xp, int yp, int xTile, int yTile, int bits) {
     int index = xTile + yTile * (512 / 16);
-    tileRender(xp, yp, tiles16 + index, 16, bits, 0, 0xFFFFFFFF, 0, 1);
+    tileRender(xp, yp, tiles16[index], 16, bits, 0, 0xFFFFFFFF, 0, 1);
 }
 
-void renderPlayerTile16(int xp, int yp, int xTile, int yTile, u8 bits, float scale) {
+void renderPlayerTile16(int xp, int yp, int xTile, int yTile, int bits, float scale) {
     int index = xTile + yTile * (736 / 16);
-    tileRender(xp, yp, playerTiles + index, 16, bits, 0, 0xFFFFFFFF, 0, scale);
+    tileRender(xp, yp, playerTiles[index], 16, bits, 0, 0xFFFFFFFF, 0, scale);
 }
 
-void renderTile16Blend(int xp, int yp, int xTile, int yTile, u8 bits, Color color) {
+void renderTile16Blend(int xp, int yp, int xTile, int yTile, int bits, Color color) {
     int index = xTile + yTile * (512 / 16);
-    tileRender(xp, yp, tiles16 + index, 16, bits, 0, color, 1, 1);
+    tileRender(xp, yp, tiles16[index], 16, bits, 0, color, 1, 1);
 }
 
-void renderTile32(int xp, int yp, int xTile, int yTile, u8 bits) {
+void renderTile32(int xp, int yp, int xTile, int yTile, int bits) {
     int index = xTile + yTile * (512 / 32);
-    tileRender(xp, yp, tiles32 + index, 32, bits, 0, 0xFFFFFFFF, 0, 1);
+    tileRender(xp, yp, tiles32[index], 32, bits, 0, 0xFFFFFFFF, 0, 1);
 }
 
-void renderTile64(int xp, int yp, int xTile, int yTile, u8 bits) {
+void renderTile64(int xp, int yp, int xTile, int yTile, int bits) {
     int index = xTile + yTile * (512 / 64);
-    tileRender(xp, yp, tiles64 + index, 64, bits, 0, 0xFFFFFFFF, 0, 1);
+    tileRender(xp, yp, tiles64[index], 64, bits, 0, 0xFFFFFFFF, 0, 1);
 }
 
-static void renderDots(int x, int y, u8 bits1, u8 bits2, u8 bits3, u8 bits4, u32 xTile, u32 yTile) {
+static void renderDots(int x, int y, int bits1, int bits2, int bits3, int bits4, int xTile, int yTile) {
     // another speedhack for o3DS
     if (tu && tl && tr && td) {
         renderTile16(x, y, xTile, yTile, bits1);
@@ -91,7 +91,7 @@ static void resetSurrTiles() {
     tdr = false;
 }
 
-static void checkSurrTiles8(u8 level, int xt, int yt, int id) {
+static void checkSurrTiles8(uByte level, int xt, int yt, int id) {
     if (getTile(level, xt, yt - 1) == id)
         tu = true;
     if (getTile(level, xt - 1, yt) == id)
@@ -110,7 +110,7 @@ static void checkSurrTiles8(u8 level, int xt, int yt, int id) {
         tdr = true;
 }
 
-static void checkSurrTiles4(u8 level, int xt, int yt, int id) {
+static void checkSurrTiles4(uByte level, int xt, int yt, int id) {
     if (getTile(level, xt, yt - 1) == id)
         tu = true;
     if (getTile(level, xt - 1, yt) == id)
@@ -122,8 +122,8 @@ static void checkSurrTiles4(u8 level, int xt, int yt, int id) {
 }
 
 //"public" methods
-u8 tData = 0;
-void renderTile(int i, int d, u8 level, int x, int y) {
+int tData = 0;
+void renderTile(int i, int d, uByte level, int x, int y) {
     int age = 0;
     switch (i) {
     case TILE_GRASS:
@@ -374,7 +374,7 @@ void renderTile(int i, int d, u8 level, int x, int y) {
     resetSurrTiles();
 }
 
-void renderConnectedTile4(int x, int y, u32 xTile, u32 yTile) {
+void renderConnectedTile4(int x, int y, int xTile, int yTile) {
     // render complete tile in one piece to reduce strain(added for o3DS)
     if (tl && tr && tu && td) {
         renderTile16(x, y, xTile + 3, yTile, 0);
@@ -396,7 +396,7 @@ void renderConnectedTile4(int x, int y, u32 xTile, u32 yTile) {
     renderTile8(x + 8, y + 8, xTile + 1 + r + d, yTile + 1, 0);
 }
 
-void renderConnectedTile8(int x, int y, u32 xTile, u32 yTile) {
+void renderConnectedTile8(int x, int y, int xTile, int yTile) {
     // render complete tile in one piece to reduce strain(added for o3DS)
     if (tl && tr && tu && td && tul && tur && tdl && tdr) {
         renderTile16(x, y, xTile + 4, yTile, 0);
@@ -418,9 +418,9 @@ void renderConnectedTile8(int x, int y, u32 xTile, u32 yTile) {
     renderTile8(x + 8, y + 8, xTile + 1 + r + d + ((tr && td && tdr) ? 2 : 0), yTile + 1, 0);
 }
 
-void renderBackground(s8 level, int xScroll, int yScroll) {
+void renderBackground(uByte level, int xScroll, int yScroll) {
     if (level == 0) {
-        drawTextureAt(minimap + 1, (-xScroll / 3) - 256, (-yScroll / 3) - 32, 12.5, 7.5, 0, 0xFFFFFFFF, 0);
+        drawTextureAt(minimap[1], (-xScroll / 3) - 256, (-yScroll / 3) - 32, 12.5, 7.5, 0, 0xFFFFFFFF, 0);
         drawRect(0, 0, 400, 240, 0xAFDFDFDF);
     } else if (level == 5) {
         drawRect(0, 0, 400, 240, dungeonColor[1]);

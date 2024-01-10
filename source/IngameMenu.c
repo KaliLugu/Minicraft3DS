@@ -240,7 +240,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
                 pd->ingameMenuSelection = 0;
         }
 
-        u8 wrap = 0;
+        uByte wrap = 0;
         wrap = wrap - 1;
 
         pd->entity.p.health = 10;
@@ -343,7 +343,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
     }
 }
 
-u8 opacity = 255;
+uByte opacity = 255;
 bool rev = true;
 char scoreText[15];
 
@@ -357,7 +357,7 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
         renderTextCentered("Paused", 16, width);
         for (i = 3; i >= 0; --i) {
             char *msg = pOptions[i];
-            u32 color = 0x7F7F7FFF;
+            Color color = 0x7F7F7FFF;
             if (i == pd->ingameMenuSelection)
                 color = 0xFFFFFFFF;
             if ((i == 1 && dungeonActive())) {
@@ -469,7 +469,7 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
                 // draw information
                 renderFrame(35, 3 + epos * 3, 45, 3 + epos * 3 + 3, 0x1010FFFF);
 
-                u32 etime = playerEffectGetTime(pd, i);
+                sInt etime = playerEffectGetTime(pd, i);
                 if (etime != EFFECTS_DURATION_INFINITE) {
                     char etimest[20];
                     sprintf(etimest, "       %02lu:%02lu", (etime / 60 / 60) % 60, (etime / 60) % 60);
@@ -636,10 +636,10 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
 // touch menu
 void tickTouchMap(PlayerData *pd) {
     if (pd->mapShouldRender) {
-        if (pd->inputs.k_touch.px > 0 || pd->inputs.k_touch.py > 0) {
+        if (pd->inputs.k_touchX > 0 || pd->inputs.k_touchY > 0) {
             // Plus/Minus zoom button
-            if (pd->inputs.k_touch.py > 204 && pd->inputs.k_touch.py < 232) {
-                if (pd->inputs.k_touch.px > 284 && pd->inputs.k_touch.px < 312) {
+            if (pd->inputs.k_touchY > 204 && pd->inputs.k_touchY < 232) {
+                if (pd->inputs.k_touchX > 284 && pd->inputs.k_touchX < 312) {
                     if (pd->mapZoomLevel > 4)
                         return;
                     if (!pd->touchIsChangingSize && !pd->touchIsDraggingMap) {
@@ -658,7 +658,7 @@ void tickTouchMap(PlayerData *pd) {
                     else if (pd->mapScrollY > 0)
                         pd->mapScrollY = 0;
                     return;
-                } else if (pd->inputs.k_touch.px > 256 && pd->inputs.k_touch.px < 284) {
+                } else if (pd->inputs.k_touchX > 256 && pd->inputs.k_touchX < 284) {
                     if (pd->mapZoomLevel < 4)
                         return;
                     if (!pd->touchIsChangingSize && !pd->touchIsDraggingMap) {
@@ -678,7 +678,7 @@ void tickTouchMap(PlayerData *pd) {
                         pd->mapScrollY = 0;
                     return;
                 }
-            } else if (pd->inputs.k_touch.py > 8 && pd->inputs.k_touch.py < 40 && pd->inputs.k_touch.px > 284 && pd->inputs.k_touch.px < 312) {
+            } else if (pd->inputs.k_touchY > 8 && pd->inputs.k_touchY < 40 && pd->inputs.k_touchX > 284 && pd->inputs.k_touchX < 312) {
                 // Exit Button
                 if (!pd->touchIsChangingSize && !pd->touchIsDraggingMap) {
                     pd->mapShouldRender = false;
@@ -687,11 +687,11 @@ void tickTouchMap(PlayerData *pd) {
             }
 
             if (!pd->touchIsDraggingMap) {
-                pd->touchLastX = pd->inputs.k_touch.px;
-                pd->touchLastY = pd->inputs.k_touch.py;
+                pd->touchLastX = pd->inputs.k_touchX;
+                pd->touchLastY = pd->inputs.k_touchY;
             }
             if (pd->mapZoomLevel > 2) {
-                int dx = pd->touchLastX - pd->inputs.k_touch.px;
+                int dx = pd->touchLastX - pd->inputs.k_touchX;
                 if (dx > 1 || dx < -1) {
                     pd->mapScrollX -= dx;
                     if (pd->mapScrollX < 320 - (128 * pd->mapZoomLevel))
@@ -699,10 +699,10 @@ void tickTouchMap(PlayerData *pd) {
                     else if (pd->mapScrollX > 0)
                         pd->mapScrollX = 0;
                 }
-                pd->touchLastX = pd->inputs.k_touch.px;
+                pd->touchLastX = pd->inputs.k_touchX;
             }
 
-            int dy = pd->touchLastY - pd->inputs.k_touch.py;
+            int dy = pd->touchLastY - pd->inputs.k_touchY;
             if (dy > 1 || dy < -1) {
                 pd->mapScrollY -= dy;
                 if (pd->mapScrollY < 240 - (128 * pd->mapZoomLevel))
@@ -710,7 +710,7 @@ void tickTouchMap(PlayerData *pd) {
                 else if (pd->mapScrollY > 0)
                     pd->mapScrollY = 0;
             }
-            pd->touchLastY = pd->inputs.k_touch.py;
+            pd->touchLastY = pd->inputs.k_touchY;
             pd->touchIsDraggingMap = true;
         } else {
             pd->touchIsDraggingMap = false;
@@ -718,7 +718,7 @@ void tickTouchMap(PlayerData *pd) {
         }
     } else {
         // touch minimap to bring up zoomed map.
-        if (pd->inputs.k_touch.py > 100 && pd->inputs.k_touch.py < 228 && pd->inputs.k_touch.px > 10 && pd->inputs.k_touch.px < 142) {
+        if (pd->inputs.k_touchY > 100 && pd->inputs.k_touchY < 228 && pd->inputs.k_touchX > 10 && pd->inputs.k_touchX < 142) {
             pd->mapShouldRender = true;
         }
     }
@@ -734,7 +734,7 @@ void tickTouchQuickSelect(PlayerData *pd) {
                 int xip = i % 4;
                 int yip = i / 4;
 
-                if (pd->inputs.k_touch.py > 72 * 2 + yip * 21 * 2 && pd->inputs.k_touch.py < 72 * 2 + yip * 21 * 2 + 21 * 2 && pd->inputs.k_touch.px > 76 * 2 + xip * 21 * 2 && pd->inputs.k_touch.px < 76 * 2 + xip * 21 * 2 + 21 * 2) {
+                if (pd->inputs.k_touchY > 72 * 2 + yip * 21 * 2 && pd->inputs.k_touchY < 72 * 2 + yip * 21 * 2 + 21 * 2 && pd->inputs.k_touchX > 76 * 2 + xip * 21 * 2 && pd->inputs.k_touchX < 76 * 2 + xip * 21 * 2 + 21 * 2) {
                     playerSetActiveItem(pd, &inv->items[i]);
                 }
             }

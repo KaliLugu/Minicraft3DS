@@ -7,7 +7,7 @@ static int _itemIconX[MAX_ITEM_ID + 1];
 static int _itemIconY[MAX_ITEM_ID + 1];
 static bool _itemSingle[MAX_ITEM_ID + 1];
 
-static void _itemRegister(s16 id, char *name, int iconX, int iconY, bool isSingle) {
+static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;
     _itemIconX[id] = iconX;
     _itemIconY[id] = iconY;
@@ -99,7 +99,7 @@ void itemsDataInit() {
     _itemRegister(ITEM_SCROLL_NIGHTVISION, "Night Vision", 18, 21, false);
 }
 
-char *itemGetName(s16 id, s16 countLevel) {
+char *itemGetName(int id, int countLevel) {
     switch (id) {
     // handle special cases here
     case TOOL_SHOVEL:
@@ -183,7 +183,7 @@ char *itemGetName(s16 id, s16 countLevel) {
 }
 
 char _itemCurrentName[20];
-char *itemGetNameWithCount(s16 id, s16 countLevel) {
+char *itemGetNameWithCount(int id, int countLevel) {
     if (itemIsSingle(id, countLevel)) {
         return itemGetName(id, countLevel);
     } else {
@@ -192,7 +192,7 @@ char *itemGetNameWithCount(s16 id, s16 countLevel) {
     }
 }
 
-int itemGetIconX(s16 id, s16 countLevel) {
+int itemGetIconX(int id, int countLevel) {
     switch (id) {
     // handle special cases here
     case TOOL_SHOVEL:
@@ -208,7 +208,7 @@ int itemGetIconX(s16 id, s16 countLevel) {
     }
 }
 
-int itemGetIconY(s16 id, s16 countLevel) {
+int itemGetIconY(int id, int countLevel) {
     switch (id) {
     // handle special cases here
 
@@ -218,6 +218,6 @@ int itemGetIconY(s16 id, s16 countLevel) {
     }
 }
 
-bool itemIsSingle(s16 id, s16 countLevel) {
+bool itemIsSingle(int id, int countLevel) {
     return _itemSingle[id];
 }

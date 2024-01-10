@@ -2,14 +2,14 @@
 
 #include "../Globals.h"
 #include "../Ingame.h"
-#include "../Input.h"
+#include "../Inputs.h"
 #include "../Player.h"
-#include "Network.h"
+#include "../engine/network.h"
 #include "PacketHandler.h"
 
-u32 syncTickCount;
+int syncTickCount;
 
-static u32 synchronizerLocalTurn;
+static sInt synchronizerLocalTurn;
 static unsigned int synchronizerNextSeed;
 static bool synchronizerRunning;
 
@@ -20,7 +20,7 @@ static void synchronizerNextTurn();
 
 static void synchronizerSendLocalInputs();
 
-static int synchronizerGetTurnIndex(u32 turn);
+static int synchronizerGetTurnIndex(sInt turn);
 
 void synchronizerInit(int seed, int initPlayerCount, int initPlayerLocalID) {
     synchronizerLocalTurn = 0;
@@ -54,7 +54,7 @@ void synchronizerSendUID() {
     sendIDPacket(playerLocalID, localUID);
 }
 
-void synchronizerSetPlayerUID(int playerID, u32 uid) {
+void synchronizerSetPlayerUID(int playerID, int uid) {
     players[playerID].id = uid;
     players[playerID].idSet = true;
 }
@@ -187,8 +187,8 @@ static void synchronizerNextTurn() {
 
 static void synchronizerSendLocalInputs() {
     // scan local inputs
-    hidScanInput();
-    tickKeys(&localInputs, hidKeysHeld(), hidKeysDown());
+    scanInputs();
+    tickKeys(&localInputs);
 
     // store local input in nextInput
     players[playerLocalID].nextInputs[synchronizerGetTurnIndex(synchronizerLocalTurn)] = localInputs;
@@ -201,7 +201,7 @@ static void synchronizerSendLocalInputs() {
     }
 }
 
-void synchronizerOnInputPacket(u8 playerID, u32 turnNumber, void *data, size_t dataSize) {
+void synchronizerOnInputPacket(int playerID, int turnNumber, void *data, size_t dataSize) {
     if (turnNumber >= synchronizerLocalTurn && turnNumber < synchronizerLocalTurn + MAX_INPUT_BUFFER && playerID < playerCount) {
         if (readInputPacketData(data, dataSize, &(players[playerID].nextInputs[synchronizerGetTurnIndex(turnNumber)]))) {
             players[playerID].nextTurnReady[synchronizerGetTurnIndex(turnNumber)] = true;
@@ -209,7 +209,7 @@ void synchronizerOnInputPacket(u8 playerID, u32 turnNumber, void *data, size_t d
     }
 }
 
-static int synchronizerGetTurnIndex(u32 turn) {
+static int synchronizerGetTurnIndex(sInt turn) {
     return turn % MAX_INPUT_BUFFER;
 }
 
