@@ -51,46 +51,46 @@ void tickMenu(int menu) {
     }
 }
 
-void renderMenu(int menu) {
+void renderMenu(int menu, int screen, int width, int height) {
     switch (menu) {
     case MENU_TITLE:
-        menuTitleRender();
+        menuTitleRender(screen, width, height);
         break;
     case MENU_CHOOSE_GAME:
-        menuChooseGameRender();
+        menuChooseGameRender(screen, width, height);
         break;
     case MENU_LOADGAME:
-        menuLoadGameRender();
+        menuLoadGameRender(screen, width, height);
         break;
     case MENU_MULTIPLAYER_HOST:
-        menuMultiplayerHostRender();
+        menuMultiplayerHostRender(screen, width, height);
         break;
     case MENU_MULTIPLAYER_JOIN:
-        menuMultiplayerJoinRender();
+        menuMultiplayerJoinRender(screen, width, height);
         break;
     case MENU_MULTIPLAYER_WAIT:
-        menuMultiplayerWaitRender();
+        menuMultiplayerWaitRender(screen, width, height);
         break;
     case MENU_LOADING:
-        menuLoadingRender();
+        menuLoadingRender(screen, width, height);
         break;
     case MENU_EDITOR:
-        editorRender();
+        editorRender(screen, width, height);
         break;
     case MENU_TUTORIAL:
-        menuTutorialRender();
+        menuTutorialRender(screen, width, height);
         break;
     case MENU_SETTINGS:
-        menuSettingsRender();
+        menuSettingsRender(screen, width, height);
         break;
     case MENU_SETTINGS_REBIND:
-        menuSettingsRebindRender();
+        menuSettingsRebindRender(screen, width, height);
         break;
     case MENU_SETTINGS_TP:
-        menuSettingsTextureRender();
+        menuSettingsTextureRender(screen, width, height);
         break;
     case MENU_ABOUT:
-        menuAboutRender();
+        menuAboutRender(screen, width, height);
         break;
     }
 }
@@ -115,43 +115,43 @@ void menuTickKeyboard(char *string, int maxLength) {
                 if (xVal >= 4 && xVal < 4 + 16) {
                     touchX = 4;
                     if (strLength < maxLength)
-                        strncat(string, "1", 1);
+                        strcat(string, "1");
                 } else if (xVal >= 36 && xVal < 4 + 32 + 16) {
                     touchX = 36;
                     if (strLength < maxLength)
-                        strncat(string, "2", 1);
+                        strcat(string, "2");
                 } else if (xVal >= 68 && xVal < 4 + 64 + 16) {
                     touchX = 68;
                     if (strLength < maxLength)
-                        strncat(string, "3", 1);
+                        strcat(string, "3");
                 } else if (xVal >= 100 && xVal < 4 + 96 + 16) {
                     touchX = 100;
                     if (strLength < maxLength)
-                        strncat(string, "4", 1);
+                        strcat(string, "4");
                 } else if (xVal >= 132 && xVal < 4 + 128 + 16) {
                     touchX = 132;
                     if (strLength < maxLength)
-                        strncat(string, "5", 1);
+                        strcat(string, "5");
                 } else if (xVal >= 164 && xVal < 4 + 160 + 16) {
                     touchX = 164;
                     if (strLength < maxLength)
-                        strncat(string, "6", 1);
+                        strcat(string, "6");
                 } else if (xVal >= 196 && xVal < 4 + 192 + 16) {
                     touchX = 196;
                     if (strLength < maxLength)
-                        strncat(string, "7", 1);
+                        strcat(string, "7");
                 } else if (xVal >= 228 && xVal < 4 + 224 + 16) {
                     touchX = 228;
                     if (strLength < maxLength)
-                        strncat(string, "8", 1);
+                        strcat(string, "8");
                 } else if (xVal >= 260 && xVal < 4 + 256 + 16) {
                     touchX = 260;
                     if (strLength < maxLength)
-                        strncat(string, "9", 1);
+                        strcat(string, "9");
                 } else if (xVal >= 292 && xVal < 4 + 288 + 16) {
                     touchX = 292;
                     if (strLength < maxLength)
-                        strncat(string, "0", 1);
+                        strcat(string, "0");
                 } else
                     return;
                 touchY = 56;
@@ -163,43 +163,43 @@ void menuTickKeyboard(char *string, int maxLength) {
                 if (xVal >= 4 && xVal < 4 + 16) {
                     touchX = 4;
                     if (strLength < maxLength)
-                        strncat(string, "Q", 1);
+                        strcat(string, "Q");
                 } else if (xVal >= 36 && xVal < 4 + 32 + 16) {
                     touchX = 36;
                     if (strLength < maxLength)
-                        strncat(string, "W", 1);
+                        strcat(string, "W");
                 } else if (xVal >= 68 && xVal < 4 + 64 + 16) {
                     touchX = 68;
                     if (strLength < maxLength)
-                        strncat(string, "E", 1);
+                        strcat(string, "E");
                 } else if (xVal >= 100 && xVal < 4 + 96 + 16) {
                     touchX = 100;
                     if (strLength < maxLength)
-                        strncat(string, "R", 1);
+                        strcat(string, "R");
                 } else if (xVal >= 132 && xVal < 4 + 128 + 16) {
                     touchX = 132;
                     if (strLength < maxLength)
-                        strncat(string, "T", 1);
+                        strcat(string, "T");
                 } else if (xVal >= 164 && xVal < 4 + 160 + 16) {
                     touchX = 164;
                     if (strLength < maxLength)
-                        strncat(string, "Y", 1);
+                        strcat(string, "Y");
                 } else if (xVal >= 196 && xVal < 4 + 192 + 16) {
                     touchX = 196;
                     if (strLength < maxLength)
-                        strncat(string, "U", 1);
+                        strcat(string, "U");
                 } else if (xVal >= 228 && xVal < 4 + 224 + 16) {
                     touchX = 228;
                     if (strLength < maxLength)
-                        strncat(string, "I", 1);
+                        strcat(string, "I");
                 } else if (xVal >= 260 && xVal < 4 + 256 + 16) {
                     touchX = 260;
                     if (strLength < maxLength)
-                        strncat(string, "O", 1);
+                        strcat(string, "O");
                 } else if (xVal >= 292 && xVal < 4 + 288 + 16) {
                     touchX = 292;
                     if (strLength < maxLength)
-                        strncat(string, "P", 1);
+                        strcat(string, "P");
                 } else
                     return;
                 touchY = 76;
@@ -211,39 +211,39 @@ void menuTickKeyboard(char *string, int maxLength) {
                 if (xVal >= 20 && xVal < 36) {
                     touchX = 20;
                     if (strLength < maxLength)
-                        strncat(string, "A", 1);
+                        strcat(string, "A");
                 } else if (xVal >= 52 && xVal < 68) {
                     touchX = 52;
                     if (strLength < maxLength)
-                        strncat(string, "S", 1);
+                        strcat(string, "S");
                 } else if (xVal >= 84 && xVal < 100) {
                     touchX = 84;
                     if (strLength < maxLength)
-                        strncat(string, "D", 1);
+                        strcat(string, "D");
                 } else if (xVal >= 116 && xVal < 132) {
                     touchX = 116;
                     if (strLength < maxLength)
-                        strncat(string, "F", 1);
+                        strcat(string, "F");
                 } else if (xVal >= 148 && xVal < 164) {
                     touchX = 148;
                     if (strLength < maxLength)
-                        strncat(string, "G", 1);
+                        strcat(string, "G");
                 } else if (xVal >= 180 && xVal < 196) {
                     touchX = 180;
                     if (strLength < maxLength)
-                        strncat(string, "H", 1);
+                        strcat(string, "H");
                 } else if (xVal >= 212 && xVal < 230) {
                     touchX = 212;
                     if (strLength < maxLength)
-                        strncat(string, "J", 1);
+                        strcat(string, "J");
                 } else if (xVal >= 244 && xVal < 262) {
                     touchX = 244;
                     if (strLength < maxLength)
-                        strncat(string, "K", 1);
+                        strcat(string, "K");
                 } else if (xVal >= 276 && xVal < 294) {
                     touchX = 276;
                     if (strLength < maxLength)
-                        strncat(string, "L", 1);
+                        strcat(string, "L");
                 } else
                     return;
                 touchY = 96;
@@ -255,31 +255,31 @@ void menuTickKeyboard(char *string, int maxLength) {
                 if (xVal >= 52 && xVal < 68) {
                     touchX = 52;
                     if (strLength < maxLength)
-                        strncat(string, "Z", 1);
+                        strcat(string, "Z");
                 } else if (xVal >= 84 && xVal < 100) {
                     touchX = 84;
                     if (strLength < maxLength)
-                        strncat(string, "X", 1);
+                        strcat(string, "X");
                 } else if (xVal >= 116 && xVal < 132) {
                     touchX = 116;
                     if (strLength < maxLength)
-                        strncat(string, "C", 1);
+                        strcat(string, "C");
                 } else if (xVal >= 148 && xVal < 164) {
                     touchX = 148;
                     if (strLength < maxLength)
-                        strncat(string, "V", 1);
+                        strcat(string, "V");
                 } else if (xVal >= 180 && xVal < 196) {
                     touchX = 180;
                     if (strLength < maxLength)
-                        strncat(string, "B", 1);
+                        strcat(string, "B");
                 } else if (xVal >= 212 && xVal < 230) {
                     touchX = 212;
                     if (strLength < maxLength)
-                        strncat(string, "N", 1);
+                        strcat(string, "N");
                 } else if (xVal >= 244 && xVal < 262) {
                     touchX = 244;
                     if (strLength < maxLength)
-                        strncat(string, "M", 1);
+                        strcat(string, "M");
                 } else
                     return;
                 touchY = 116;
@@ -292,7 +292,7 @@ void menuTickKeyboard(char *string, int maxLength) {
                     touchX = 32;
                     touchW = 16 * 5 + 14;
                     if (strLength < maxLength)
-                        strncat(string, "_", 1); // Underscores don't appear in the game.
+                        strcat(string, "_"); // Underscores don't appear in the game.
                 } else if (xVal >= 148 && xVal < 262) {
                     if (strLength <= 0)
                         return;
@@ -315,20 +315,20 @@ void menuTickKeyboard(char *string, int maxLength) {
         --touchDelay;
 }
 
-void menuRenderKeyboard() {
-    renderTextColor("Touch the keypad below", (320 - 22 * 12) / 2, 12, 0xFF33FFFF);
+void menuRenderKeyboard(int screen, int width, int height) {
+    renderTextColor("Touch the keypad", (width / 2 - 16 * 8) / 2, 6, 0xFFFF33FF);
 
-    sf2d_draw_rectangle(0, 50, 320, 110, 0xFF7F7FBF);
+    drawRect(0, 50, 320, 110, 0xBF7F7FFF);
 
     if (touchDelay > 0) {
-        sf2d_draw_rectangle(touchX, touchY, touchW, touchH, 0xFF0000AF);
+        drawRect(touchX, touchY, touchW, touchH, 0xAF0000FF);
     }
 
-    renderTextSized(guiText0, 4, 60, 2);
-    renderTextSized(guiText1, 4, 80, 2);
-    renderTextSized(guiText2, 12, 100, 2);
-    renderTextSized(guiText3, 28, 120, 2);
-    renderTextSized(guiText4, 12, 140, 2);
+    renderText(guiText0, 4, 30);
+    renderText(guiText1, 4, 40);
+    renderText(guiText2, 12, 50);
+    renderText(guiText3, 28, 60);
+    renderText(guiText4, 12, 70);
 }
 
 // Menu Map Background
@@ -376,7 +376,7 @@ void menuRenderMapBGTop() {
         offsetX = 0;
         offsetY = 0;
 
-        sf2d_draw_rectangle(0, 0, 400, 240, 0xAA0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+        drawRect(0, 0, 400, 240, 0x0C0C0CAA);
     }
 }
 
@@ -388,6 +388,6 @@ void menuRenderMapBGBottom() {
         offsetX = 0;
         offsetY = 0;
 
-        sf2d_draw_rectangle(0, 0, 320, 240, 0xAA0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+        drawRect(0, 0, 320, 240, 0x0C0C0CAA);
     }
 }

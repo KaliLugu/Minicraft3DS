@@ -157,96 +157,96 @@ void menuLoadGameTick() {
     }
 }
 
-void menuLoadGameRender() {
+void menuLoadGameRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    if (!enteringName) { // World select
-        offsetX = 0;
-        offsetY = (currentSelection * 32) - 48;
-        renderText("Select a file", 122, -16);
-        for (int i = 0; i < worldFileCount + 1; ++i) {
-            int color = 0xFF921020;
-            char *text = fileNames[i];
-            if (i == worldFileCount) {
-                text = "Generate New World";
-                color = 0xFF209210;
+        if (!enteringName) { // World select
+            offsetX = 0;
+            offsetY = (currentSelection * 32) - 48;
+            renderTextCentered("Select a file", -16, width);
+            for (int i = 0; i < worldFileCount + 1; ++i) {
+                int color = 0x201092FF;
+                char *text = fileNames[i];
+                if (i == worldFileCount) {
+                    text = "Generate New World";
+                    color = 0x109220FF;
+                }
+                if (i != currentSelection)
+                    color &= 0x7F7F7FFF; // Darken color.
+                else {
+                    if (areYouSure)
+                        color = 0xDF1010FF;
+                }
+
+                char scoreText[24];
+                sprintf(scoreText, "Score: %d", fileScore[i]);
+
+                renderFrame(1, i * 4, 24, (i * 4) + 4, color);
+                if (i != worldFileCount) {
+                    renderTextCentered(text, i * 32 + 6, width);
+                    renderTextCentered(scoreText, i * 32 + 16, width);
+                } else {
+                    renderTextCentered(text, i * 32 + 12, width);
+                }
+                if (fileWin[i] && i != worldFileCount)
+                    renderTile16(18, i * 32 + 8, 2, 13, 0); // Render crown
             }
-            if (i != currentSelection)
-                color &= 0xFF7F7F7F; // Darken color.
-            else {
-                if (areYouSure)
-                    color = 0xFF1010DF;
-            }
+            offsetX = 0;
+            offsetY = 0;
+        } else { // Enter new world name.
+            renderTextCentered("Enter a name", 8, width);
+            renderTextCentered(fileNames[worldFileCount], 24, width);
 
-            char scoreText[24];
-            sprintf(scoreText, "Score: %d", fileScore[i]);
-
-            renderFrame(1, i * 4, 24, (i * 4) + 4, color);
-            if (i != worldFileCount) {
-                renderText(text, (400 - (strlen(text) * 12)) / 2, i * 64 + 12);
-                renderText(scoreText, (400 - (strlen(scoreText) * 12)) / 2, i * 64 + 32);
-            } else {
-                renderText(text, (400 - (strlen(text) * 12)) / 2, i * 64 + 24);
-            }
-            if (fileWin[i] && i != worldFileCount)
-                render16(18, i * 32 + 8, 24, 208, 0); // Render crown
-        }
-        offsetX = 0;
-        offsetY = 0;
-    } else { // Enter new world name.
-        renderText("Enter a name", 128, 16);
-        renderText(fileNames[worldFileCount], (400 - (strlen(fileNames[worldFileCount]) * 12)) / 2, 48);
-
-        if (errorFileName > 0) {
-            switch (errorFileName) { // Error: Filename cannot already exist.
-            case 1:
-                renderTextColor("ERROR: Length cannot be 0!", (400 - 26 * 12) / 2, 200, 0xFF1010AF);
-                break;
-            case 2:
-                renderTextColor("ERROR: You need Letters/Numbers!", (400 - 32 * 12) / 2, 200, 0xFF1010AF);
-                break;
-            case 3:
-                renderTextColor("ERROR: Filename already exists!", (400 - 31 * 12) / 2, 200, 0xFF1010AF);
-                break;
+            if (errorFileName > 0) {
+                switch (errorFileName) {
+                case 1:
+                    renderTextColor("Length cannot be 0!", (width / 2 - 19 * 8) / 2, 100, 0xAF1010FF);
+                    break;
+                case 2:
+                    renderTextColor("You need Letters/Numbers!", (width / 2 - 25 * 8) / 2, 100, 0xAF1010FF);
+                    break;
+                case 3:
+                    renderTextColor("Filename already exists!", (width / 2 - 24 * 8) / 2, 100, 0xAF1010FF);
+                    break;
+                }
             }
         }
     }
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    if (!enteringName) { // World select
-        if (!areYouSure) {
-            renderTextColor("Load World", 100, 12, 0xFF3FFFFF);
-            renderText("Press   or   to scroll", 28, 50);
-            renderButtonIcon(localInputs.k_up.input & -localInputs.k_up.input, 98, 48, 1);
-            renderButtonIcon(localInputs.k_down.input & -localInputs.k_down.input, 160, 48, 1);
-            renderText("Press   to load world", (320 - 21 * 12) / 2, 100);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 104, 98, 1);
-            renderText("Press   to return", 58, 150);
-            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 148, 1);
-            if (currentSelection != worldFileCount) {
-                renderText("Press   to delete", (320 - 17 * 12) / 2, 200);
-                renderButtonIcon(localInputs.k_delete.input & -localInputs.k_delete.input, 128, 198, 1);
+        if (!enteringName) { // World select
+            if (!areYouSure) {
+                renderTextColor("Load World", (width / 2 - 10 * 8) / 2, 6, 0xFFFF3FFF);
+                renderTextCentered("Press  or  to scroll", 25, width);
+                renderButtonIcon(localInputs.k_up.input & -localInputs.k_up.input, 40, 20);
+                renderButtonIcon(localInputs.k_down.input & -localInputs.k_down.input, 71, 20);
+                renderTextCentered("Press   to select", 50, width);
+                renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 55, 45);
+                renderTextCentered("Press   to return", 75, width);
+                renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 70);
+                if (currentSelection != worldFileCount) {
+                    renderTextCentered("Press   to delete", 100, width);
+                    renderButtonIcon(localInputs.k_delete.input & -localInputs.k_delete.input, 55, 95);
+                }
+            } else {
+                renderTextColor("Delete File?", (width / 2 - 12 * 8) / 2, 6, 0xFF3F3FFF);
+                renderTextCentered("Press   to confirm", 50, width);
+                renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 52, 45);
+                renderTextCentered("Press   to return", 75, width);
+                renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 70);
             }
-        } else {
-            renderTextColor("Delete File?", 88, 12, 0xFF3F3FFF);
-            renderText("Press   to confirm", (320 - 18 * 12) / 2, 100);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 122, 98, 1);
-            renderText("Press   to return", 58, 150);
-            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 148, 1);
-        }
-    } else { // Draw the "keyboard"
-        menuRenderKeyboard();
+        } else { // Draw the "keyboard"
+            menuRenderKeyboard(screen, width, height);
 
-        renderText("Press   to confirm", (320 - 18 * 12) / 2, 180);
-        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 122, 178, 1);
-        renderText("Press   to return", 58, 210);
-        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 208, 1);
+            renderTextCentered("Press   to confirm", 90, width);
+            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 52, 85);
+            renderTextCentered("Press   to return", 105, width);
+            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 100);
+        }
     }
-    sf2d_end_frame();
 }

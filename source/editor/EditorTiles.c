@@ -151,79 +151,79 @@ void editorRenderTile(int id, int data, int x, int y) {
     offsetY = 0;
 }
 
-void editorTilesRenderTop() {
+void editorTilesRenderTop(int screen, int width, int height) {
     // render current tile
-    renderFrame(0, 4, 10, 15, 0xFFFF1010);
+    renderFrame(0, 4, 10, 15, 0x1010FFFF);
 
-    renderTextColor("Current Tile", 80 - (12 * 12) / 2 + 1, 80 + 1, 0xFF000000);
-    renderTextColor("Current Tile", 80 - (12 * 12) / 2, 80, 0xFFFFFFFF);
+    renderTextColor("Cur Tile", 40 - (8 * 8) / 2 + 1, 40 + 1, 0x000000FF);
+    renderTextColor("Cur Tile", 40 - (8 * 8) / 2, 40, 0xFFFFFFFF);
 
-    editorRenderTile(editorTile, 0, 32, 50);
+    editorRenderTile(editorTile, 0, 32, 48);
 
-    renderTextColor(tileGetName(editorTile), 80 - (strlen(tileGetName(editorTile)) * 12) / 2 + 1, 140 + 1, 0xFF000000);
-    renderTextColor(tileGetName(editorTile), 80 - (strlen(tileGetName(editorTile)) * 12) / 2, 140, 0xFFFFFFFF);
+    renderTextColor(tileGetName(editorTile), 40 - (strlen(tileGetName(editorTile)) * 8) / 2 + 1, 66 + 1, 0x000000FF);
+    renderTextColor(tileGetName(editorTile), 40 - (strlen(tileGetName(editorTile)) * 8) / 2, 66, 0xFFFFFFFF);
 
     // render current level number
     char sbuffer[10];
     sprintf(sbuffer, "Level: %i", editorLevel);
-    renderTextColor(sbuffer, 8 + 1, 180 + 1, 0xFF000000);
-    renderTextColor(sbuffer, 8, 180, 0xFFFFFFFF);
+    renderTextColor(sbuffer, 4 + 1, 79 + 1, 0x000000FF);
+    renderTextColor(sbuffer, 4, 79, 0xFFFFFFFF);
 
-    renderTextColor("   up", 8 + 1, 200 + 1, 0xFF000000);
-    renderTextColor("   up", 8, 200, 0xFFFFFFFF);
-    renderTextColor("   down", 8 + 1, 218 + 1, 0xFF000000);
-    renderTextColor("   down", 8, 218, 0xFFFFFFFF);
+    renderTextColor("   up", 4 + 1, 91 + 1, 0x000000FF);
+    renderTextColor("   up", 4, 91, 0xFFFFFFFF);
+    renderTextColor("   down", 4 + 1, 104 + 1, 0x000000FF);
+    renderTextColor("   down", 4, 104, 0xFFFFFFFF);
 
-    renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 20, 200 - 3, 1);
-    renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 20, 218 - 3, 1);
+    renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 5, 91 - 4);
+    renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 5, 104 - 4);
 
     // draw dp with available modes
-    renderFrame(10, 4, 25, 15, 0xFFFF1010);
-    int dpxpos = 280;
-    int dpypos = 152;
+    renderFrame(10, 4, 25, 15, 0x1010FFFF);
+    int dpxpos = 140;
+    int dpypos = 76;
 
-    sf2d_draw_rectangle(dpxpos - 32 / 2, dpypos - 32 * 3 / 2, 32, 32 * 3, 0xFF606060);
-    sf2d_draw_rectangle(dpxpos - 32 * 3 / 2, dpypos - 32 / 2, 32 * 3, 32, 0xFF606060);
+    drawRect(dpxpos * 2 - 32 / 2, dpypos * 2 - 32 * 3 / 2, 32, 32 * 3, 0x606060FF);
+    drawRect(dpxpos * 2 - 32 * 3 / 2, dpypos * 2 - 32 / 2, 32 * 3, 32, 0x606060FF);
 
     if (editorMode == EDITOR_MODE_SCROLL) {
     } else if (editorMode == EDITOR_MODE_PICK)
-        sf2d_draw_rectangle(dpxpos - 32 * 3 / 2, dpypos - 32 / 2, 32, 32, 0xFF909090);
+        drawRect(dpxpos * 2 - 32 * 3 / 2, dpypos * 2 - 32 / 2, 32, 32, 0x909090FF);
     else if (editorMode == EDITOR_MODE_PAINT)
-        sf2d_draw_rectangle(dpxpos - 32 / 2, dpypos - 32 * 3 / 2, 32, 32, 0xFF909090);
+        drawRect(dpxpos * 2 - 32 / 2, dpypos * 2 - 32 * 3 / 2, 32, 32, 0x909090FF);
     else if (editorMode == EDITOR_MODE_CHOOSE)
-        sf2d_draw_rectangle(dpxpos + 32 / 2, dpypos - 32 / 2, 32, 32, 0xFF909090);
+        drawRect(dpxpos * 2 + 32 / 2, dpypos * 2 - 32 / 2, 32, 32, 0x909090FF);
     else
-        sf2d_draw_rectangle(dpxpos - 32 / 2, dpypos + 32 / 2, 32, 32, 0xFF909090);
+        drawRect(dpxpos * 2 - 32 / 2, dpypos * 2 + 32 / 2, 32, 32, 0x909090FF);
 
     // draw texts for modes
-    renderTextColor("Scroll", dpxpos - (6 * 12) / 2 + 1, dpypos - 6 + 1, 0xFF000000);
-    renderTextColor("Scroll", dpxpos - (6 * 12) / 2, dpypos - 6, 0xFF404040);
+    renderTextColor("Scroll", dpxpos - (6 * 8) / 2 + 1, dpypos - 3 + 1, 0x000000FF);
+    renderTextColor("Scroll", dpxpos - (6 * 8) / 2, dpypos - 3, 0x404040FF);
 
-    renderTextColor("Pick", dpxpos - 56 - (4 * 12) + 1, dpypos - 6 + 1, 0xFF000000);
-    renderTextColor("Pick", dpxpos - 56 - (4 * 12), dpypos - 6, 0xFF404040);
+    renderTextColor("Pick", dpxpos - 25 - (4 * 8) + 1, dpypos - 3 + 1, 0x000000FF);
+    renderTextColor("Pick", dpxpos - 25 - (4 * 8), dpypos - 3, 0x404040FF);
 
-    renderTextColor("Paint", dpxpos - (5 * 12) / 2 + 1, dpypos - 64 + 1, 0xFF000000);
-    renderTextColor("Paint", dpxpos - (5 * 12) / 2, dpypos - 64, 0xFF404040);
+    renderTextColor("Paint", dpxpos - (5 * 8) / 2 + 1, dpypos - 34 + 1, 0x000000FF);
+    renderTextColor("Paint", dpxpos - (5 * 8) / 2, dpypos - 34, 0x404040FF);
 
-    renderTextColor("Tile", dpxpos + 56 + 1, dpypos - 6 + 1, 0xFF000000);
-    renderTextColor("Tile", dpxpos + 56, dpypos - 6, 0xFF404040);
+    renderTextColor("Tile", dpxpos + 25 + 1, dpypos - 3 + 1, 0x000000FF);
+    renderTextColor("Tile", dpxpos + 25, dpypos - 3, 0x404040FF);
 
-    renderTextColor("Tests", dpxpos - (5 * 12) / 2 + 1, dpypos + 54 + 1, 0xFF000000);
-    renderTextColor("Tests", dpxpos - (5 * 12) / 2, dpypos + 54, 0xFF404040);
+    renderTextColor("Tests", dpxpos - (5 * 8) / 2 + 1, dpypos + 27 + 1, 0x000000FF);
+    renderTextColor("Tests", dpxpos - (5 * 8) / 2, dpypos + 27, 0x404040FF);
 
     if (editorMode == EDITOR_MODE_SCROLL)
-        renderTextColor("Scroll", dpxpos - (6 * 12) / 2, dpypos - 6, 0xFFFFFFFF);
+        renderTextColor("Scroll", dpxpos - (6 * 8) / 2, dpypos - 3, 0xFFFFFFFF);
     else if (editorMode == EDITOR_MODE_PICK)
-        renderTextColor("Pick", dpxpos - 56 - (4 * 12), dpypos - 6, 0xFFFFFFFF);
+        renderTextColor("Pick", dpxpos - 25 - (4 * 8), dpypos - 3, 0xFFFFFFFF);
     else if (editorMode == EDITOR_MODE_PAINT)
-        renderTextColor("Paint", dpxpos - (5 * 12) / 2, dpypos - 64, 0xFFFFFFFF);
+        renderTextColor("Paint", dpxpos - (5 * 8) / 2, dpypos - 34, 0xFFFFFFFF);
     else if (editorMode == EDITOR_MODE_CHOOSE)
-        renderTextColor("Tile", dpxpos + 56, dpypos - 6, 0xFFFFFFFF);
+        renderTextColor("Tile", dpxpos + 25, dpypos - 3, 0xFFFFFFFF);
     else {
     }
 }
 
-void editorTilesRenderBottom() {
+void editorTilesRenderBottom(int screen, int width, int height) {
     if (editorMode == EDITOR_MODE_PAINT || editorMode == EDITOR_MODE_PICK || editorMode == EDITOR_MODE_SCROLL) {
         // render map
         offsetX = editorX;
@@ -239,7 +239,7 @@ void editorTilesRenderBottom() {
             int yp = (t / 6);
 
             offsetY = editorChooseOffset;
-            renderFrame(xp * 3, yp * 3, xp * 3 + 3, yp * 3 + 3, 0xFFFF1010);
+            renderFrame(xp * 3, yp * 3, xp * 3 + 3, yp * 3 + 3, 0x1010FFFF);
             offsetY = 0;
 
             editorRenderTile(t, 0, xp * 24 + 3, yp * 24 + 3 - editorChooseOffset);

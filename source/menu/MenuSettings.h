@@ -1,4 +1,4 @@
 #pragma once
 
 extern void menuSettingsTick();
-extern void menuSettingsRender();
+extern void menuSettingsRender(int screen, int width, int height);

@@ -29,11 +29,11 @@
 #include "menu/MenuTutorial.h"
 
 extern void initMenus();
-extern void renderMenu(int menu);
+extern void renderMenu(int menu, int screen, int width, int height);
 extern void tickMenu(int menu);
 
 extern void menuTickKeyboard(char *string, int maxLength);
-extern void menuRenderKeyboard();
+extern void menuRenderKeyboard(int screen, int width, int height);
 
 extern void menuInitMapBG();
 extern void menuUpdateMapBG();

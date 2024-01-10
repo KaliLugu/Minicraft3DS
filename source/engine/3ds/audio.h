@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../engine.h"
-#ifdef T_3DS
+#ifdef __3DS__
 
 #include <3ds.h>
 

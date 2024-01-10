@@ -108,22 +108,22 @@ void editorOptionsTick() {
         editorMenuTimer--;
 }
 
-void editorOptionsRenderTop() {
+void editorOptionsRenderTop(int screen, int width, int height) {
     // changing filename
     if (editorOptionsChangeName) {
-        renderText("Enter a name", 128, 104);
-        renderText(editorCurrentFileName, (400 - (strlen(editorCurrentFileName) * 12)) / 2, 136);
+        renderTextCentered("Enter a name", 52, width);
+        renderTextCentered(editorCurrentFileName, 68, width);
 
         if (editorErrorFileName > 0) {
             switch (editorErrorFileName) { // Error: Filename cannot already exist.
             case 1:
-                renderTextColor("ERROR: Length cannot be 0!", (400 - 26 * 12) / 2, 200, 0xFF1010AF);
+                renderTextColor("Length cannot be 0!", (width / 2 - 19 * 8) / 2, 100, 0xaF1010FF);
                 break;
             case 2:
-                renderTextColor("ERROR: You need Letters/Numbers!", (400 - 32 * 12) / 2, 200, 0xFF1010AF);
+                renderTextColor("You need Letters/Numbers!", (width / 2 - 25 * 8) / 2, 100, 0xAF1010FF);
                 break;
             case 3:
-                renderTextColor("ERROR: Filename already exists!", (400 - 31 * 12) / 2, 200, 0xFF1010AF);
+                renderTextColor("Filename already exists!", (width / 2 - 24 * 8) / 2, 100, 0xAF1010FF);
                 break;
             }
         }
@@ -131,39 +131,39 @@ void editorOptionsRenderTop() {
     } else {
         for (int i = 2; i >= 0; --i) {
             char *msg = editorOptions[i];
-            u32 color = 0xFF7F7F7F;
+            u32 color = 0x7F7F7FFF;
             if (i == editorOptionsSelection)
                 color = 0xFFFFFFFF;
-            renderTextColor(msg, (400 - (strlen(msg) * 12)) / 2, (i * 24) + 112, color);
+            renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 56, color);
         }
 
         if (editorMenuTimer > 0)
-            renderTextColor("Game Saved!", (400 - (11 * 12)) / 2, 200, 0xFF20FF20);
+            renderTextColor("Game Saved!", (width / 2 - (11 * 8)) / 2, 100, 0x20FF20FF);
 
         if (editorAreYouSure || editorAreYouSureSave) {
             if (editorAreYouSure)
-                renderFrame(6, 5, 19, 10, 0xFF10108F);
+                renderFrame(5, 5, 20, 12, 0x8F1010FF);
             else
-                renderFrame(6, 5, 19, 10, 0xFF108F10);
+                renderFrame(5, 5, 20, 12, 0x108F10FF);
 
-            renderText("Are you sure?", 122, 96);
-            renderText("   Yes", 164, 117);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 166, 114, 1);
-            renderText("   No", 170, 133);
-            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 166, 130, 1);
+            renderTextCentered("Are you sure?", 48, width);
+            renderTextCentered("   Yes", 64, width);
+            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 83, 64 - 4);
+            renderTextCentered("   No", 80, width);
+            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 83, 80 - 4);
         }
     }
 }
 
-void editorOptionsRenderBottom() {
+void editorOptionsRenderBottom(int screen, int width, int height) {
     // changing filename
     if (editorOptionsChangeName) { // Draw the "keyboard"
-        menuRenderKeyboard();
+        menuRenderKeyboard(screen, width, height);
 
-        renderText("Press   to confirm", (320 - 18 * 12) / 2, 180);
-        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 122, 178, 1);
-        renderText("Press   to return", 58, 210);
-        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 208, 1);
+        renderTextCentered("Press   to confirm", 90, width);
+        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 52, 85);
+        renderTextCentered("Press   to return", 105, width);
+        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 100);
         // normal menu
     } else {
     }

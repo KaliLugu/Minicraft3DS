@@ -69,30 +69,7 @@ void menuSettingsTextureTick() {
         if (currentSelection > 0) {
             isLoadingTP = 4;
         } else {
-            if (icons != NULL) {
-                sf2d_free_texture(icons);
-                icons = NULL;
-            }
-            icons = sfil_load_PNG_buffer(icons_png, SF2D_PLACE_RAM);
-            reloadColors();
-
-            if (font != NULL) {
-                sf2d_free_texture(font);
-                font = NULL;
-            }
-            font = sfil_load_PNG_buffer(Font_png, SF2D_PLACE_RAM);
-
-            if (bottombg != NULL) {
-                sf2d_free_texture(bottombg);
-                bottombg = NULL;
-            }
-            bottombg = sfil_load_PNG_buffer(bottombg_png, SF2D_PLACE_RAM);
-
-            if (playerSprites != NULL) {
-                sf2d_free_texture(playerSprites);
-                playerSprites = NULL;
-            }
-            playerSprites = sfil_load_PNG_buffer(player_png, SF2D_PLACE_RAM);
+            loadTexturePack(NULL);
 
             currentMenu = MENU_SETTINGS;
             currentSelection = 1;
@@ -101,69 +78,69 @@ void menuSettingsTextureTick() {
     }
 }
 
-void menuSettingsTextureRender() {
+void menuSettingsTextureRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    offsetX = 0;
-    offsetY = (currentSelection * 40) - 48;
+        offsetX = 0;
+        offsetY = (currentSelection * 40) - 48;
 
-    renderText("Texture Packs", 122, -16);
-    for (int i = 0; i < tpFileCount; ++i) {
-        int color = 0xFF923232;
-        char *text = tpFileNames[i];
-        char *cmtText = tpFileComment[i];
-        if (i == 0) {
-            text = "Default";
-            cmtText = "Regular look of the game";
-            color = 0xFF921060;
+        renderTextCentered("Texture Packs", -16, width);
+        for (int i = 0; i < tpFileCount; ++i) {
+            int color = 0x323292FF;
+            char *text = tpFileNames[i];
+            char *cmtText = tpFileComment[i];
+            if (i == 0) {
+                text = "Default";
+                cmtText = " Normal look of the  game ";
+                color = 0x601092FF;
+            }
+            if (i != currentSelection)
+                color &= 0xFFFFFF7F; // Darken color.
+
+            renderFrame(1, i * 5, 24, (i * 5) + 5, color);
+            renderTextCentered(text, i * 40 + 8, width);
+
+            if (strlen(cmtText) > 20) {
+                char cmtTxt1[30], cmtTxt2[30];
+                strncpy(cmtTxt1, cmtText, 20);
+                strncpy(cmtTxt2, cmtText + 20, strlen(cmtText) - 20);
+                renderTextColor(cmtTxt1, (width / 2 - (strlen(cmtTxt1) * 8)) / 2, i * 40 + 18, 0xAFAFAFFF);
+                renderTextColor(cmtTxt2, (width / 2 - (strlen(cmtTxt2) * 8)) / 2, i * 40 + 27, 0xAFAFAFFF);
+            } else {
+                renderTextColor(cmtText, (width / 2 - (strlen(cmtText) * 8)) / 2, i * 40 + 21, 0xAFAFAFFF);
+            }
         }
-        if (i != currentSelection)
-            color &= 0x7FFFFFFF; // Darken color.
 
-        renderFrame(1, i * 5, 24, (i * 5) + 5, color);
-        renderText(text, (400 - (strlen(text) * 12)) / 2, i * 80 + 16);
+        offsetX = 0;
+        offsetY = 0;
+        if (isLoadingTP > 0) {
+            --isLoadingTP;
+            renderFrame(1, 5, 24, 9, 0xFF666666);
+            renderTextColor("Loading Texture pack...", (width / 2 - (23 * 8)) / 2, 54, 0xFFFF10FF);
+            if (isLoadingTP == 0) {
+                char fullDirName[256];
+                sprintf(fullDirName, "./texturepacks/%s.zip", tpFileNames[currentSelection]);
+                loadedtp = loadTexturePack(fullDirName);
 
-        if (strlen(cmtText) > 29) {
-            char cmtTxt1[30], cmtTxt2[30];
-            strncpy(cmtTxt1, cmtText, 29);
-            strncpy(cmtTxt2, cmtText + 29, strlen(cmtText) - 29);
-            renderTextColor(cmtTxt1, (400 - (strlen(cmtTxt1) * 12)) / 2, i * 80 + 36, 0xFFAFAFAF);
-            renderTextColor(cmtTxt2, (400 - (strlen(cmtTxt2) * 12)) / 2, i * 80 + 50, 0xFFAFAFAF);
-        } else {
-            renderTextColor(cmtText, (400 - (strlen(cmtText) * 12)) / 2, i * 80 + 43, 0xFFAFAFAF);
+                FILE *fs = fopen("lastTP.bin", "w");
+                fprintf(fs, "%s", fullDirName);
+                fclose(fs);
+
+                currentMenu = MENU_SETTINGS;
+                currentSelection = 1;
+            }
         }
     }
-
-    offsetX = 0;
-    offsetY = 0;
-    if (isLoadingTP > 0) {
-        --isLoadingTP;
-        renderFrame(1, 5, 24, 9, 0xFF666666);
-        renderTextColor("Loading Texture pack...", (400 - (23 * 12)) / 2, 108, 0xFF10FFFF);
-        if (isLoadingTP == 0) {
-            char fullDirName[256];
-            sprintf(fullDirName, "./texturepacks/%s.zip", tpFileNames[currentSelection]);
-            loadedtp = loadTexturePack(fullDirName);
-
-            FILE *fs = fopen("lastTP.bin", "w");
-            fprintf(fs, "%s", fullDirName);
-            fclose(fs);
-
-            currentMenu = MENU_SETTINGS;
-            currentSelection = 1;
-        }
-    }
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderText("Press   to select", 58, 100);
-    renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 128, 98, 1);
-    renderText("Press   to return", 58, 150);
-    renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 148, 1);
-    sf2d_end_frame();
+        renderTextCentered("Press   to select", 40, width);
+        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 55, 35);
+        renderTextCentered("Press   to return", 65, width);
+        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 60);
+    }
 }

@@ -2,7 +2,6 @@
 #include "Sound.h"
 #include <3ds.h>
 #include <math.h>
-#include <sf2d.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>

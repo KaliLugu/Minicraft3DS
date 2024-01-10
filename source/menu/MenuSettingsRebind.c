@@ -271,123 +271,123 @@ void menuSettingsRebindTick() {
     }
 }
 
-void menuSettingsRebindRender() {
+void menuSettingsRebindRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderTextColor("Rebind Buttons", 116, 12, 0xFF00AFAF);
-    renderText("Button", 16, 32);
-    renderText("Game", 140, 32);
-    renderText("Menus", 280, 32);
+        renderTextColor("Rebind Buttons", (width / 2 - 14 * 8) / 2, 3, 0xAFAF00FF);
+        renderText("Button", 4, 16);
+        renderText("Game", 72, 16);
+        renderText("Menus", 148, 16);
 
-    char gameButText[34];
-    char menuButText[34];
+        char gameButText[34];
+        char menuButText[34];
 
-    for (int i = 0; i < 5; ++i) {
-        if ((currentSelection - 2) + i > 21 || (currentSelection - 2) + i < 0)
-            continue;
-        renderButtonIcon(keys[(currentSelection - 2) + i], 16, (i * 18) + 30, 2);
-        int ccol = 0xFF7F7F7F;
+        for (int i = 0; i < 5; ++i) {
+            if ((currentSelection - 2) + i > 21 || (currentSelection - 2) + i < 0)
+                continue;
+            renderButtonIcon(keys[(currentSelection - 2) + i], 16, (i * 17) + 36);
+            int ccol = 0xFF7F7F7F;
 
-        sprintf(gameButText, "%s", getButtonFunctionGame(keys[(currentSelection - 2) + i]));
-        sprintf(menuButText, "%s", getButtonFunctionMenu(keys[(currentSelection - 2) + i]));
+            sprintf(gameButText, "%s", getButtonFunctionGame(keys[(currentSelection - 2) + i]));
+            sprintf(menuButText, "%s", getButtonFunctionMenu(keys[(currentSelection - 2) + i]));
 
-        if (i == 2) {
-            if (!selBut)
-                ccol = 0xFFFFFFFF;
-            else {
-                ccol = 0xFF00FF00;
-                if (left)
-                    sprintf(gameButText, "<%s>", getButtonFunctionGame(keys[(currentSelection - 2) + i]));
-                else
-                    sprintf(menuButText, "<%s>", getButtonFunctionMenu(keys[(currentSelection - 2) + i]));
+            if (i == 2) {
+                if (!selBut)
+                    ccol = 0xFFFFFFFF;
+                else {
+                    ccol = 0x00FF00FF;
+                    if (left)
+                        sprintf(gameButText, "<%s>", getButtonFunctionGame(keys[(currentSelection - 2) + i]));
+                    else
+                        sprintf(menuButText, "<%s>", getButtonFunctionMenu(keys[(currentSelection - 2) + i]));
+                }
+            }
+            if (left) {
+                renderTextColor(gameButText, 46, (i * 17) + 40, ccol);
+                renderTextColor(menuButText, 140, (i * 17) + 40, 0x7F7F7FFF);
+            } else {
+                renderTextColor(gameButText, 46, (i * 17) + 40, 0x7F7F7FFF);
+                renderTextColor(menuButText, 140, (i * 17) + 40, ccol);
             }
         }
-        if (left) {
-            renderTextColor(gameButText, 112, (i * 33) + 80, ccol);
-            renderTextColor(menuButText, 280, (i * 33) + 80, 0xFF7F7F7F);
-        } else {
-            renderTextColor(gameButText, 112, (i * 33) + 80, 0xFF7F7F7F);
-            renderTextColor(menuButText, 280, (i * 33) + 80, ccol);
-        }
-    }
 
-    if (bindOpt) {
-        renderFrame(1, 1, 24, 14, 0xFFBF1010);
-        renderTextColor("Save changes?", 122, 32, 0xFF00AFAF);
-        for (int i = 2; i >= 0; --i) {
-            char *msg = keybOptions[i];
-            u32 color = 0xFF4F4F4F;
-            if (i == curSaveSel)
-                color = 0xFFFFFFFF;
-            renderTextColor(msg, (400 - (strlen(msg) * 12)) / 2, (i * 24) + 92, color);
-        }
-        renderText("Press   to return", 98, 190);
-        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 168, 188, 1);
-
-        if (errorBut >= 0 && errorBut < 12) {
-            char errorText[30];
-            switch (errorBut) {
-            case 0:
-                sprintf(errorText, "Error: Missing 'Move up'");
-                break;
-            case 1:
-                sprintf(errorText, "Error: Missing 'Move down'");
-                break;
-            case 2:
-                sprintf(errorText, "Error: Missing 'Move right'");
-                break;
-            case 3:
-                sprintf(errorText, "Error: Missing 'Move left'");
-                break;
-            case 4:
-                sprintf(errorText, "Error: Missing 'Attack'");
-                break;
-            case 5:
-                sprintf(errorText, "Error: Missing 'Toggle Menu'");
-                break;
-            case 6:
-                sprintf(errorText, "Error: Missing 'Pause'");
-                break;
-            case 7:
-                sprintf(errorText, "Error: Missing 'Accept'");
-                break;
-            case 8:
-                sprintf(errorText, "Error: Missing 'Decline'");
-                break;
-            case 9:
-                sprintf(errorText, "Error: Missing 'Delete'");
-                break;
-            case 10:
-                sprintf(errorText, "Error: Missing 'Next'");
-                break;
-            case 11:
-                sprintf(errorText, "Error: Missing 'Previous'");
-                break;
+        if (bindOpt) {
+            renderFrame(1, 1, 24, 14, 0x1010BFFF);
+            renderTextColor("Save changes?", (width / 2 - 13 * 8) / 2, 16, 0xAFAF00FF);
+            for (int i = 2; i >= 0; --i) {
+                char *msg = keybOptions[i];
+                u32 color = 0x4F4F4FFF;
+                if (i == curSaveSel)
+                    color = 0xFFFFFFFF;
+                renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 46, color);
             }
-            renderTextColor(errorText, (400 - (strlen(errorText) * 12)) / 2, 50, 0xFF0000FF);
+            renderTextCentered("Press   to return", 95, width);
+            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 75, 90);
+
+            if (errorBut >= 0 && errorBut < 12) {
+                char errorText[30];
+                switch (errorBut) {
+                case 0:
+                    sprintf(errorText, "Error: Missing 'Move up'");
+                    break;
+                case 1:
+                    sprintf(errorText, "Error: Missing 'Move down'");
+                    break;
+                case 2:
+                    sprintf(errorText, "Error: Missing 'Move right'");
+                    break;
+                case 3:
+                    sprintf(errorText, "Error: Missing 'Move left'");
+                    break;
+                case 4:
+                    sprintf(errorText, "Error: Missing 'Attack'");
+                    break;
+                case 5:
+                    sprintf(errorText, "Error: Missing 'Toggle Menu'");
+                    break;
+                case 6:
+                    sprintf(errorText, "Error: Missing 'Pause'");
+                    break;
+                case 7:
+                    sprintf(errorText, "Error: Missing 'Accept'");
+                    break;
+                case 8:
+                    sprintf(errorText, "Error: Missing 'Decline'");
+                    break;
+                case 9:
+                    sprintf(errorText, "Error: Missing 'Delete'");
+                    break;
+                case 10:
+                    sprintf(errorText, "Error: Missing 'Next'");
+                    break;
+                case 11:
+                    sprintf(errorText, "Error: Missing 'Previous'");
+                    break;
+                }
+                renderTextColor(errorText, (width / 2 - (strlen(errorText) * 8)) / 2, 25, 0xFF0000FF);
+            }
         }
     }
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    if (!selBut) {
-        renderText("Press   to select", 58, 80);
-        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 128, 78, 1);
-        renderText("Press   to return", 58, 130);
-        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 128, 1);
-    } else {
-        renderText("Press   or   to scroll", 28, 50);
-        renderButtonIcon(localInputs.k_left.input & -localInputs.k_left.input, 98, 48, 1);
-        renderButtonIcon(localInputs.k_right.input & -localInputs.k_right.input, 160, 48, 1);
-        renderText("Press   to unselect", 46, 100);
-        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 118, 98, 1);
-        renderText("Press   to return", 58, 150);
-        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 148, 1);
+        if (!selBut) {
+            renderTextCentered("Press   to select", 40, width);
+            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 55, 35);
+            renderTextCentered("Press   to return", 65, width);
+            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 60);
+        } else {
+            renderTextCentered("Press  or  to scroll", 25, width);
+            renderButtonIcon(localInputs.k_left.input & -localInputs.k_left.input, 40, 20);
+            renderButtonIcon(localInputs.k_right.input & -localInputs.k_right.input, 71, 20);
+            renderTextCentered("Press   to unselect", 50, width);
+            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 47, 45);
+            renderTextCentered("Press   to return", 75, width);
+            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 70);
+        }
     }
-    sf2d_end_frame();
 }

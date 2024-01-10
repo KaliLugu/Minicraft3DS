@@ -347,45 +347,45 @@ u8 opacity = 255;
 bool rev = true;
 char scoreText[15];
 
-void ingameMenuRender(PlayerData *pd, int menu) {
+void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int height) {
     int i;
-    int oox, ooy, osx;
+    int oox, ooy;
 
     switch (menu) {
     case MENU_PAUSED:
-        renderFrame(1, 1, 24, 14, 0xFF1010AF);
-        renderText("Paused", 164, 32);
+        renderFrame(1, 1, 24, 14, 0xAF1010FF);
+        renderTextCentered("Paused", 16, width);
         for (i = 3; i >= 0; --i) {
             char *msg = pOptions[i];
-            u32 color = 0xFF7F7F7F;
+            u32 color = 0x7F7F7FFF;
             if (i == pd->ingameMenuSelection)
                 color = 0xFFFFFFFF;
             if ((i == 1 && dungeonActive())) {
-                color = 0xFF7F7FFF;
+                color = 0x7F7FFFFF;
                 if (i == pd->ingameMenuSelection)
                     color = 0xFFAFAFFF;
             }
-            renderTextColor(msg, (400 - (strlen(msg) * 12)) / 2, (i * 24) + 88, color);
+            renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 44, color);
         }
 
         if (pd->ingameMenuTimer > 0)
-            renderTextColor("Game Saved!", (400 - (11 * 12)) / 2, 64, 0xFF20FF20);
+            renderTextColor("Game Saved!", (width / 2 - (11 * 8)) / 2, 32, 0x20FF20FF);
 
         if (pd->ingameMenuAreYouSure || pd->ingameMenuAreYouSureSave) {
             if (pd->ingameMenuAreYouSure)
-                renderFrame(6, 5, 19, 10, 0xFF10108F);
+                renderFrame(5, 5, 20, 12, 0x8F1010FF);
             else
-                renderFrame(6, 5, 19, 10, 0xFF108F10);
+                renderFrame(5, 5, 20, 12, 0x108F10FF);
 
-            renderText("Are you sure?", 122, 96);
-            renderText("   Yes", 164, 117);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 166, 114, 1);
-            renderText("   No", 170, 133);
-            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 166, 130, 1);
+            renderTextCentered("Are you sure?", 48, width);
+            renderTextCentered("   Yes", 64, width);
+            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 83, 64 - 4);
+            renderTextCentered("   No", 80, width);
+            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 83, 80 - 4);
         }
         break;
     case MENU_WIN:
-        renderFrame(5, 3, 21, 12, 0xFFFF1010);
+        renderFrame(5, 3, 21, 12, 0x1010FFFF);
         if (!rev) {
             opacity += 5;
             if (opacity == 255)
@@ -396,13 +396,13 @@ void ingameMenuRender(PlayerData *pd, int menu) {
                 rev = false;
         }
         sprintf(scoreText, "Score: %d", pd->score);
-        renderTextColor("You Win!", 158, 76, 0x0000AFAF + (opacity << 24));
-        renderText(scoreText, 200 - ((strlen(scoreText) - 1) * 6), 100);
-        renderText("Press   to continue", 96, 150);
-        renderButtonIcon(localInputs.k_attack.input & -localInputs.k_attack.input, 166, 148, 1);
+        renderTextColor("You Win!", (width / 2 - 8 * 8) / 2, 38, 0xAFAF0000 + opacity);
+        renderTextCentered(scoreText, 50, width);
+        renderTextCentered("Press   to continue", 75, width);
+        renderButtonIcon(localInputs.k_attack.input & -localInputs.k_attack.input, 74, 70);
         break;
     case MENU_LOSE:
-        renderFrame(5, 3, 21, 12, 0xFFFF1010);
+        renderFrame(5, 3, 21, 12, 0x1010FFFF);
         if (!rev) {
             opacity += 5;
             if (opacity == 255)
@@ -413,10 +413,10 @@ void ingameMenuRender(PlayerData *pd, int menu) {
                 rev = false;
         }
         sprintf(scoreText, "Score: %d", pd->score);
-        renderTextColor("You DIED!", 158, 76, 0x000000AF + (opacity << 24));
-        renderText(scoreText, 200 - ((strlen(scoreText) - 1) * 6), 100);
-        renderText("Press   to continue", 96, 150);
-        renderButtonIcon(localInputs.k_attack.input & -localInputs.k_attack.input, 166, 148, 1);
+        renderTextColor("You DIED!", (width / 2 - 9 * 8) / 2, 38, 0xAF000000 + opacity);
+        renderTextCentered(scoreText, 50, width);
+        renderTextCentered("Press   to continue", 75, width);
+        renderButtonIcon(localInputs.k_attack.input & -localInputs.k_attack.input, 74, 70);
         break;
     case MENU_INVENTORY:
         if (pd->ingameMenuSelection == 1) {
@@ -428,59 +428,56 @@ void ingameMenuRender(PlayerData *pd, int menu) {
         }
 
         // inventory
-        renderFrame(1, 1, 23, 14, 0xFFFF1010);
-        renderTextColor("Inventory", 24 + 1, 14 + 1, 0xFF000000);
-        renderTextColor("Inventory", 24, 14, 0xFF6FE2E2);
+        renderFrame(1, 1, 23, 14, 0x1010FFFF);
+        renderTextColor("Inventory", 12 + 1, 6 + 1, 0x000000FF);
+        renderTextColor("Inventory", 12, 6, 0xE2E26FFF);
         renderItemList(&(pd->inventory), 1, 1, 23, 14, pd->ingameMenuInvSel);
 
         // player stats
-        renderFrame(24, 1, 46, 14, 0xFFFF1010);
-        renderTextColor("Character", 368 + 24 + 1, 14 + 1, 0xFF000000);
-        renderTextColor("Character", 368 + 24, 14, 0xFF6FE2E2);
+        renderFrame(24, 1, 46, 14, 0x1010FFFF);
+        renderTextColor("Character", 184 + 12 + 1, 6 + 1, 0x000000FF);
+        renderTextColor("Character", 184 + 12, 6, 0xE2E26FFF);
 
         // player sprite (TODO: Mostly Duplicated in MENU_CHARACTER_CUSTOMIZE, move to function?)
-        renderFrame(25, 2, 34, 10, 0xFF909090);
+        renderFrame(25, 2, 34, 10, 0x909090FF);
         oox = offsetX;
         ooy = offsetY;
-        osx = playerScale;
         // move player sprite to 0/0
         offsetX = offsetX + pd->entity.x - 8;
         offsetY = offsetY + pd->entity.y - 8;
         // move to where I want it
         offsetX -= 212;
         offsetY -= 24;
-        playerScale = 6;
-        renderPlayer(pd);
+        renderPlayer(pd, 3);
         offsetX = oox;
         offsetY = ooy;
-        playerScale = osx;
 
-        // TODO: armor
+        // TODO: equipment
 
         // effects
-        renderTextColor("Effects", 360 + 208 + 1, 34 + 1, 0xFF000000);
-        renderTextColor("Effects", 360 + 208, 34, 0xFFFFFFFF);
+        renderTextColor("Effects", 180 + 104 + 1, 17 + 1, 0x000000FF);
+        renderTextColor("Effects", 180 + 104, 17, 0xFFFFFFFF);
         int epos = 0;
         for (i = 0; i < EFFECTS_MAX; i++) {
             if (playerEffectActive(pd, i)) {
                 // can only display a limited amount of effects at once
                 if (epos == 3) {
-                    renderTextColor("...", 362 + 208, 34 + 24 + epos * 48, 0xFFFFFFFF);
+                    renderTextColor("...", 181 + 104, 17 + 12 + epos * 24, 0xFFFFFFFF);
                     break;
                 }
 
                 // draw information
-                renderFrame(35, 3 + epos * 3, 45, 3 + epos * 3 + 3, 0xFFFF1010);
+                renderFrame(35, 3 + epos * 3, 45, 3 + epos * 3 + 3, 0x1010FFFF);
 
                 u32 etime = playerEffectGetTime(pd, i);
                 if (etime != EFFECTS_DURATION_INFINITE) {
                     char etimest[20];
                     sprintf(etimest, "       %02lu:%02lu", (etime / 60 / 60) % 60, (etime / 60) % 60);
 
-                    renderTextColor(etimest, 362 + 208, 34 + 24 + epos * 48, 0xFFFFFFFF);
+                    renderTextColor(etimest, 181 + 104, 17 + 12 + epos * 24, 0xFFFFFFFF);
                 }
-                render((362 + 208) >> 1, (34 + 23 + epos * 48) >> 1, effectGetIconX(i), effectGetIconY(i), 0);
-                renderTextColor(effectGetName(i), 362 + 208, 34 + 40 + epos * 48, 0xFFFFFFFF);
+                renderTile8((362 + 208) >> 1, (34 + 23 + epos * 48) >> 1, effectGetIconX(i), effectGetIconY(i), 0);
+                renderTextColor(effectGetName(i), 181 + 104, 17 + 20 + epos * 24, 0xFFFFFFFF);
 
                 epos++;
             }
@@ -490,22 +487,22 @@ void ingameMenuRender(PlayerData *pd, int menu) {
         offsetY = 0;
         break;
     case MENU_CRAFTING:
-        renderFrame(15, 1, 24, 4, 0xFFFF1010);
-        renderTextColor("Have", 248 + 1, 14 + 1, 0xFF000000);
-        renderTextColor("Have", 248, 14, 0xFF6FE2E2);
-        renderFrame(15, 5, 24, 14, 0xFFFF1010);
-        renderTextColor("Cost", 248 + 1, 78 + 1, 0xFF000000);
-        renderTextColor("Cost", 248, 78, 0xFF6FE2E2);
-        renderFrame(1, 1, 14, 14, 0xFFFF1010);
-        renderTextColor(pd->currentCraftTitle, 24 + 1, 14 + 1, 0xFF000000);
-        renderTextColor(pd->currentCraftTitle, 24, 14, 0xFF6FE2E2);
+        renderFrame(15, 1, 24, 4, 0x1010FFFF);
+        renderTextColor("Have", 124 + 1, 6 + 1, 0x000000FF);
+        renderTextColor("Have", 124, 6, 0xE2E26FFF);
+        renderFrame(15, 5, 24, 14, 0x1010FFFF);
+        renderTextColor("Cost", 124 + 1, 38 + 1, 0x000000FF);
+        renderTextColor("Cost", 124, 38, 0xE2E26FFF);
+        renderFrame(1, 1, 14, 14, 0x1010FFFF);
+        renderTextColor(pd->currentCraftTitle, 12 + 1, 6 + 1, 0x000000FF);
+        renderTextColor(pd->currentCraftTitle, 12, 6, 0xE2E26FFF);
         renderRecipes(&(pd->currentRecipes), 1, 1, 14, 14, pd->ingameMenuInvSel);
 
         Recipe *rec = &(pd->currentRecipes.recipes[pd->ingameMenuInvSel]);
         renderItemIcon(rec->itemResult, rec->itemAmountLevel, 128, 16);
         char craftText[12];
         sprintf(craftText, "%d", countItemInv(rec->itemResult, rec->itemAmountLevel, &(pd->inventory)));
-        renderText(craftText, 274, 34);
+        renderText(craftText, 137, 17);
 
         if (rec->numOfCosts > 0) {
             int i;
@@ -514,70 +511,70 @@ void ingameMenuRender(PlayerData *pd, int menu) {
                 int ttlCst = rec->costs[i].costAmount;
                 int col = 0xFFFFFFFF;
                 if (amnt < ttlCst)
-                    col = 0xFF7F7F7F;
+                    col = 0x7F7F7FFF;
                 renderItemIcon(rec->costs[i].costItem, 1, 128, 48 + (i * 8));
                 sprintf(craftText, "%d/%d", amnt, ttlCst);
-                renderTextColor(craftText, 274, 96 + (i * 18), col);
+                renderTextColor(craftText, 137, 48 + (i * 8), col);
             }
         }
         break;
 
     case MENU_CONTAINER:
         if (pd->curChestEntityR == 1) {
-            offsetX = 48;
+            offsetX = 128;
             offsetY = 0;
         } else {
             offsetX = 0;
             offsetY = 0;
         }
 
-        renderFrame(1, 1, 15, 14, 0xFFFF1010);
-        renderTextColor("Chest", 24 + 1, 14 + 1, 0xFF000000);
-        renderTextColor("Chest", 24, 14, 0xFF6FE2E2);
-        renderItemList(pd->curChestEntity->entityFurniture.inv, 1, 1, 15, 14,
+        renderFrame(1, 1, 20, 14, 0x1010FFFF);
+        renderTextColor("Chest", 12 + 1, 6 + 1, 0x000000FF);
+        renderTextColor("Chest", 12, 6, 0xE2E26FFF);
+        renderItemList(pd->curChestEntity->entityFurniture.inv, 1, 1, 20, 14,
                        pd->curChestEntityR == 0 ? pd->ingameMenuInvSel : -pd->ingameMenuInvSelOther - 1);
-        renderFrame(16, 1, 30, 14, 0xFFFF1010);
-        renderTextColor("Inventory", 264 + 1, 14 + 1, 0xFF000000);
-        renderTextColor("Inventory", 264, 14, 0xFF6FE2E2);
-        renderItemList(&(pd->inventory), 16, 1, 30, 14,
+        renderFrame(21, 1, 40, 14, 0x1010FFFF);
+        renderTextColor("Inventory", 172 + 1, 6 + 1, 0x000000FF);
+        renderTextColor("Inventory", 172, 6, 0xE2E26FFF);
+        renderItemList(&(pd->inventory), 21, 1, 40, 14,
                        pd->curChestEntityR == 1 ? pd->ingameMenuInvSel : -pd->ingameMenuInvSelOther - 1);
         offsetX = 0;
         offsetY = 0;
         break;
 
     case MENU_DUNGEON:
-        renderFrame(1, 1, 24, 14, 0xFFFF1010);
+        renderFrame(1, 1, 24, 14, 0x1010FFFF);
         if (pd->entity.level != 5) {
-            renderTextColor("Dungeon Entrance", 24 + 1, 14 + 1, 0xFF000000);
-            renderTextColor("Dungeon Entrance", 24, 14, 0xFF6FE2E2);
+            renderTextColor("Dungeon Entrance", 12 + 1, 6 + 1, 0x000000FF);
+            renderTextColor("Dungeon Entrance", 12, 6, 0xE2E26FFF);
 
-            renderText("Warning: ", 32, 32);
-            renderText("You need a Dungeon Key to   ", 32, 56);
-            renderText("enter and cannot save while ", 32, 72);
-            renderText("being in the Dungeon!       ", 32, 88);
-            renderText("After leaving you will need ", 32, 112);
-            renderText("a new Dungeon Key for       ", 32, 128);
-            renderText("entering another Dungeon!   ", 32, 144);
+            renderText("Warning: ", 16, 16);
+            renderText("You need a Dungeonkey", 16, 28);
+            renderText("to enter and cannot  ", 16, 36);
+            renderText("save while in it!    ", 16, 44);
+            renderText("After leaving you    ", 16, 56);
+            renderText("need a new Dungeonkey", 16, 64);
+            renderText("to enter another one!", 16, 72);
 
-            renderText("   Enter", 148, 171);
+            renderText("   Enter", 74, 85);
         } else {
-            renderTextColor("Dungeon Exit", 24 + 1, 14 + 1, 0xFF000000);
-            renderTextColor("Dungeon Exit", 24, 14, 0xFF6FE2E2);
+            renderTextColor("Dungeon Exit", 12 + 1, 6 + 1, 0x000000FF);
+            renderTextColor("Dungeon Exit", 12, 6, 0xE2E26FFF);
 
-            renderText("Warning: ", 32, 32);
-            renderText("The Dungeon and everything  ", 32, 56);
-            renderText("in it will disappear when   ", 32, 72);
-            renderText("you leave it!               ", 32, 88);
-            renderText("You will need a new Dungeon ", 32, 112);
-            renderText("Key for entering another    ", 32, 128);
-            renderText("Dungeon again!              ", 32, 144);
+            renderText("Warning: ", 16, 16);
+            renderText("The Dungeon and every", 16, 28);
+            renderText("thing in it will dis-", 16, 36);
+            renderText("appear when you leave", 16, 44);
+            renderText("You will need a new  ", 16, 56);
+            renderText("Dungeonkey to enter  ", 16, 64);
+            renderText("another one again!   ", 16, 72);
 
-            renderText("   Leave", 148, 171);
+            renderText("   Leave", 74, 85);
         }
 
-        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 150, 168, 1);
-        renderText("   Stay", 148, 195);
-        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 150, 192, 1);
+        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 75, 85 - 4);
+        renderText("   Stay", 74, 97);
+        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 75, 97 - 4);
         break;
 
     case MENU_NPC:
@@ -585,56 +582,53 @@ void ingameMenuRender(PlayerData *pd, int menu) {
         break;
 
     case MENU_CHARACTER_CUSTOMIZE:
-        renderFrame(1, 1, 24, 14, 0xFFFF1010);
-        renderTextColor("Character", 24 + 1, 14 + 1, 0xFF000000);
-        renderTextColor("Character", 24, 14, 0xFF6FE2E2);
+        renderFrame(1, 1, 24, 14, 0x1010FFFF);
+        renderTextColor("Character", 12 + 1, 6 + 1, 0x000000FF);
+        renderTextColor("Character", 12, 6, 0xE2E26FFF);
 
-        renderText("Head: ", 32, 52);
-        renderText("Eyes: ", 32, 68);
-        renderText("Body: ", 32, 84);
-        renderText("Arms: ", 32, 100);
-        renderText("Legs: ", 32, 116);
-        renderText("Accs: ", 32, 132);
+        renderText("Head ", 16, 26);
+        renderText("Eyes ", 16, 34);
+        renderText("Body ", 16, 42);
+        renderText("Arms ", 16, 50);
+        renderText("Legs ", 16, 58);
+        renderText("Accs ", 16, 66);
 
-        renderText("Rot.: ", 32, 158);
+        renderText("Rot. ", 16, 79);
 
         // for the dynamic part
         char display[30];
 
-        sprintf(display, pd->ingameMenuSelection == 0 ? "< %02i/%02i >" : "  %02i/%02i  ", pd->sprite.head + 1, PLAYER_SPRITE_HEAD_COUNT);
-        renderText(display, 96, 52);
-        sprintf(display, pd->ingameMenuSelection == 1 ? "< %02i/%02i >" : "  %02i/%02i  ", pd->sprite.eyes + 1, PLAYER_SPRITE_EYES_COUNT);
-        renderText(display, 96, 68);
-        sprintf(display, pd->ingameMenuSelection == 2 ? "< %02i/%02i >" : "  %02i/%02i  ", pd->sprite.body + 1, PLAYER_SPRITE_BODY_COUNT);
-        renderText(display, 96, 84);
-        sprintf(display, pd->ingameMenuSelection == 3 ? "< %02i/%02i >" : "  %02i/%02i  ", pd->sprite.arms + 1, PLAYER_SPRITE_ARMS_COUNT);
-        renderText(display, 96, 100);
-        sprintf(display, pd->ingameMenuSelection == 4 ? "< %02i/%02i >" : "  %02i/%02i  ", pd->sprite.legs + 1, PLAYER_SPRITE_LEGS_COUNT);
-        renderText(display, 96, 116);
-        sprintf(display, pd->ingameMenuSelection == 5 ? "< %02i/%02i >" : "  %02i/%02i  ", pd->sprite.accs + 1, PLAYER_SPRITE_ACCS_COUNT);
-        renderText(display, 96, 132);
-        sprintf(display, pd->ingameMenuSelection == 6 ? "< %02i/%02i >" : "  %02i/%02i  ", pd->entity.p.dir + 1, 4);
-        renderText(display, 96, 158);
-        sprintf(display, pd->ingameMenuSelection == 7 ? "< Done  >" : "  Done   ");
-        renderText(display, 96, 174);
+        sprintf(display, pd->ingameMenuSelection == 0 ? "<%02i/%02i>" : " %02i/%02i ", pd->sprite.head + 1, PLAYER_SPRITE_HEAD_COUNT);
+        renderText(display, 48, 26);
+        sprintf(display, pd->ingameMenuSelection == 1 ? "<%02i/%02i>" : " %02i/%02i ", pd->sprite.eyes + 1, PLAYER_SPRITE_EYES_COUNT);
+        renderText(display, 48, 34);
+        sprintf(display, pd->ingameMenuSelection == 2 ? "<%02i/%02i>" : " %02i/%02i ", pd->sprite.body + 1, PLAYER_SPRITE_BODY_COUNT);
+        renderText(display, 48, 42);
+        sprintf(display, pd->ingameMenuSelection == 3 ? "<%02i/%02i>" : " %02i/%02i ", pd->sprite.arms + 1, PLAYER_SPRITE_ARMS_COUNT);
+        renderText(display, 48, 50);
+        sprintf(display, pd->ingameMenuSelection == 4 ? "<%02i/%02i>" : " %02i/%02i ", pd->sprite.legs + 1, PLAYER_SPRITE_LEGS_COUNT);
+        renderText(display, 48, 58);
+        sprintf(display, pd->ingameMenuSelection == 5 ? "<%02i/%02i>" : " %02i/%02i ", pd->sprite.accs + 1, PLAYER_SPRITE_ACCS_COUNT);
+        renderText(display, 48, 66);
+        sprintf(display, pd->ingameMenuSelection == 6 ? "<%02i/%02i>" : " %02i/%02i ", pd->entity.p.dir + 1, 4);
+        renderText(display, 48, 79);
+        sprintf(display, pd->ingameMenuSelection == 7 ? "<Done >" : " Done  ");
+        renderText(display, 48, 87);
 
         // player sprite
-        renderFrame(13, 3, 22, 12, 0xFF909090);
+        renderFrame(13, 3, 22, 12, 0x909090FF);
         oox = offsetX;
         ooy = offsetY;
-        osx = playerScale;
         // move player sprite to 0/0
         offsetX = pd->entity.x - 8;
         offsetY = pd->entity.y - 8;
         // move to where I want it
         offsetX -= 108;
         offsetY -= 28;
-        playerScale = 8;
-        renderPlayer(pd);
+        renderPlayer(pd, 4);
 
         offsetX = oox;
         offsetY = ooy;
-        playerScale = osx;
         break;
     }
 }

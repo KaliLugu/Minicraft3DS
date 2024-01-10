@@ -1,6 +1,7 @@
 #include "Globals.h"
 
 #include "network/Synchronizer.h"
+#include "render/TextureManager.h"
 
 char versionText[34] = "Version 1.5.2";
 char fpsstr[34];
@@ -15,27 +16,11 @@ u8 MODEL_3DS;
 bool shouldRenderDebug;
 bool shouldSpeedup;
 
-sf2d_texture *icons;
-sf2d_texture *playerSprites;
-sf2d_texture *font;
-sf2d_texture *bottombg;
-sf2d_texture *minimap[6];
-
-u32 dirtColor[5];
-u32 grassColor;
-u32 sandColor;
-u32 waterColor[2];
-u32 lavaColor[2];
-u32 rockColor[4];
-u32 woodColor;
-u32 ironColor;
-u32 goldColor;
-u32 gemColor;
-u32 dungeonColor[2];
-u32 myceliumColor;
-u32 mushroomColor;
-u32 snowColor;
-u32 iceColor;
+Image imageIcons;
+Image imagePlayerSprites;
+Image imageFont;
+Image imageBottombg;
+Image imageMinimap[6];
 
 char currentFileName[256];
 u8 initGame;
@@ -596,34 +581,34 @@ bool tileIsSolid(int tile, Entity *e) {
 }
 
 /* For minimap */
-u32 getTileColor(int tile) {
+Color getTileColor(int tile) {
     switch (tile) {
     case TILE_WATER:
-        return SWAP_UINT32(waterColor[0]);
+        return waterColor[0];
     case TILE_LAVA:
-        return SWAP_UINT32(lavaColor[0]);
+        return lavaColor[0];
     case TILE_DIRT:
         return 0x826D6CFF;
     case TILE_ROCK:
-        return SWAP_UINT32(rockColor[1]);
+        return rockColor[1];
     case TILE_HARDROCK:
-        return SWAP_UINT32(rockColor[3]);
+        return rockColor[3];
     case TILE_GRASS:
-        return SWAP_UINT32(grassColor);
+        return grassColor;
     case TILE_TREE:
         return 0x007F00FF;
     case TILE_SAND:
-        return SWAP_UINT32(sandColor);
+        return sandColor;
     case TILE_CACTUS:
         return 0x009F00FF;
     case TILE_FLOWER:
-        return SWAP_UINT32(grassColor);
+        return grassColor;
     case TILE_IRONORE:
-        return SWAP_UINT32(ironColor);
+        return ironColor;
     case TILE_GOLDORE:
-        return SWAP_UINT32(goldColor);
+        return goldColor;
     case TILE_GEMORE:
-        return SWAP_UINT32(gemColor);
+        return gemColor;
     case TILE_CLOUD:
         return 0xFFFFFFFF;
     case TILE_CLOUDCACTUS:
@@ -635,33 +620,33 @@ u32 getTileColor(int tile) {
     case TILE_HOLE:
         return 0x383838FF;
     case TILE_WOOD_WALL:
-        return SWAP_UINT32(woodColor);
+        return woodColor;
     case TILE_STONE_WALL:
-        return SWAP_UINT32(rockColor[1]);
+        return rockColor[1];
     case TILE_IRON_WALL:
-        return SWAP_UINT32(ironColor);
+        return ironColor;
     case TILE_GOLD_WALL:
-        return SWAP_UINT32(goldColor);
+        return goldColor;
     case TILE_GEM_WALL:
-        return SWAP_UINT32(gemColor);
+        return gemColor;
     case TILE_DUNGEON_WALL:
-        return SWAP_UINT32(dungeonColor[0]);
+        return dungeonColor[0];
     case TILE_DUNGEON_FLOOR:
-        return SWAP_UINT32(dungeonColor[1]);
+        return dungeonColor[1];
     case TILE_MAGIC_BARRIER:
-        return SWAP_UINT32(dungeonColor[0]);
+        return dungeonColor[0];
     case TILE_BOOKSHELVES:
-        return SWAP_UINT32(woodColor);
+        return woodColor;
     case TILE_WOOD_FLOOR:
-        return SWAP_UINT32(woodColor);
+        return woodColor;
     case TILE_MYCELIUM:
-        return SWAP_UINT32(myceliumColor);
+        return myceliumColor;
     case TILE_MUSHROOM_BROWN:
-        return SWAP_UINT32(mushroomColor);
+        return mushroomColor;
     case TILE_MUSHROOM_RED:
-        return SWAP_UINT32(mushroomColor);
+        return mushroomColor;
     case TILE_ICE:
-        return SWAP_UINT32(iceColor);
+        return iceColor;
 
     default:
         return 0x111111FF;
@@ -1105,7 +1090,7 @@ void setTile(int id, s8 level, int x, int y) {
     worldData.map[level][x + y * 128] = id;
     worldData.data[level][x + y * 128] = 0; // reset data(set again if needed, hopefully this breaks nothing)
 
-    sf2d_set_pixel(minimap[level], x, y, getMinimapColor(getLocalPlayer(), level, x, y));
+    setPixel(imageMinimap[level], x, y, getMinimapColor(getLocalPlayer(), level, x, y));
 }
 
 int getData(s8 level, int x, int y) {
@@ -1276,11 +1261,11 @@ void switchLevel(PlayerData *pd, s8 change) {
 
     if (pd == getLocalPlayer()) {
         if (pd->entity.level == 1)
-            sf2d_set_clear_color(0xFF6C6D82);
+            setClearColor(0xFF6C6D82);
         else if (pd->entity.level > 1)
-            sf2d_set_clear_color(0xFF666666);
+            setClearColor(0xFF666666);
         else
-            sf2d_set_clear_color(0xFF007F00);
+            setClearColor(0xFF007F00);
     }
 
     // for level 0 background
@@ -1494,7 +1479,7 @@ void setMinimapVisible(PlayerData *pd, int level, int x, int y, bool visible) {
     }
 
     if (pd == getLocalPlayer())
-        sf2d_set_pixel(minimap[level], x, y, getMinimapColor(pd, level, x, y));
+        setPixel(imageMinimap[level], x, y, getMinimapColor(pd, level, x, y));
 }
 
 bool getMinimapVisible(PlayerData *pd, int level, int x, int y) {
@@ -1518,48 +1503,11 @@ void initMinimapLevel(PlayerData *pd, int level) {
     for (x = 0; x < 128; ++x) {
         for (y = 0; y < 128; ++y) {
             /* Minimaps */
-            sf2d_set_pixel(minimap[level], x, y, getMinimapColor(pd, level, x, y));
+            setPixel(imageMinimap[level], x, y, getMinimapColor(pd, level, x, y));
         }
     }
 }
 
 void updateLevel1Map() {
     initMinimapLevel(getLocalPlayer(), 1);
-}
-
-void reloadColors() {
-    dirtColor[0] = SWAP_UINT32(sf2d_get_pixel(icons, 16, 0));
-    dirtColor[1] = SWAP_UINT32(sf2d_get_pixel(icons, 16, 1));
-    dirtColor[2] = SWAP_UINT32(sf2d_get_pixel(icons, 16, 2));
-    dirtColor[3] = SWAP_UINT32(sf2d_get_pixel(icons, 16, 3));
-    dirtColor[4] = SWAP_UINT32(sf2d_get_pixel(icons, 16, 4));
-
-    grassColor = SWAP_UINT32(sf2d_get_pixel(icons, 17, 0));
-    myceliumColor = SWAP_UINT32(sf2d_get_pixel(icons, 17, 1));
-    mushroomColor = SWAP_UINT32(sf2d_get_pixel(icons, 17, 2));
-
-    sandColor = SWAP_UINT32(sf2d_get_pixel(icons, 18, 0));
-
-    waterColor[0] = SWAP_UINT32(sf2d_get_pixel(icons, 19, 0));
-    waterColor[1] = SWAP_UINT32(sf2d_get_pixel(icons, 19, 1));
-
-    lavaColor[0] = SWAP_UINT32(sf2d_get_pixel(icons, 20, 0));
-    lavaColor[1] = SWAP_UINT32(sf2d_get_pixel(icons, 20, 1));
-
-    rockColor[0] = SWAP_UINT32(sf2d_get_pixel(icons, 21, 0));
-    rockColor[1] = SWAP_UINT32(sf2d_get_pixel(icons, 21, 1));
-    rockColor[2] = SWAP_UINT32(sf2d_get_pixel(icons, 21, 2));
-    rockColor[3] = SWAP_UINT32(sf2d_get_pixel(icons, 21, 3));
-
-    woodColor = SWAP_UINT32(sf2d_get_pixel(icons, 22, 0));
-
-    ironColor = SWAP_UINT32(sf2d_get_pixel(icons, 23, 0));
-    goldColor = SWAP_UINT32(sf2d_get_pixel(icons, 23, 1));
-    gemColor = SWAP_UINT32(sf2d_get_pixel(icons, 23, 2));
-
-    dungeonColor[0] = SWAP_UINT32(sf2d_get_pixel(icons, 24, 0));
-    dungeonColor[1] = SWAP_UINT32(sf2d_get_pixel(icons, 24, 1));
-
-    snowColor = SWAP_UINT32(sf2d_get_pixel(icons, 25, 0));
-    iceColor = SWAP_UINT32(sf2d_get_pixel(icons, 25, 1));
 }

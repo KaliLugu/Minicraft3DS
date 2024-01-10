@@ -9,11 +9,6 @@
 #include "Quests.h"
 #include <3ds.h>
 
-#include "Font_png.h"
-#include "bottombg_png.h"
-#include "icons_png.h"
-#include "player_png.h"
-
 #define CIRCLEPAD 0xF0000000
 #define CSTICK 0x0F000000
 
@@ -33,8 +28,6 @@
 #define NPC_LIBRARIAN 3
 #define NPC_DWARF 4
 
-#define SWAP_UINT32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) | (((x) & 0x0000FF00) << 8) | ((x) << 24))
-
 // WARNING: Having this set to different values in different clients will break multiplayer!
 // TODO: Change back before any release
 #define TESTGODMODE true
@@ -50,27 +43,11 @@ extern char versionText[34];
 extern bool shouldRenderDebug;
 extern bool shouldSpeedup;
 
-extern sf2d_texture *icons;
-extern sf2d_texture *playerSprites;
-extern sf2d_texture *font;
-extern sf2d_texture *bottombg;
-extern sf2d_texture *minimap[6];
-
-extern u32 dirtColor[5];
-extern u32 grassColor;
-extern u32 sandColor;
-extern u32 waterColor[2];
-extern u32 lavaColor[2];
-extern u32 rockColor[4];
-extern u32 woodColor;
-extern u32 ironColor;
-extern u32 goldColor;
-extern u32 gemColor;
-extern u32 dungeonColor[2];
-extern u32 myceliumColor;
-extern u32 mushroomColor;
-extern u32 snowColor;
-extern u32 iceColor;
+extern Image imageIcons;
+extern Image imagePlayerSprites;
+extern Image imageFont;
+extern Image imageBottombg;
+extern Image imageMinimap[6];
 
 extern char currentFileName[256];
 extern u8 currentMenu;
@@ -123,7 +100,7 @@ extern int getTile(s8 level, int x, int y);
 extern void setTile(int id, s8 level, int x, int y);
 extern int getData(s8 level, int x, int y);
 extern void setData(int id, s8 level, int x, int y);
-extern u32 getTileColor(int tile);
+extern Color getTileColor(int tile);
 
 extern bool intersectsEntity(int x, int y, int r, Entity *e);
 
@@ -149,5 +126,3 @@ extern bool getMinimapVisible(PlayerData *pd, int level, int x, int y);
 extern u32 getMinimapColor(PlayerData *pd, int level, int x, int y);
 extern void initMinimapLevel(PlayerData *pd, int level);
 extern void updateLevel1Map();
-
-extern void reloadColors();

@@ -2,4 +2,4 @@
 
 extern void editorInit();
 extern void editorTick();
-extern void editorRender();
+extern void editorRender(int screen, int width, int height);

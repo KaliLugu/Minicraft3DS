@@ -9,6 +9,7 @@
 #include "SaveLoad.h"
 #include "network/Network.h"
 #include "network/Synchronizer.h"
+#include "render/TextureManager.h"
 
 #define STALL_TIME 120
 
@@ -108,7 +109,7 @@ void startGame(bool load, char *filename) {
             // TODO: What do?
             networkDisconnect();
 
-            sf2d_set_clear_color(0xFF);
+            setClearColor(0xFF000000);
             currentSelection = 0;
             currentMenu = MENU_TITLE;
         }
@@ -276,105 +277,103 @@ void tickGame() {
     }
 }
 
-void renderGame() {
+void renderGame(int screen, int width, int height) {
     // Important: all code called from this function should never affect game state!
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
+    if (screen == 0) {
+        //"camera" code -> move to own class (when adding new dungeon system)
+        int xscr = getLocalPlayer()->entity.x - 100;
+        int yscr = getLocalPlayer()->entity.y - 56;
+        if (xscr < 16)
+            xscr = 16;
+        else if (xscr > 1832)
+            xscr = 1832;
+        if (yscr < 16)
+            yscr = 16;
+        else if (yscr > 1912)
+            yscr = 1912;
 
-    //"camera" code -> move to own class (when adding new dungeon system)
-    int xscr = getLocalPlayer()->entity.x - 100;
-    int yscr = getLocalPlayer()->entity.y - 56;
-    if (xscr < 16)
-        xscr = 16;
-    else if (xscr > 1832)
-        xscr = 1832;
-    if (yscr < 16)
-        yscr = 16;
-    else if (yscr > 1912)
-        yscr = 1912;
+        offsetX = xscr;
+        offsetY = yscr;
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    offsetX = xscr;
-    offsetY = yscr;
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // RGBA8(12, 12, 12, 255)); //You might think "real" black would be better, but it actually looks better that way
+        bool nightvision = playerEffectActive(getLocalPlayer(), EFFECT_NIGHTVISION);
+        if (!nightvision) {
+            renderLightsToStencil(getLocalPlayer(), false, false, true);
+        }
 
-    bool nightvision = playerEffectActive(getLocalPlayer(), EFFECT_NIGHTVISION);
-    if (!nightvision) {
-        renderLightsToStencil(getLocalPlayer(), false, false, true);
+        renderBackground(getLocalPlayer()->entity.level, xscr, yscr);
+        renderEntities(getLocalPlayer()->entity.level, getLocalPlayer()->entity.x, getLocalPlayer()->entity.y, &eManager);
+        for (int i = 0; i < playerCount; i++) {
+            renderPlayer(players + i, 1);
+        }
+        renderWeather(getLocalPlayer()->entity.level, xscr, yscr);
+
+        if (!nightvision) {
+            resetStencil();
+        }
+
+        if (!nightvision) {
+            renderDayNight(getLocalPlayer());
+        }
+
+        offsetX = 0;
+        offsetY = 0;
+
+        if (shouldRenderDebug) {
+            sprintf(fpsstr, "FPS:%.0f,X:%d,Y:%d,E:%d", 0.0f, getLocalPlayer()->entity.x, getLocalPlayer()->entity.y, eManager.lastSlot[getLocalPlayer()->entity.level]);
+            renderText(fpsstr, 1, 112);
+        }
+
+        if (getLocalPlayer()->ingameMenu != MENU_NONE) {
+            ingameMenuRender(getLocalPlayer(), getLocalPlayer()->ingameMenu, screen, width, height);
+        }
+
+        // game stalled -> most likely a player disconnected -> present option to exit game
+        if (stallCounter > STALL_TIME) {
+            renderFrame(1, 1, 24, 14, 0xAF1010FF);
+            renderTextCentered("Waiting for a long time", 16, width);
+
+            char text[50];
+            sprintf(text, "Last response %is ago", stallCounter / 60);
+            renderTextCentered(text, 32, width);
+
+            if (playerLocalID == 0) {
+                renderTextCentered("Press   to leave the game", 80, width);
+                renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 60, 80 - 4);
+
+                renderTextCentered("A backup save will be created", 96, width);
+            } else {
+                renderTextCentered("Press   to leave the game", 96, width);
+                renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 60, 96 - 4);
+            }
+
+            if (stallAreYouSure) {
+                renderFrame(5, 5, 20, 12, 0x8F1010FF);
+
+                renderTextCentered("Are you sure?", 48, width);
+                renderTextCentered("   Yes", 64, width);
+                renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 83, 64 - 4);
+                renderTextCentered("   No", 80, width);
+                renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 83, 80 - 4);
+            }
+        }
     }
 
-    renderBackground(getLocalPlayer()->entity.level, xscr, yscr);
-    renderEntities(getLocalPlayer()->entity.level, getLocalPlayer()->entity.x, getLocalPlayer()->entity.y, &eManager);
-    for (int i = 0; i < playerCount; i++) {
-        renderPlayer(players + i);
-    }
-    renderWeather(getLocalPlayer()->entity.level, xscr, yscr);
-
-    if (!nightvision) {
-        resetStencil();
-    }
-
-    if (!nightvision) {
-        renderDayNight(getLocalPlayer());
-    }
-
-    offsetX = 0;
-    offsetY = 0;
-
-    if (shouldRenderDebug) {
-        sprintf(fpsstr, " FPS: %.0f, X:%d, Y:%d, E:%d", sf2d_get_fps(), getLocalPlayer()->entity.x, getLocalPlayer()->entity.y, eManager.lastSlot[getLocalPlayer()->entity.level]);
-        renderText(fpsstr, 2, 225);
-    }
-
-    if (getLocalPlayer()->ingameMenu != MENU_NONE) {
-        ingameMenuRender(getLocalPlayer(), getLocalPlayer()->ingameMenu);
-    }
-
-    // game stalled -> most likely a player disconnected -> present option to exit game
-    if (stallCounter > STALL_TIME) {
-        renderFrame(1, 1, 24, 14, 0xFF1010AF);
-        renderText("Waiting for a long time", (400 - (23 * 12)) / 2, 32);
-
-        char text[50];
-        sprintf(text, "Last response %is ago", stallCounter / 60);
-        renderText(text, (400 - (strlen(text) * 12)) / 2, 64);
-
-        if (playerLocalID == 0) {
-            renderText("Press   to leave the game", (400 - (25 * 12)) / 2, 160);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 120, 157, 1);
-
-            renderText("A backup save will be created", (400 - (29 * 12)) / 2, 192);
+    if (screen == 10) {
+        if (!players[playerLocalID].mapShouldRender) {
+            drawTexture(&bottomBGFull, 0, 0);
+            renderGui(getLocalPlayer());
         } else {
-            renderText("Press   to leave the game", (400 - (25 * 12)) / 2, 192);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 120, 189, 1);
-        }
-
-        if (stallAreYouSure) {
-            renderFrame(6, 5, 19, 10, 0xFF10108F);
-
-            renderText("Are you sure?", 122, 96);
-            renderText("   Yes", 164, 117);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 166, 114, 1);
-            renderText("   No", 170, 133);
-            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 166, 130, 1);
+            renderZoomedMap(getLocalPlayer());
         }
     }
-
-    sf2d_end_frame();
-
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    if (!players[playerLocalID].mapShouldRender) {
-        sf2d_draw_texture(bottombg, 0, 0);
-        renderGui(getLocalPlayer());
-    } else {
-        renderZoomedMap(getLocalPlayer());
-    }
-    sf2d_end_frame();
 }
 
 void exitGame() {
     networkDisconnect();
     synchronizerReset();
 
-    sf2d_set_clear_color(0xFF);
+    setClearColor(0xFF000000);
     currentSelection = 0;
     currentMenu = MENU_TITLE;
 

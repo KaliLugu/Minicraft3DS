@@ -48,44 +48,44 @@ void menuMultiplayerJoinTick() {
     }
 }
 
-void menuMultiplayerJoinRender() {
+void menuMultiplayerJoinRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    offsetX = 0;
-    offsetY = (currentSelection * 32) - 48;
-    renderText("Select a world", 122, -16);
-    for (int i = 0; i < networkGetScanCount(); ++i) {
-        int color = 0xFF921020;
-        char *text = malloc((50 + 8 + 1) * sizeof(char));
-        memset(text, 0, (50 + 8 + 1) * sizeof(char));
-        networkGetScanName(text, i);
-        strcat(text, "'s World");
+        offsetX = 0;
+        offsetY = (currentSelection * 32) - 48;
+        renderTextCentered("Select a world", -16, width);
+        for (int i = 0; i < networkGetScanCount(); ++i) {
+            int color = 0x201092FF;
+            char *text = malloc((50 + 8 + 1) * sizeof(char));
+            memset(text, 0, (50 + 8 + 1) * sizeof(char));
+            networkGetScanName(text, i);
+            strcat(text, "'s World");
 
-        if (i != currentSelection)
-            color &= 0xFF7F7F7F; // Darken color.
+            if (i != currentSelection)
+                color &= 0x7F7F7FFF; // Darken color.
 
-        renderFrame(1, i * 4, 24, (i * 4) + 4, color);
-        renderText(text, (400 - (strlen(text) * 12)) / 2, i * 64 + 24);
+            renderFrame(1, i * 4, 24, (i * 4) + 4, color);
+            renderTextCentered(text, i * 32 + 12, width);
 
-        free(text);
+            free(text);
+        }
+        offsetX = 0;
+        offsetY = 0;
     }
-    offsetX = 0;
-    offsetY = 0;
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderTextColor("Searching for Worlds", 40, 12, 0xFF3FFFFF);
-    renderText("Press   or   to scroll", 28, 50);
-    renderButtonIcon(localInputs.k_up.input & -localInputs.k_up.input, 98, 48, 1);
-    renderButtonIcon(localInputs.k_down.input & -localInputs.k_down.input, 160, 48, 1);
-    renderText("Press   to join world", (320 - 21 * 12) / 2, 100);
-    renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 104, 98, 1);
-    renderText("Press   to return", 58, 150);
-    renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 148, 1);
-    sf2d_end_frame();
+        renderTextColor("Searching for Worlds", (width / 2 - 20 * 8) / 2, 6, 0xFFFF3FFF);
+        renderTextCentered("Press  or  to scroll", 25, width);
+        renderButtonIcon(localInputs.k_up.input & -localInputs.k_up.input, 40, 20);
+        renderButtonIcon(localInputs.k_down.input & -localInputs.k_down.input, 71, 20);
+        renderTextCentered("Press   to join", 50, width);
+        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 63, 45);
+        renderTextCentered("Press   to return", 75, width);
+        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 70);
+    }
 }

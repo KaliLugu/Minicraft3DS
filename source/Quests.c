@@ -110,52 +110,52 @@ void openNPCMenu(PlayerData *pd, int npc) {
         data->currentTalkOptions = 1;
         data->currentTalkOption0 = "...";
 
-        data->currentTalk0 = "Hello?";
-        data->currentTalk1 = "I have a feeling of having";
-        data->currentTalk2 = "forgotten something very";
-        data->currentTalk3 = "important.";
-        data->currentTalk4 = "Hopefully I will remember";
-        data->currentTalk5 = "it soon...";
+        data->currentTalk0 = "Hello?               ";
+        data->currentTalk1 = "I have a feeling of  ";
+        data->currentTalk2 = "forgetting something ";
+        data->currentTalk3 = "very important.      ";
+        data->currentTalk4 = "Hopefully I will     ";
+        data->currentTalk5 = "remember it soon...  ";
         break;
     case NPC_PRIEST:
         data->currentTalkOptions = 3;
         data->currentTalkOption1 = "Trade";
         data->currentTalkOption2 = "Why are you so few?";
 
-        data->currentTalk0 = "Welcome to our small village";
-        data->currentTalk1 = "I am the leader of our group.";
-        data->currentTalk2 = "If you have anything usefull";
-        data->currentTalk3 = "for us I might be able to";
-        data->currentTalk4 = "provide something nice in";
-        data->currentTalk5 = "exchange.";
+        data->currentTalk0 = "Welcome to my village";
+        data->currentTalk1 = "I am our leader.     ";
+        data->currentTalk2 = "If you have anything ";
+        data->currentTalk3 = "usefull, I might be  ";
+        data->currentTalk4 = "able to provide some-";
+        data->currentTalk5 = "thing nice in trade. ";
         break;
     case NPC_FARMER:
         data->currentTalkOptions = 2;
-        data->currentTalkOption0 = "Maybe some other time";
+        data->currentTalkOption0 = "some other time";
         data->currentTalkOption1 = "Trade";
 
-        data->currentTalk0 = "Hello friend!";
-        data->currentTalk1 = "Nice seeing somebody else";
-        data->currentTalk2 = "visit my little farm.";
-        data->currentTalk3 = "Interested in buying some";
-        data->currentTalk4 = "fresh farm goods?";
-        data->currentTalk5 = "";
+        data->currentTalk0 = "Hello friend!        ";
+        data->currentTalk1 = "Nice seeing somebody ";
+        data->currentTalk2 = "else visit my little ";
+        data->currentTalk3 = "farm. Interested in  ";
+        data->currentTalk4 = "buying some fresh    ";
+        data->currentTalk5 = "farm goods?          ";
         break;
     case NPC_LIBRARIAN:
         data->currentTalkOptions = 2;
         data->currentTalkOption0 = "Nothing";
-        data->currentTalkOption1 = "What are you doing here?";
+        data->currentTalkOption1 = "What are you doing?";
         if (questManager->questlines[1].currentQuest == 1) {
             data->currentTalkOptions = 3;
             data->currentTalkOption2 = "Dwarvish language";
         }
 
-        data->currentTalk0 = "Oh hello?";
-        data->currentTalk1 = "You must be quite brave";
-        data->currentTalk2 = "or stupid to be walking";
-        data->currentTalk3 = "around in this dungeon.";
-        data->currentTalk4 = "";
-        data->currentTalk5 = "How can I help you?";
+        data->currentTalk0 = "Oh hello?            ";
+        data->currentTalk1 = "You are quite brave  ";
+        data->currentTalk2 = "or stupid walking    ";
+        data->currentTalk3 = "around this dungeon. ";
+        data->currentTalk4 = "                     ";
+        data->currentTalk5 = "How can I help you?  ";
         break;
     case NPC_DWARF:
         if (questManager->questlines[1].currentQuest <= 1) {
@@ -164,24 +164,24 @@ void openNPCMenu(PlayerData *pd, int npc) {
             data->currentTalkOptions = 1;
             data->currentTalkOption0 = "?";
 
-            data->currentTalk0 = "Dwo neal bet reck da lo";
-            data->currentTalk1 = "dhum don lir lugn at el";
-            data->currentTalk2 = "nur tor erno ur yo trad";
-            data->currentTalk3 = "thra so tir kho ukk tin";
-            data->currentTalk4 = "hel dro ic";
-            data->currentTalk5 = "";
+            data->currentTalk0 = "Dwo neal bet reck da ";
+            data->currentTalk1 = "dhum don lir lugn at ";
+            data->currentTalk2 = "nur tor erno ur yo ta";
+            data->currentTalk3 = "thra so tir kho ukk  ";
+            data->currentTalk4 = "hel dro ic           ";
+            data->currentTalk5 = "                     ";
             // TODO: set to 2 once translation book has been bought from librarian(can only be done once it is 1, so the dwarf has been found once)
         } else if (questManager->questlines[1].currentQuest == 2) {
             data->currentTalkOptions = 2;
             data->currentTalkOption0 = "Not really";
             data->currentTalkOption1 = "Trade";
 
-            data->currentTalk0 = "How are ya?";
+            data->currentTalk0 = "How are ya?          ";
             data->currentTalk1 = "Pretty unusal meeting";
-            data->currentTalk2 = "someone down here.";
-            data->currentTalk3 = "";
-            data->currentTalk4 = "have something valuable";
-            data->currentTalk5 = "to trade?";
+            data->currentTalk2 = "someone down here.   ";
+            data->currentTalk3 = "                     ";
+            data->currentTalk4 = "Have something       ";
+            data->currentTalk5 = "valuable to trade?   ";
         }
         break;
     }
@@ -237,12 +237,12 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOptions = 1;
                     data->currentTalkOption0 = "...";
 
-                    data->currentTalk0 = "For quite some time now this";
-                    data->currentTalk1 = "village has been tyrannized";
-                    data->currentTalk2 = "by a powerfull Air Wizard.";
-                    data->currentTalk3 = "We are the only ones who";
-                    data->currentTalk4 = "still have not given up";
-                    data->currentTalk5 = "our old homes.";
+                    data->currentTalk0 = "For a long time this ";
+                    data->currentTalk1 = "village has been     ";
+                    data->currentTalk2 = "tyrannized by an Air ";
+                    data->currentTalk3 = "Wizard. Only we have ";
+                    data->currentTalk4 = "still not given up   ";
+                    data->currentTalk5 = "our old homes.       ";
                 }
             } else if (data->currentNPCVal == 1) {
                 if (data->currentTalkSel == 0) {
@@ -253,12 +253,12 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOptions = 1;
                     data->currentTalkOption0 = "...";
 
-                    data->currentTalk0 = "Most of the time the wizard";
-                    data->currentTalk1 = "hides somewhere in the";
-                    data->currentTalk2 = "cloudes. They can only be";
-                    data->currentTalk3 = "reached by a stairwell";
-                    data->currentTalk4 = "protected by an almost";
-                    data->currentTalk5 = "undestroyable stone barrier.";
+                    data->currentTalk0 = "The wizard hides some";
+                    data->currentTalk1 = "where in the cloudes.";
+                    data->currentTalk2 = "They can only be     ";
+                    data->currentTalk3 = "reached via stairs   ";
+                    data->currentTalk4 = "protected by almost  ";
+                    data->currentTalk5 = "undestroyable stones.";
                 }
             } else if (data->currentNPCVal == 2) {
                 if (data->currentTalkSel == 0) {
@@ -269,12 +269,12 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOptions = 1;
                     data->currentTalkOption0 = "...";
 
-                    data->currentTalk0 = "I am guessing you would ";
+                    data->currentTalk0 = "I would guess you    ";
                     data->currentTalk1 = "need tools atleast as";
-                    data->currentTalk2 = "strong as diamonds to be";
-                    data->currentTalk3 = "able to destroy it.";
-                    data->currentTalk4 = "";
-                    data->currentTalk5 = "";
+                    data->currentTalk2 = "strong as diamonds to";
+                    data->currentTalk3 = "be able to destroy   ";
+                    data->currentTalk4 = "them.                ";
+                    data->currentTalk5 = "                     ";
                 }
             } else if (data->currentNPCVal == 3) {
                 if (data->currentTalkSel == 0) {
@@ -286,11 +286,11 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOption0 = "Let me do it!";
                     data->currentTalkOption1 = "I am not sure";
 
-                    data->currentTalk0 = "I am willing to give an";
-                    data->currentTalk1 = "ancient artifact passed";
-                    data->currentTalk2 = "down over generations to";
-                    data->currentTalk3 = "anybody who manages to";
-                    data->currentTalk4 = "chase the wizard away and";
+                    data->currentTalk0 = "I'm willing to give  ";
+                    data->currentTalk1 = "an artifact passed   ";
+                    data->currentTalk2 = "down over generations";
+                    data->currentTalk3 = "to anybody who can   ";
+                    data->currentTalk4 = "defeat the wizard and";
                     data->currentTalk5 = "come back with proof.";
                 }
             } else if (data->currentNPCVal == 4) {
@@ -322,12 +322,12 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOptions = 1;
                     data->currentTalkOption0 = "Ok";
 
-                    data->currentTalk0 = "The books in this dungeon";
-                    data->currentTalk1 = "house secrets that cannot be";
-                    data->currentTalk2 = "found anywhere else in the";
-                    data->currentTalk3 = "world. So I came to study";
-                    data->currentTalk4 = "them. Most are written in";
-                    data->currentTalk5 = "an ancient language.";
+                    data->currentTalk0 = "Books in this dungeon";
+                    data->currentTalk1 = "house secrets that   ";
+                    data->currentTalk2 = "can't be found any-  ";
+                    data->currentTalk3 = "where else in the    ";
+                    data->currentTalk4 = "world. So I came to  ";
+                    data->currentTalk5 = "study them.          ";
                 } else if (data->currentTalkSel == 2) {
                     data->currentNPCVal = 1;
 
@@ -337,12 +337,12 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOption0 = "I need to think about it";
                     data->currentTalkOption1 = "Here they are";
 
-                    data->currentTalk0 = "So you have met a dwarf but";
-                    data->currentTalk1 = "had a little communication";
-                    data->currentTalk2 = "problem? I do have a dwarvish";
-                    data->currentTalk3 = "translation book but I havent";
-                    data->currentTalk4 = "read it yet. For 10 Gold bars";
-                    data->currentTalk5 = "I will give it to you anyway.";
+                    data->currentTalk0 = "You have met a dwarf ";
+                    data->currentTalk1 = "but had a little     ";
+                    data->currentTalk2 = "communication problem?";
+                    data->currentTalk3 = "I have a translation ";
+                    data->currentTalk4 = "book. For 10 Goldbars";
+                    data->currentTalk5 = "I will give it to you.";
                 }
             } else if (data->currentNPCVal == 1) {
                 if (data->currentTalkSel == 0) {
@@ -365,21 +365,21 @@ void tickNPCMenu(PlayerData *pd) {
 
                         questManager->questlines[1].currentQuest = 2;
 
-                        data->currentTalk0 = "Thank you these will be";
-                        data->currentTalk1 = "really helpfull.";
-                        data->currentTalk2 = "Here take this book with";
-                        data->currentTalk3 = "it you should be able to";
-                        data->currentTalk4 = "easily understand anything";
-                        data->currentTalk5 = "a dwarf can say.";
+                        data->currentTalk0 = "Thank you these will ";
+                        data->currentTalk1 = "be really helpfull.  ";
+                        data->currentTalk2 = "Take the book with it";
+                        data->currentTalk3 = "you should be able to";
+                        data->currentTalk4 = "understand anything a";
+                        data->currentTalk5 = "dwarf can say.       ";
 
                         data->currentTalkOption0 = "Thanks";
                     } else {
-                        data->currentTalk0 = "You do not seem to have";
-                        data->currentTalk1 = "enough Gold Bars with you.";
-                        data->currentTalk2 = "";
-                        data->currentTalk3 = "Ask again when you have";
-                        data->currentTalk4 = "collected the 10 Bars.";
-                        data->currentTalk5 = "";
+                        data->currentTalk0 = "You do not seem to   ";
+                        data->currentTalk1 = "have enough Goldbars ";
+                        data->currentTalk2 = "on you.              ";
+                        data->currentTalk3 = "                     ";
+                        data->currentTalk4 = "Meet me when you have";
+                        data->currentTalk5 = "collected 10 Bars.   ";
 
                         data->currentTalkOption0 = "Ok";
                     }
@@ -411,30 +411,30 @@ void tickNPCMenu(PlayerData *pd) {
 }
 
 void renderTalkMenu(NPC_MenuData *data, char *name) {
-    renderFrame(1, 1, 24, 14, 0xFFFF1010);
-    renderTextColor(name, 24 + 1, 14 + 1, 0xFF000000);
-    renderTextColor(name, 24, 14, 0xFF6FE2E2);
+    renderFrame(1, 1, 24, 14, 0x1010FFFF);
+    renderTextColor(name, 12 + 1, 6 + 1, 0x000000FF);
+    renderTextColor(name, 12, 6, 0xE2E26FFF);
 
-    renderText(data->currentTalk0, 32, 32);
-    renderText(data->currentTalk1, 32, 48);
-    renderText(data->currentTalk2, 32, 64);
-    renderText(data->currentTalk3, 32, 80);
-    renderText(data->currentTalk4, 32, 96);
-    renderText(data->currentTalk5, 32, 112);
+    renderText(data->currentTalk0, 16, 16);
+    renderText(data->currentTalk1, 16, 24);
+    renderText(data->currentTalk2, 16, 32);
+    renderText(data->currentTalk3, 16, 40);
+    renderText(data->currentTalk4, 16, 48);
+    renderText(data->currentTalk5, 16, 56);
 
     if (data->currentTalkOptions >= 3)
-        renderText(data->currentTalkOption2, 64, 147);
+        renderText(data->currentTalkOption2, 32, 73);
     if (data->currentTalkOptions >= 2)
-        renderText(data->currentTalkOption1, 64, 171);
+        renderText(data->currentTalkOption1, 32, 85);
     if (data->currentTalkOptions >= 1)
-        renderText(data->currentTalkOption0, 64, 195);
+        renderText(data->currentTalkOption0, 32, 97);
 
     if (data->currentTalkOptions >= 3 && data->currentTalkSel == 2)
-        renderText(">", 48, 147);
+        renderText(">", 24, 73);
     if (data->currentTalkOptions >= 2 && data->currentTalkSel == 1)
-        renderText(">", 48, 171);
+        renderText(">", 24, 85);
     if (data->currentTalkOptions >= 1 && data->currentTalkSel == 0)
-        renderText(">", 48, 195);
+        renderText(">", 24, 97);
 }
 
 void renderNPCMenu(NPC_MenuData *data) {

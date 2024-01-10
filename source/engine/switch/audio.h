@@ -1,6 +1,6 @@
 #pragma once
 
 #include "../engine.h"
-#ifdef T_SWITCH
+#ifdef __SWITCH__
 
 #endif

@@ -25,13 +25,13 @@ Entity newEntitySkeleton(int lvl, int x, int y, int level) {
     e.canPass = false;
     switch (lvl) {
     case 2:
-        e.hostile.color = 0xFFC4C4C4;
+        e.hostile.color = 0xC4C4C4FF;
         break;
     case 3:
-        e.hostile.color = 0xFFA0A0A0;
+        e.hostile.color = 0xA0A0A0FF;
         break;
     case 4:
-        e.hostile.color = 0xFF7A7A7A;
+        e.hostile.color = 0x7A7A7AFF;
         break;
     default:
         e.hostile.color = 0xFFFFFFFF;

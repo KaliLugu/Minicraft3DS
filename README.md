@@ -19,11 +19,11 @@ For building the game yourself look below.
 
 For building and installing the dependencies look below.
 
-ctrulib by smea: https://github.com/smealum/ctrulib  
-citro3d by fincs: https://github.com/fincs/citro3d  
-sf2dlib by xerpi: https://github.com/xerpi/sf2dlib  
-sfillib by xerpi: https://github.com/xerpi/sfillib  
-zlib: http://www.zlib.net/  
+ctrulib
+citro3d
+citro2d
+libpng
+zlib
 
 
 ----------
@@ -36,34 +36,7 @@ zlib: http://www.zlib.net/
 - And install atleast Minimal System and devkitARM
 - This includes make, ctrulib and citro3d
 
-**2. Install zlib, libjpeg-turbo and libpng**
-- Download 3DS-Portlibs: https://github.com/devkitPro/3ds_portlibs
-- Run these commands:
-		
-```
-	make zlib
-	make install-zlib
-	make libjpeg-turbo
-	make libpng
-	make install
-```
-
-**3. Install sf2dlib**
-- Download https://github.com/xerpi/sf2dlib
-- In the libsf2d directory run these commands:
-```
-	make
-	make install
-```
-**4. Install sfillib**
-- Download https://github.com/xerpi/sfillib
-- In the libsfil directory run these commands:
-```
-	make
-	make install
-```
-
-**5. You can now build Minicraft3DS 3dsx and elf files by running make**
+**2. You can now build Minicraft3DS 3dsx and elf files by running make**
 
 
 ----------

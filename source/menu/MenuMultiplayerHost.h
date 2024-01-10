@@ -1,4 +1,4 @@
 #pragma once
 
 extern void menuMultiplayerHostTick();
-extern void menuMultiplayerHostRender();
+extern void menuMultiplayerHostRender(int screen, int width, int height);

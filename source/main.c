@@ -1,7 +1,5 @@
 #include <3ds.h>
 #include <ctype.h>
-#include <sf2d.h>
-#include <sfil.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +17,7 @@
 #include "network/Network.h"
 #include "network/PacketHandler.h"
 #include "network/Synchronizer.h"
-#include "render/Batching.h"
+#include "render/TextureManager.h"
 #include "texturepack.h"
 
 // TODO: Dungeon is way to difficult
@@ -27,9 +25,6 @@
 //       -> Or instead of less damage, implement a simple armor system
 
 // TODO: Something still causes desyncs very rarely
-
-// TODO: More Batched Rendering (most importantly ingame menus)
-// TODO: IMPORTANT: Batching causes flickering rendering (especially when performance is low/on o3ds), sometimes it even hangs up the main thread?
 
 void setupGame() {
     synchronizerInit(rand(), 1, 0);
@@ -71,16 +66,24 @@ void setupGameServer() {
 void setupBGMap() {
     // Reset entity manager.
     memset(&eManager, 0, sizeof(eManager));
-    sf2d_set_clear_color(0xFF6C6D82);
+    setClearColor(0xFF6C6D82);
 
     srand(time(NULL));
     createAndValidateTopMap(128, 128, 1, worldData.map[1], worldData.data[1]);
 
     // Reset entity manager.
     memset(&eManager, 0, sizeof(eManager));
-    sf2d_set_clear_color(0xFF6C6D82);
+    setClearColor(0xFF6C6D82);
 
     initBGMap = 0;
+}
+
+void draw(int screen, int width, int height) {
+    if (currentMenu == MENU_NONE) {
+        renderGame(screen, width, height);
+    } else {
+        renderMenu(currentMenu, screen, width, height);
+    }
 }
 
 char debugText[34];
@@ -96,9 +99,8 @@ int main() {
         osSetSpeedupEnable(shouldSpeedup);
         fclose(file);
     }
-    sf2d_init();
 
-    initEngine();
+    initEngine(&draw);
 
     networkInit();
     romfsInit();
@@ -126,29 +128,14 @@ int main() {
     quitGame = false;
     initBGMap = 1;
 
-    icons = sfil_load_PNG_buffer(icons_png, SF2D_PLACE_RAM);
-    playerSprites = sfil_load_PNG_buffer(player_png, SF2D_PLACE_RAM);
-    font = sfil_load_PNG_buffer(Font_png, SF2D_PLACE_RAM);
-    bottombg = sfil_load_PNG_buffer(bottombg_png, SF2D_PLACE_RAM);
-
-    batch_init(1024 * 10);
-
     loadSounds();
     playMusic(music_menu);
 
     bakeLights();
 
-    int i;
-    for (i = 0; i < 6; ++i) {
-        minimap[i] = sf2d_create_texture(128, 128, TEXFMT_RGBA8, SF2D_PLACE_RAM);
-        sf2d_texture_tile32(minimap[i]);
+    for (int i = 0; i < 6; ++i) {
+        imageMinimap[i] = createImage(128, 128);
     }
-
-    reloadColors();
-
-    sf2d_set_vblank_wait(true);
-
-    sf2d_set_clear_color(0xFF);
 
     /* Default inputs (also located in MenuSettingsRebind.c) */
     localInputs.k_up.input = KEY_DUP | KEY_CPAD_UP | KEY_CSTICK_UP;
@@ -187,6 +174,8 @@ int main() {
         fgets(fnbuf, 256, file); // get directory to texturepack
         loadTexturePack(fnbuf);
         fclose(file);
+    } else {
+        loadTexturePack(NULL);
     }
 
     initData();
@@ -198,8 +187,6 @@ int main() {
         if (quitGame)
             break;
 
-        batch_reset();
-
         if (initGame > 0 && --initGame == 0)
             setupGame();
         if (initMPGame > 0 && --initMPGame == 0)
@@ -209,17 +196,15 @@ int main() {
 
         if (currentMenu == MENU_NONE) {
             tickGame();
-            renderGame();
         } else {
             // input scanning ingame is handled by the synchronizer
             hidScanInput();
             tickKeys(&localInputs, hidKeysHeld(), hidKeysDown());
 
             tickMenu(currentMenu);
-            renderMenu(currentMenu);
         }
 
-        sf2d_swapbuffers();
+        drawGraphics();
     }
 
     stopMusic();
@@ -229,21 +214,19 @@ int main() {
     freePlayers();
 
     freeLightBakes();
-    sf2d_free_texture(icons);
-    sf2d_free_texture(minimap[0]);
-    sf2d_free_texture(minimap[1]);
-    sf2d_free_texture(minimap[2]);
-    sf2d_free_texture(minimap[3]);
-    sf2d_free_texture(minimap[4]);
-    sf2d_free_texture(minimap[5]);
-    freeSounds();
+    freeImage(imageIcons);
+    freeImage(imagePlayerSprites);
+    freeImage(imageFont);
+    freeImage(imageBottombg);
+    for (int i = 0; i < 6; ++i) {
+        freeImage(imageMinimap[i]);
+    }
 
-    batch_free();
+    freeSounds();
 
     romfsExit();
     networkExit();
     exitEngine();
     cfguExit();
-    sf2d_fini();
     return 0;
 }

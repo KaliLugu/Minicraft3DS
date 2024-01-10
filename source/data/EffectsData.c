@@ -11,12 +11,12 @@ static void _effectRegister(int id, char *name, int iconX, int iconY) {
 }
 
 void effectsDataInit() {
-    _effectRegister(EFFECT_UNDYING, "Undying", 0, 352);
-    _effectRegister(EFFECT_REGENERATION, "Regeneration", 8, 352);
-    _effectRegister(EFFECT_SPEED, "Speed", 16, 352);
-    _effectRegister(EFFECT_STRENGTH, "Strength", 24, 352);
-    _effectRegister(EFFECT_SHIELDING, "Shielding", 32, 352);
-    _effectRegister(EFFECT_NIGHTVISION, "Night Vision", 40, 352);
+    _effectRegister(EFFECT_UNDYING, "Undying", 0, 44);
+    _effectRegister(EFFECT_REGENERATION, "Regeneration", 1, 44);
+    _effectRegister(EFFECT_SPEED, "Speed", 2, 44);
+    _effectRegister(EFFECT_STRENGTH, "Strength", 3, 44);
+    _effectRegister(EFFECT_SHIELDING, "Shielding", 4, 44);
+    _effectRegister(EFFECT_NIGHTVISION, "Night Vision", 5, 44);
 }
 
 char *effectGetName(int id) {

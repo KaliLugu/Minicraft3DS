@@ -6,4 +6,4 @@
 
 extern void menuLoadGameInit(int target);
 extern void menuLoadGameTick();
-extern void menuLoadGameRender();
+extern void menuLoadGameRender(int screen, int width, int height);

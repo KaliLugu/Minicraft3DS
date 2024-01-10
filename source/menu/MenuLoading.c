@@ -7,17 +7,16 @@
 void menuLoadingTick() {
 }
 
-void menuLoadingRender() {
+void menuLoadingRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
-
-    sf2d_end_frame();
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
+    }
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderText("Loading game...", (320 - 15 * 12) / 2, 100);
-    sf2d_end_frame();
+        renderTextCentered("Loading game...", 50, width);
+    }
 }

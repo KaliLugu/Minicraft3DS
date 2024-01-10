@@ -25,39 +25,39 @@ void menuMultiplayerHostTick() {
     }
 }
 
-void menuMultiplayerHostRender() {
+void menuMultiplayerHostRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    networkUpdateStatus();
-    renderText("Connected Players", 98, 8);
-    int j = 0;
-    int lastj = 0;
-    for (int i = 0; i < networkGetNodeCount(); i++) {
-        for (j = lastj + 1; j <= UDS_MAXNODES; j++) {
-            if (networkIsNodeConnected(j)) {
-                char *text = malloc((50 + 8 + 1) * sizeof(char));
-                memset(text, 0, (50 + 8 + 1) * sizeof(char));
-                networkGetNodeName(j, text);
+        networkUpdateStatus();
+        renderTextCentered("Connected Players", 4, width);
+        int j = 0;
+        int lastj = 0;
+        for (int i = 0; i < networkGetNodeCount(); i++) {
+            for (j = lastj + 1; j <= UDS_MAXNODES; j++) {
+                if (networkIsNodeConnected(j)) {
+                    char *text = malloc((50 + 8 + 1) * sizeof(char));
+                    memset(text, 0, (50 + 8 + 1) * sizeof(char));
+                    networkGetNodeName(j, text);
 
-                renderText(text, (400 - (strlen(text) * 12)) / 2, i * 26 + 32);
+                    renderTextCentered(text, i * 13 + 16, width);
 
-                free(text);
-                lastj = j;
-                break;
+                    free(text);
+                    lastj = j;
+                    break;
+                }
             }
         }
     }
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderText("Press   to start game", (320 - 21 * 12) / 2, 100);
-    renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 104, 98, 1);
-    renderText("Press   to return", 58, 150);
-    renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 148, 1);
-    sf2d_end_frame();
+        renderTextCentered("Press   to start", 50, width);
+        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 59, 45);
+        renderTextCentered("Press   to return", 75, width);
+        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 70);
+    }
 }

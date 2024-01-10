@@ -197,6 +197,7 @@ struct Entity {
     s16 slotNum; // Read-only. Do not mess with this.
     bool canPass;
     bool canSwim;
+    // TODO: unify stuff like health, dir, ... in a Mob struct
     union {
         Player p;
         EntityItem entityItem;
@@ -215,8 +216,12 @@ struct Entity {
     };
 
     // TODO: Move more "callbacks" to this "dynamic functions"
-    // Note: These need to always be set (explicitly set to NULL if unused) ot the game will crash
+    // Note: These need to always be set (explicitly set to NULL if unused) or the game will crash
     void (*tickFunction)(Entity *e, PlayerData *pd);
+    // TODO: onDeathFunction
+    // TODO: renderFunction
+    // TODO: saveFunction
+    // TODO: loadFunction
 };
 
 typedef struct

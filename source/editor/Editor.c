@@ -78,64 +78,64 @@ char *editorGetComponentName(int comp) {
     }
 }
 
-void editorRender() {
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+void editorRender(int screen, int width, int height) {
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    // draw top bar
-    renderFrame(0, 0, 25, 4, 0xFF209210);
-    renderTextColor("Editor Mode:", 200 - (12 * 12) / 2 + 1, 12 + 1, 0xFF000000);
-    renderTextColor("Editor Mode:", 200 - (12 * 12) / 2, 12, 0xFFFFFFFF);
+        // draw top bar
+        renderFrame(0, 0, 25, 4, 0x109220FF);
+        renderTextColor("Editor Mode:", (width / 2 - (12 * 8)) / 2 + 1, 8 + 1, 0x000000FF);
+        renderTextColor("Editor Mode:", (width / 2 - (12 * 8)) / 2, 8, 0xFFFFFFFF);
 
-    char *text;
-    text = editorGetComponentName(editorComponent - 1);
-    renderTextColor(text, 90 - (strlen(text) * 12) / 2 + 1, 40 + 1, 0xFF000000);
-    renderTextColor(text, 90 - (strlen(text) * 12) / 2, 40, 0xFF404040);
+        char *text;
+        text = editorGetComponentName(editorComponent - 1);
+        renderTextColor(text, 36 - (strlen(text) * 8) / 2 + 1, 20 + 1, 0x000000FF);
+        renderTextColor(text, 36 - (strlen(text) * 8) / 2, 20, 0x404040FF);
 
-    text = editorGetComponentName(editorComponent);
-    renderTextColor(text, 200 - (strlen(text) * 12) / 2 + 1, 40 + 1, 0xFF000000);
-    renderTextColor(text, 200 - (strlen(text) * 12) / 2, 40, 0xFFFFFFFF);
+        text = editorGetComponentName(editorComponent);
+        renderTextColor(text, 100 - (strlen(text) * 8) / 2 + 1, 20 + 1, 0x000000FF);
+        renderTextColor(text, 100 - (strlen(text) * 8) / 2, 20, 0xFFFFFFFF);
 
-    text = editorGetComponentName(editorComponent + 1);
-    renderTextColor(text, 310 - (strlen(text) * 12) / 2 + 1, 40 + 1, 0xFF000000);
-    renderTextColor(text, 310 - (strlen(text) * 12) / 2, 40, 0xFF404040);
+        text = editorGetComponentName(editorComponent + 1);
+        renderTextColor(text, 164 - (strlen(text) * 8) / 2 + 1, 20 + 1, 0x000000FF);
+        renderTextColor(text, 164 - (strlen(text) * 8) / 2, 20, 0x404040FF);
 
-    renderButtonIcon(localInputs.k_menuPrev.input & -localInputs.k_menuPrev.input, 16, 40 - 3, 1);
-    renderButtonIcon(localInputs.k_menuNext.input & -localInputs.k_menuNext.input, 364, 40 - 3, 1);
+        renderButtonIcon(localInputs.k_menuPrev.input & -localInputs.k_menuPrev.input, 3, 3);
+        renderButtonIcon(localInputs.k_menuNext.input & -localInputs.k_menuNext.input, 181, 3);
 
-    // render component
-    switch (editorComponent) {
-    case EDITOR_COMPONENT_TILES:
-        editorTilesRenderTop();
-        break;
-    case EDITOR_COMPONENT_ENTITIES:
+        // render component
+        switch (editorComponent) {
+        case EDITOR_COMPONENT_TILES:
+            editorTilesRenderTop(screen, width, height);
+            break;
+        case EDITOR_COMPONENT_ENTITIES:
 
-        break;
-    case EDITOR_COMPONENT_SCRIPT:
+            break;
+        case EDITOR_COMPONENT_SCRIPT:
 
-        break;
-    case EDITOR_COMPONENT_OPTIONS:
-        editorOptionsRenderTop();
-        break;
+            break;
+        case EDITOR_COMPONENT_OPTIONS:
+            editorOptionsRenderTop(screen, width, height);
+            break;
+        }
     }
-    sf2d_end_frame();
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    // render component
-    switch (editorComponent) {
-    case EDITOR_COMPONENT_TILES:
-        editorTilesRenderBottom();
-        break;
-    case EDITOR_COMPONENT_ENTITIES:
+        // render component
+        switch (editorComponent) {
+        case EDITOR_COMPONENT_TILES:
+            editorTilesRenderBottom(screen, width, height);
+            break;
+        case EDITOR_COMPONENT_ENTITIES:
 
-        break;
-    case EDITOR_COMPONENT_SCRIPT:
+            break;
+        case EDITOR_COMPONENT_SCRIPT:
 
-        break;
-    case EDITOR_COMPONENT_OPTIONS:
-        editorOptionsRenderBottom();
-        break;
+            break;
+        case EDITOR_COMPONENT_OPTIONS:
+            editorOptionsRenderBottom(screen, width, height);
+            break;
+        }
     }
-    sf2d_end_frame();
 }

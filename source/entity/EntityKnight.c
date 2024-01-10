@@ -24,13 +24,13 @@ Entity newEntityKnight(int lvl, int x, int y, int level) {
     e.canPass = false;
     switch (lvl) {
     case 2:
-        e.hostile.color = 0xFF0000C6;
+        e.hostile.color = 0xC60000FF;
         break;
     case 3:
-        e.hostile.color = 0xFF00A3C6;
+        e.hostile.color = 0xC6A300FF;
         break;
     case 4:
-        e.hostile.color = 0xFF707070;
+        e.hostile.color = 0x707070FF;
         break;
     default:
         e.hostile.color = 0xFFFFFFFF;

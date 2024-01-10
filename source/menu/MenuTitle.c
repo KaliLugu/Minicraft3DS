@@ -7,6 +7,8 @@
 #include "MenuLoadGame.h"
 #include "MenuTutorial.h"
 
+#include "../render/TextureManager.h"
+
 char options[][12] = {"Start Game", "Editor", "How To Play", "Settings", "About", "Exit"};
 
 void menuTitleTick() {
@@ -52,70 +54,73 @@ void menuTitleTick() {
     }
 }
 
-void menuTitleRender() {
+void menuTitleRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    menuRenderMapBGTop();
+    if (screen == 0) {
+        menuRenderMapBGTop();
 
-    renderTitle(76, 12);
+        renderTitle(76, 12);
 
-    for (int i = 5; i >= 0; --i) {
-        char *msg = options[i];
-        u32 color = 0xFF7F7F7F;
-        if (i == currentSelection)
-            color = 0xFFFFFFFF;
-        renderTextColorSized(msg, ((200 - (strlen(msg) * 8)) / 2) + 1, (((8 + i) * 20 - 66) >> 1) + 1, 2.0, 0xFF000000);
-        renderTextColorSized(msg, (200 - (strlen(msg) * 8)) / 2, ((8 + i) * 20 - 66) >> 1, 2.0, color);
+        for (int i = 5; i >= 0; --i) {
+            char *msg = options[i];
+            u32 color = 0x7F7F7FFF;
+            if (i == currentSelection)
+                color = 0xFFFFFFFF;
+            renderTextColor(msg, ((200 - (strlen(msg) * 8)) / 2) + 1, (i * 10 + 55) + 1, 0x000000FF);
+            renderTextColor(msg, (200 - (strlen(msg) * 8)) / 2, i * 10 + 55, color);
+        }
+
+        renderText(versionText, 2, 225);
     }
-
-    renderText(versionText, 2, 225);
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    menuRenderMapBGBottom();
+    if (screen == 10) {
+        menuRenderMapBGBottom();
 
-    int startX = 0, startY = 0; // relative coordinates ftw
-    switch (currentSelection) {
-    case 0: // "Start Game"
+        int startX = 0, startY = 0; // relative coordinates ftw
+        switch (currentSelection) {
+        case 0: // "Start Game"
 
-        break;
-    case 1: // "Editor"
+            break;
+        case 1: // "Editor"
 
-        break;
-    case 2: // "How To Play"
-        startX = 72;
-        startY = 54;
-        render16(startX, startY, 96, 208, 0); // C-PAD
-        startX = 72;
-        startY = 37;
-        render16(startX, startY - 16, 16, 112, 0); // Player
-        render16(startX, startY, 112, 208, 0);     // C-PAD up
-        startX = 72;
-        startY = 71;
-        render16(startX, startY + 16, 0, 112, 0); // Player
-        render16(startX, startY, 144, 208, 0);    // C-PAD down
-        startX = 39;
-        startY = 54;
-        render16(startX, startY, 48, 112, 1);       // Player
-        render16(startX + 16, startY, 128, 208, 0); // C-PAD left
-        startX = 89;
-        startY = 54;
-        render16(startX + 16, startY, 48, 112, 0); // Player
-        render16(startX, startY, 160, 208, 0);     // C-PAD right
-        renderTextColor("Learn the basics", 64, 24, 0xFF7FFFFF);
-        break;
-    case 3: // "Settings"
-        renderTextColor("Modify the game's feel", (320 - (22 * 12)) / 2, 24, 0xFF7FFFFF);
-        renderc(48, 48, 0, 112, 64, 32, 0);
-        break;
-    case 4: // "About"
-        renderTextColor("Who made this game?", (320 - (19 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
-    case 5: // "Exit"
-        renderTextColor("Exit to the home menu", (320 - (21 * 12)) / 2, 24, 0xFF7FFFFF);
-        renderTextColor("(bye-bye)", (320 - (9 * 12)) / 2, 100, 0xFF7FFFFF);
-        break;
+            break;
+        case 2: // "How To Play"
+            startX = 72;
+            startY = 54;
+            renderTile16(startX, startY, 6, 13, 0); // C-PAD
+            startX = 72;
+            startY = 37;
+            renderTile16(startX, startY - 16, 1, 7, 0); // Player
+            renderTile16(startX, startY, 7, 13, 0);     // C-PAD up
+            startX = 72;
+            startY = 71;
+            renderTile16(startX, startY + 16, 0, 7, 0); // Player
+            renderTile16(startX, startY, 9, 13, 0);     // C-PAD down
+            startX = 39;
+            startY = 54;
+            renderTile16(startX, startY, 3, 7, 1);       // Player
+            renderTile16(startX + 16, startY, 8, 13, 0); // C-PAD left
+            startX = 89;
+            startY = 54;
+            renderTile16(startX + 16, startY, 3, 7, 0); // Player
+            renderTile16(startX, startY, 10, 13, 0);    // C-PAD right
+            renderTextColor("Learn the basics", (160 - (16 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 3: // "Settings"
+            renderTextColor("Modify the game", (160 - (15 * 8)) / 2, 12, 0xFFFF7FFF);
+            renderTile16(48 + 0, 48, 0, 7, 0);
+            renderTile16(48 + 16, 48, 1, 7, 0);
+            renderTile16(48 + 32, 48, 2, 7, 0);
+            renderTile16(48 + 48, 48, 3, 7, 0);
+            break;
+        case 4: // "About"
+            renderTextColor("Who made this game?", (160 - (19 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 5: // "Exit"
+            renderTextColor("Exit the game", (160 - (13 * 8)) / 2, 12, 0xFFFF7FFF);
+            renderTextColor("(bye-bye)", (160 - (9 * 8)) / 2, 100, 0xFFFF7FFF);
+            break;
+        }
     }
-    sf2d_end_frame();
 }

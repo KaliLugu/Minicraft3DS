@@ -1,4 +1,5 @@
 #include "texturepack.h"
+#include "render/TextureManager.h"
 
 #include "ZipHelper.h"
 
@@ -41,60 +42,59 @@ int loadTexture(char *filename) {
     toLowerString(lowerFilename);
 
     if (strcmp(lowerFilename, "icons.png") == 0) {
-        if (icons != NULL) {
-            sf2d_free_texture(icons);
-            icons = NULL;
+        if (imageIcons != NULL) {
+            freeImage(imageIcons);
+            imageIcons = NULL;
         }
 
-        sf2d_texture *tex = sfil_load_PNG_file(filename, SF2D_PLACE_RAM);
-        if (tex == NULL) {
+        Image image = loadImage(filename);
+        if (image == NULL) {
             return 0;
         }
 
-        icons = tex;
-        reloadColors();
+        imageIcons = image;
 
         texturepackUseDefaultIcons = false;
     } else if (strcmp(lowerFilename, "player.png") == 0) {
-        if (playerSprites != NULL) {
-            sf2d_free_texture(playerSprites);
-            playerSprites = NULL;
+        if (imagePlayerSprites != NULL) {
+            freeImage(imagePlayerSprites);
+            imagePlayerSprites = NULL;
         }
 
-        sf2d_texture *tex = sfil_load_PNG_file(filename, SF2D_PLACE_RAM);
-        if (tex == NULL) {
+        Image image = loadImage(filename);
+        if (image == NULL) {
             return 0;
         }
 
-        playerSprites = tex;
+        imagePlayerSprites = image;
 
         texturepackUseDefaultPlayer = false;
     } else if (strcmp(lowerFilename, "font.png") == 0) {
-        if (font != NULL) {
-            sf2d_free_texture(font);
-            font = NULL;
+        if (imageFont != NULL) {
+            freeImage(imageFont);
+            imageFont = NULL;
         }
 
-        sf2d_texture *tex = sfil_load_PNG_file(filename, SF2D_PLACE_RAM);
-        if (tex == NULL) {
+        Image image = loadImage(filename);
+        if (image == NULL) {
             return 0;
         }
 
-        font = tex;
+        imageFont = image;
 
         texturepackUseDefaultFont = false;
     } else if (strcmp(lowerFilename, "bottombg.png") == 0) {
-        if (bottombg != NULL) {
-            sf2d_free_texture(bottombg);
-            bottombg = NULL;
+        if (imageBottombg != NULL) {
+            freeImage(imageBottombg);
+            imageBottombg = NULL;
         }
 
-        sf2d_texture *tex = sfil_load_PNG_file(filename, SF2D_PLACE_RAM);
-        if (tex == NULL) {
+        Image image = loadImage(filename);
+        if (image == NULL) {
             return 0;
         }
 
-        bottombg = tex;
+        imageBottombg = image;
 
         texturepackUseDefaultBottom = false;
     }
@@ -108,39 +108,39 @@ int loadTexturePack(char *filename) {
     texturepackUseDefaultFont = true;
     texturepackUseDefaultBottom = true;
 
-    if (unzipAndLoad(filename, &loadTexture, NULL, ZIPHELPER_CLEANUP_FILES) != 0) {
+    if (filename != NULL && unzipAndLoad(filename, &loadTexture, NULL, ZIPHELPER_CLEANUP_FILES) != 0) {
         return 1;
     }
 
     if (texturepackUseDefaultIcons) {
-        if (icons != NULL) {
-            sf2d_free_texture(icons);
-            icons = NULL;
+        if (imageIcons != NULL) {
+            freeImage(imageIcons);
+            imageIcons = NULL;
         }
-        icons = sfil_load_PNG_buffer(icons_png, SF2D_PLACE_RAM);
-        reloadColors();
+        imageIcons = loadImage("romfs:/icons.png");
     }
     if (texturepackUseDefaultPlayer) {
-        if (playerSprites != NULL) {
-            sf2d_free_texture(playerSprites);
-            playerSprites = NULL;
+        if (imagePlayerSprites != NULL) {
+            freeImage(imagePlayerSprites);
+            imagePlayerSprites = NULL;
         }
-        playerSprites = sfil_load_PNG_buffer(player_png, SF2D_PLACE_RAM);
+        imagePlayerSprites = loadImage("romfs:/player.png");
     }
     if (texturepackUseDefaultFont) {
-        if (font != NULL) {
-            sf2d_free_texture(font);
-            font = NULL;
+        if (imageFont != NULL) {
+            freeImage(imageFont);
+            imageFont = NULL;
         }
-        font = sfil_load_PNG_buffer(Font_png, SF2D_PLACE_RAM);
+        imageFont = loadImage("romfs:/font.png");
     }
     if (texturepackUseDefaultBottom) {
-        if (bottombg != NULL) {
-            sf2d_free_texture(bottombg);
-            bottombg = NULL;
+        if (imageBottombg != NULL) {
+            freeImage(imageBottombg);
+            imageBottombg = NULL;
         }
-        bottombg = sfil_load_PNG_buffer(bottombg_png, SF2D_PLACE_RAM);
+        imageBottombg = loadImage("romfs:/bottombg.png");
     }
+    textureManagerReload();
 
     return 0;
 }

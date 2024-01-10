@@ -54,42 +54,42 @@ void menuChooseGameTick() {
     }
 }
 
-void menuChooseGameRender() {
+void menuChooseGameRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    menuRenderMapBGTop();
+    if (screen == 0) {
+        menuRenderMapBGTop();
 
-    renderTitle(76, 12);
+        renderTitle(76, 12);
 
-    for (int i = 3; i >= 0; --i) {
-        char *msg = gameOptions[i];
-        u32 color = 0xFF7F7F7F;
-        if (i == currentSelection)
-            color = 0xFFFFFFFF;
-        renderTextColorSized(msg, ((200 - (strlen(msg) * 8)) / 2) + 1, (((8 + i) * 20 - 66) >> 1) + 1, 2.0, 0xFF000000);
-        renderTextColorSized(msg, (200 - (strlen(msg) * 8)) / 2, ((8 + i) * 20 - 66) >> 1, 2.0, color);
+        for (int i = 3; i >= 0; --i) {
+            char *msg = gameOptions[i];
+            u32 color = 0x7F7F7FFF;
+            if (i == currentSelection)
+                color = 0xFFFFFFFF;
+            renderTextColor(msg, ((width / 2 - (strlen(msg) * 8)) / 2) + 1, ((8 + i) * 10 - 16) + 1, 0x000000FF);
+            renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (8 + i) * 10 - 16, color);
+        }
+
+        renderText(versionText, 1, 112);
     }
-
-    renderText(versionText, 2, 225);
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    menuRenderMapBGBottom();
+    if (screen == 10) {
+        menuRenderMapBGBottom();
 
-    switch (currentSelection) {
-    case 0: // "Start Game"
+        switch (currentSelection) {
+        case 0: // "Start Game"
 
-        break;
-    case 1: // "Host Game"
-        renderTextColor("Host local multiplayer", (320 - (22 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
-    case 2: // "Join Game"
-        renderTextColor("Join local multiplayer", (320 - (22 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
-    case 3: // "Back"
-        renderTextColor("Return to title screen", (320 - (22 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
+            break;
+        case 1: // "Host Game"
+            renderTextColor("local multiplayer", (width / 2 - (17 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 2: // "Join Game"
+            renderTextColor("local multiplayer", (width / 2 - (17 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 3: // "Back"
+            renderTextColor("Return to the title", (width / 2 - (19 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        }
     }
-    sf2d_end_frame();
 }

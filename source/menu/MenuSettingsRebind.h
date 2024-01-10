@@ -2,4 +2,4 @@
 
 extern void menuSettingsRebindInit();
 extern void menuSettingsRebindTick();
-extern void menuSettingsRebindRender();
+extern void menuSettingsRebindRender(int screen, int width, int height);

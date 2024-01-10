@@ -7,7 +7,7 @@
 #include "MenuSettingsRebind.h"
 #include "MenuSettingsTexture.h"
 
-char setOptions[][24] = {"Rebind Buttons", "Texture packs", "Debug Text:   ", "N3DS Speedup:   ", "Return to title"};
+char setOptions[][24] = {"Rebind Buttons", "Texture packs", "Debug Text:    ", "N3DS Speedup:    ", "Return to title"};
 
 void menuSettingsTick() {
     if (localInputs.k_up.clicked) {
@@ -63,62 +63,62 @@ void menuSettingsTick() {
     }
 }
 
-void menuSettingsRender() {
+void menuSettingsRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderText("Settings", (400 - (8 * 12)) / 2, 30);
-    for (int i = 4; i >= 0; --i) {
-        char *msg = setOptions[i];
-        u32 color = 0xFF7F7F7F;
-        if (i == currentSelection)
-            color = 0xFFFFFFFF;
-        if (i == 2) {
-            if (shouldRenderDebug)
-                renderTextColorSized("On", 142, ((8 + i) * 32 - 190) >> 1, 2.0, 0xFF00DF00);
-            else
-                renderTextColorSized("Off", 142, ((8 + i) * 32 - 190) >> 1, 2.0, 0xFF0000DF);
-        } else if (i == 3) {
-
-            if ((MODEL_3DS & 6) != 0) { // detect if user is using a New 3DS
-                if (shouldSpeedup)
-                    renderTextColorSized("On", 142, ((8 + i) * 32 - 190) >> 1, 2.0, 0xFF00DF00);
+        renderText("Settings", (width / 2 - (8 * 8)) / 2, 15);
+        for (int i = 4; i >= 0; --i) {
+            char *msg = setOptions[i];
+            u32 color = 0x7F7F7FFF;
+            if (i == currentSelection)
+                color = 0xFFFFFFFF;
+            if (i == 2) {
+                if (shouldRenderDebug)
+                    renderTextColor("On", (width / 2 + 9 * 8) / 2, (8 + i) * 16 - 95, 0x00DF00FF);
                 else
-                    renderTextColorSized("Off", 142, ((8 + i) * 32 - 190) >> 1, 2.0, 0xFF0000DF);
-            } else {
-                color = 0xFF3F3F3F;
-                renderTextColorSized("Off", 142, ((8 + i) * 32 - 190) >> 1, 2.0, 0xFF3F3F3F);
+                    renderTextColor("Off", (width / 2 + 9 * 8) / 2, (8 + i) * 16 - 95, 0xDF0000FF);
+            } else if (i == 3) {
+
+                if ((MODEL_3DS & 6) != 0) { // detect if user is using a New 3DS
+                    if (shouldSpeedup)
+                        renderTextColor("On", (width / 2 + 11 * 8) / 2, (8 + i) * 16 - 95, 0x00DF00FF);
+                    else
+                        renderTextColor("Off", (width / 2 + 11 * 8) / 2, (8 + i) * 16 - 95, 0xDF0000FF);
+                } else {
+                    color = 0xFF3F3F3F;
+                    renderTextColor("Off", (width / 2 + 11 * 8) / 2, (8 + i) * 16 - 95, 0x3F3F3FFF);
+                }
             }
+            renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (8 + i) * 16 - 95, color);
         }
-        renderTextColorSized(msg, (200 - (strlen(msg) * 8)) / 2, ((8 + i) * 32 - 190) >> 1, 2.0, color);
     }
-    sf2d_end_frame();
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    switch (currentSelection) {
-    case 0:
-        renderTextColor("Change the controls", (320 - (19 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
-    case 1:
-        renderTextColor("Change the game's art", (320 - (21 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
-    case 2:
-        renderTextColor("Show FPS/Pos/Entities", (320 - (22 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
-    case 3:
-        renderTextColor("Use the N3DS 804mhz mode", (320 - (24 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
-    case 4:
-        renderTextColor("Back to the titlescreen", (320 - (23 * 12)) / 2, 24, 0xFF7FFFFF);
-        break;
+        switch (currentSelection) {
+        case 0:
+            renderTextColor("Change the controls", (width / 2 - (19 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 1:
+            renderTextColor("Change the art", (width / 2 - (14 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 2:
+            renderTextColor("Show FPS/Pos/Entity", (width / 2 - (19 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 3:
+            renderTextColor("Use N3DS 804mhz mode", (width / 2 - (20 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        case 4:
+            renderTextColor("Back to the title", (width / 2 - (17 * 8)) / 2, 12, 0xFFFF7FFF);
+            break;
+        }
+        renderText("Press   to select", 12, 50);
+        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 55, 45);
+        renderText("Press   to return", 12, 75);
+        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 70);
     }
-    renderText("Press   to select", 58, 100);
-    renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 128, 98, 1);
-    renderText("Press   to return", 58, 150);
-    renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 148, 1);
-    sf2d_end_frame();
 }

@@ -24,16 +24,16 @@ Entity newEntitySlime(int lvl, int x, int y, int level) {
     e.canPass = false;
     switch (lvl) {
     case 2:
-        e.hostile.color = 0xFF8282CC;
+        e.hostile.color = 0xCC8282FF;
         break;
     case 3:
-        e.hostile.color = 0xFFEFEFEF;
+        e.hostile.color = 0xEFEFEFFF;
         break;
     case 4:
-        e.hostile.color = 0xFFAA6262;
+        e.hostile.color = 0x6262AAFF;
         break;
     default:
-        e.hostile.color = 0xFF95DB95;
+        e.hostile.color = 0x95DB95FF;
         break;
     }
 

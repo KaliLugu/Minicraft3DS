@@ -10,38 +10,38 @@ void menuAboutTick() {
     }
 }
 
-void menuAboutRender() {
+void menuAboutRender(int screen, int width, int height) {
     /* Top Screen */
-    sf2d_start_frame(GFX_TOP, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 400, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 0) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderText("About Minicraft", 110, 12);
-    renderTextSized("Minicraft was made by Markus Persson for the", 24, 36, 1.0);
-    renderTextSized("22'nd ludum dare competition in december 2011.", 16, 48, 1.0);
-    renderTextSized("it is dedicated to my father. <3", 72, 60, 1.0);
-    renderTextSized("- Markus \"Notch\" Persson", 104, 76, 1.0);
+        renderTextCentered("About Minicraft", 6, width);
+        renderTextCentered("made by Markus Persson", 18, width);
+        renderTextCentered("for the 22'nd ludum dare", 28, width);
+        renderTextCentered("competition in dec 2011.", 38, width);
+        renderTextCentered("dedicated to my father.<3", 48, width);
+        renderTextCentered("- Markus \"Notch\" Persson", 58, width);
 
-    renderTextColor("3DS Homebrew Edition", 74, 120, 0xFF00FF00);
-    renderTextColorSized("This port was made by David Benepe (Davideesk)", 16, 144, 1.0, 0xFF00FF00);
-    renderTextColorSized("just for fun in September/October 2015.", 44, 156, 1.0, 0xFF00FF00);
-    renderTextColorSized("Updated and modded by Andre Schweiger (andre111)", 8, 168, 1.0, 0xFF00FF00);
-    renderTextColorSized("TY Notch for creating a fun game to remake!", 28, 192, 1.0, 0xFF00FF00);
-    sf2d_end_frame();
+        renderTextColor("3DS Homebrew Edition", (width / 2 - 20 * 8) / 2, 80, 0x7FFF7FFF);
+        renderTextColor("Remade by Andre Schweiger", (width / 2 - 25 * 8) / 2, 92, 0x00FF00FF);
+        renderTextColor("over 2015-2024!", (width / 2 - 15 * 8) / 2, 102, 0x00FF00FF);
+    }
 
     /* Bottom Screen */
-    sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-    sf2d_draw_rectangle(0, 0, 320, 240, 0xFF0C0C0C); // You might think "real" black would be better, but it actually looks better that way
+    if (screen == 10) {
+        drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-    renderTextColor("Special Thanks to:", 52, 12, 0xFF7F7FFF);
-    renderTextColor("Smea", 136, 50, 0xFF2020FF);
-    renderTextColorSized("for ctrulib", 116, 70, 1.0, 0xFF2020FF);
-    renderTextColor("Xerpi", 130, 100, 0xFFFF2020);
-    renderTextColorSized("for sf2dlib", 116, 120, 1.0, 0xFFFF2020);
-    renderTextColor("Music from", 100, 150, 0xFF20FF20);
-    renderTextColorSized("opengameart.org/content/", 64, 170, 1.0, 0xFF20FF20);
-    renderTextColorSized("generic-8-bit-jrpg-soundtrack", 48, 180, 1.0, 0xFF20FF20);
+        renderTextColor("Special Thanks to:", (width / 2 - 18 * 8) / 2, 6, 0xFF7F7FFF);
+        renderTextColor("David Benepe", (width / 2 - 12 * 8) / 2, 16, 0xFF2020FF);
+        renderTextColor("(Davideesk) for the", (width / 2 - 19 * 8) / 2, 26, 0xFF2020FF);
+        renderTextColor("original 3DS port", (width / 2 - 17 * 8) / 2, 36, 0xFF2020FF);
 
-    renderText("Press   to return", 58, 220);
-    renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 128, 218, 1);
-    sf2d_end_frame();
+        renderTextColor("Music from", (width / 2 - 10 * 8) / 2, 56, 0x7FFF7FFF);
+        renderTextColor("opengameart.org/", (width / 2 - 16 * 8) / 2, 66, 0x20FF20FF);
+        renderTextColor("content/generic-8-", (width / 2 - 18 * 8) / 2, 76, 0x20FF20FF);
+        renderTextColor("bit-jrpg-soundtrack", (width / 2 - 19 * 8) / 2, 86, 0x20FF20FF);
+
+        renderTextCentered("Press   to return", 110, width);
+        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 105);
+    }
 }
