@@ -3,11 +3,11 @@
 
 #define MIN_TEXTURE_SIZE 64
 
-typedef unsigned int Color;
+typedef unsigned int MColor;
 typedef struct _img _img;
-typedef _img *Image;
+typedef _img *MImage;
 typedef struct _tex _tex;
-typedef _tex *Texture;
+typedef _tex *MTexture;
 
 typedef enum {
     DM_NORMAL = 0,
@@ -21,28 +21,30 @@ extern void initGraphics();
 extern void drawGraphics(DrawCallback callback);
 extern void exitGraphics();
 
-extern Image createImage(int width, int height);
-extern Image loadImage(char *name);
-extern int imageWidth(Image image);
-extern int imageHeight(Image image);
-extern void freeImage(Image image);
+extern sInt getScreenCount();
 
-extern Color getPixel(Image image, int x, int y);
-extern void setPixel(Image image, int x, int y, Color color);
+extern MImage createImage(int width, int height);
+extern MImage loadImage(char *name);
+extern int imageWidth(MImage image);
+extern int imageHeight(MImage image);
+extern void freeImage(MImage image);
 
-extern Texture createTexture(Image image, int x0, int y0, int x1, int y1);
-inline Texture createFullTexture(Image image) {
+extern MColor getPixel(MImage image, int x, int y);
+extern void setPixel(MImage image, int x, int y, MColor color);
+
+extern MTexture createTexture(MImage image, int x0, int y0, int x1, int y1);
+inline MTexture createFullTexture(MImage image) {
     return createTexture(image, 0, 0, imageWidth(image), imageHeight(image));
 }
-extern int textureWidth(Texture texture);
-extern int textureHeight(Texture texture);
-extern void freeTexture(Texture texture);
+extern int textureWidth(MTexture texture);
+extern int textureHeight(MTexture texture);
+extern void freeTexture(MTexture texture);
 
-extern void drawTextureAt(Texture texture, float x, float y, float scaleX, float scaleY, float angle, Color color, float blend);
-inline void drawTexture(Texture texture, float x, float y) {
+extern void drawTextureAt(MTexture texture, float x, float y, float scaleX, float scaleY, float angle, MColor color, float blend);
+inline void drawTexture(MTexture texture, float x, float y) {
     drawTextureAt(texture, x, y, 1, 1, 0, 0xFFFFFFFF, 0);
 }
-extern void drawRect(float x, float y, float w, float h, Color color);
+extern void drawRect(float x, float y, float w, float h, MColor color);
 
 extern void setDrawMode(DrawMode mode);
-extern void setClearColor(Color color);
+extern void setClearColor(MColor color);

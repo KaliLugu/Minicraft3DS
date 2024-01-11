@@ -6,6 +6,7 @@
 #include "../Player.h"
 #include "../engine/network.h"
 #include "PacketHandler.h"
+#include <math.h>
 
 int syncTickCount;
 

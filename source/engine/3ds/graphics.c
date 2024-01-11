@@ -16,7 +16,7 @@ struct _tex {
     bool valid;
 };
 
-static Color clearColor = 0xFF000000;
+static MColor clearColor = 0xFF000000;
 
 static C3D_RenderTarget *topScreenTarget;
 static C3D_RenderTarget *bottomScreenTarget;
@@ -65,6 +65,10 @@ void exitGraphics() {
     gfxExit();
 }
 
+sInt getScreenCount() {
+    return 2;
+}
+
 static inline u32 mortonInterleave(u32 x, u32 y) {
     u32 i = (x & 7) | ((y & 7) << 8); // ---- -210
     i = (i ^ (i << 2)) & 0x1313;      // ---2 --10
@@ -90,8 +94,8 @@ static unsigned int nextPowerOf2(unsigned int v) {
     return v >= MIN_TEXTURE_SIZE ? v : MIN_TEXTURE_SIZE;
 }
 
-Image createImage(int width, int height) {
-    Image image = linearAlloc(sizeof(Image));
+MImage createImage(int width, int height) {
+    MImage image = linearAlloc(sizeof(_img));
     if (!C3D_TexInit(&image->tex, nextPowerOf2(width), nextPowerOf2(height), GPU_RGBA8)) {
         linearFree(image);
         return NULL;
@@ -100,7 +104,7 @@ Image createImage(int width, int height) {
     return image;
 }
 
-static Image loadPng(FILE *file) {
+static MImage loadPng(FILE *file) {
     png_image png;
     png.version = PNG_IMAGE_VERSION;
     png.opaque = NULL;
@@ -108,7 +112,7 @@ static Image loadPng(FILE *file) {
         png.format = PNG_FORMAT_RGBA;
         png_bytep buffer = malloc(PNG_IMAGE_SIZE(png));
         if (buffer != NULL && png_image_finish_read(&png, NULL, buffer, 0, NULL) != 0) {
-            Image image = createImage(png.width, png.height);
+            MImage image = createImage(png.width, png.height);
             if (image != NULL) {
                 // store in morton order
                 for (int y = 0; y < png.height; y++) {
@@ -116,8 +120,8 @@ static Image loadPng(FILE *file) {
                     for (int x = 0; x < png.width; x++) {
                         int offset = mortonOffset(x, y, 4) + coarseY * image->tex.width * 4;
 
-                        Color v = ((Color *)buffer)[x + y * png.width];
-                        *(Color *)(image->tex.data + offset) = __builtin_bswap32(v); /* RGBA8 -> ABGR8 */
+                        MColor v = ((MColor *)buffer)[x + y * png.width];
+                        *(MColor *)(image->tex.data + offset) = __builtin_bswap32(v); /* RGBA8 -> ABGR8 */
                     }
                 }
             }
@@ -133,55 +137,57 @@ static Image loadPng(FILE *file) {
     return NULL;
 }
 
-Image loadImage(char *name) {
+MImage loadImage(char *name) {
     FILE *file = fopen(name, "rb");
     if (file == NULL)
         return NULL;
 
-    Image image = loadPng(file);
+    MImage image = loadPng(file);
     fclose(file);
     return image;
 }
 
-inline int imageWidth(Image image) {
+inline int imageWidth(MImage image) {
     return image->tex.width;
 }
 
-inline int imageHeight(Image image) {
+inline int imageHeight(MImage image) {
     return image->tex.height;
 }
 
-void freeImage(Image image) {
+void freeImage(MImage image) {
     if (image == NULL)
         return;
     C3D_TexDelete(&image->tex);
     linearFree(image);
 }
 
-Color getPixel(Image image, int x, int y) {
+MColor getPixel(MImage image, int x, int y) {
     if (image == NULL)
         return 0;
 
     int coarseY = y & ~7;
     int offset = mortonOffset(x, y, 4) + coarseY * image->tex.width * 4;
-    Color color = *(Color *)(image->tex.data + offset);
+    MColor color = *(MColor *)(image->tex.data + offset);
     return color; // TODO: why is this not needed here? __builtin_bswap32(color); /* ABGR8 -> RGBA8 */
 }
 
-void setPixel(Image image, int x, int y, Color color) {
+void setPixel(MImage image, int x, int y, MColor color) {
     if (image == NULL)
         return;
 
     int coarseY = y & ~7;
     int offset = mortonOffset(x, y, 4) + coarseY * image->tex.width * 4;
-    *(Color *)(image->tex.data + offset) = color; // TODO: why is this not needed here? __builtin_bswap32(color); /* RGBA8 -> ABGR8 */
+    *(MColor *)(image->tex.data + offset) = color; // TODO: why is this not needed here? __builtin_bswap32(color); /* RGBA8 -> ABGR8 */
 }
 
-Texture createTexture(Image image, int x0, int y0, int x1, int y1) {
+MTexture createTexture(MImage image, int x0, int y0, int x1, int y1) {
     uShort width = x1 - x0;
     uShort height = y1 - y0;
-    float top = y1 / (float)image->tex.height;
-    float bottom = y0 / (float)image->tex.height;
+    y0 = imageHeight(image) - y0;
+    y1 = imageHeight(image) - y1;
+    float top = y0 / (float)image->tex.height;
+    float bottom = y1 / (float)image->tex.height;
     float left = x0 / (float)image->tex.width;
     float right = x1 / (float)image->tex.width;
     Tex3DS_SubTexture *subTexture = linearAlloc(sizeof(Tex3DS_SubTexture));
@@ -192,25 +198,25 @@ Texture createTexture(Image image, int x0, int y0, int x1, int y1) {
     subTexture->left = left;
     subTexture->right = right;
     C2D_Image c2dImage = {&image->tex, subTexture};
-    Texture texture = linearAlloc(sizeof(_tex));
+    MTexture texture = linearAlloc(sizeof(_tex));
     texture->img = c2dImage;
     texture->valid = true;
     return texture;
 }
 
-inline int textureWidth(Texture texture) {
+inline int textureWidth(MTexture texture) {
     if (texture == NULL || !texture->valid)
         return 0;
     return texture->img.subtex->width;
 }
 
-inline int textureHeight(Texture texture) {
+inline int textureHeight(MTexture texture) {
     if (texture == NULL || !texture->valid)
         return 0;
     return texture->img.subtex->height;
 }
 
-void freeTexture(Texture texture) {
+void freeTexture(MTexture texture) {
     if (texture == NULL || !texture->valid)
         return;
     texture->valid = false;
@@ -218,7 +224,7 @@ void freeTexture(Texture texture) {
     linearFree(texture);
 }
 
-void drawTextureAt(Texture texture, float x, float y, float scaleX, float scaleY, float angle, Color color, float blend) {
+void drawTextureAt(MTexture texture, float x, float y, float scaleX, float scaleY, float angle, MColor color, float blend) {
     if (texture == NULL || !texture->valid)
         return;
 
@@ -232,7 +238,7 @@ void drawTextureAt(Texture texture, float x, float y, float scaleX, float scaleY
     }
 }
 
-void drawRect(float x, float y, float w, float h, Color color) {
+void drawRect(float x, float y, float w, float h, MColor color) {
     C2D_DrawRectSolid(x, y, 0, w, h, __builtin_bswap32(color)); /* RGBA8 -> ABGR8 */
 }
 
@@ -260,7 +266,7 @@ void setDrawMode(DrawMode mode) {
     }
 }
 
-void setClearColor(Color color) {
+void setClearColor(MColor color) {
     clearColor = __builtin_bswap32(color); /* RGBA8 -> ABGR8 */
 }
 

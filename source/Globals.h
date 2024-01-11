@@ -40,11 +40,11 @@ extern char versionText[34];
 
 extern bool shouldRenderDebug;
 
-extern Image imageIcons;
-extern Image imagePlayerSprites;
-extern Image imageFont;
-extern Image imageBottombg;
-extern Image imageMinimap[6];
+extern MImage imageIcons;
+extern MImage imagePlayerSprites;
+extern MImage imageFont;
+extern MImage imageBottombg;
+extern MImage imageMinimap[6];
 
 extern char currentFileName[256];
 extern uByte currentMenu;
@@ -82,7 +82,7 @@ extern int getEntities(Entity **result, uByte level, int x0, int y0, int x1, int
 // TODO: the move functions should probably be part of entity.c
 extern bool move(Entity *e, int xa, int ya);
 extern bool moveMob(Entity *e, int xa, int ya);
-extern void hurtEntity(Entity *e, int damage, int dir, Color hurtColor, Entity *damager);
+extern void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damager);
 
 extern void tickTile(uByte level, int x, int y);
 extern bool tileIsSolid(int tile, Entity *e);
@@ -97,7 +97,7 @@ extern int getTile(uByte level, int x, int y);
 extern void setTile(int id, uByte level, int x, int y);
 extern int getData(uByte level, int x, int y);
 extern void setData(int id, uByte level, int x, int y);
-extern Color getTileColor(int tile);
+extern MColor getTileColor(int tile);
 
 extern bool intersectsEntity(int x, int y, int r, Entity *e);
 
@@ -120,6 +120,6 @@ extern void leaveDungeon(PlayerData *pd);
 
 extern void setMinimapVisible(PlayerData *pd, uByte level, int x, int y, bool visible);
 extern bool getMinimapVisible(PlayerData *pd, uByte level, int x, int y);
-extern Color getMinimapColor(PlayerData *pd, uByte level, int x, int y);
+extern MColor getMinimapColor(PlayerData *pd, uByte level, int x, int y);
 extern void initMinimapLevel(PlayerData *pd, uByte level);
 extern void updateLevel1Map();

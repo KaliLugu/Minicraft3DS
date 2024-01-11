@@ -9,7 +9,7 @@ inline void renderTile8(int xp, int yp, int xTile, int yTile, int bits) {
 
 extern void renderTile16(int xp, int yp, int xTile, int yTile, int bits);
 extern void renderPlayerTile16(int xp, int yp, int xTile, int yTile, int bits, float scale);
-extern void renderTile16Blend(int xp, int yp, int xTile, int yTile, int bits, Color color);
+extern void renderTile16Blend(int xp, int yp, int xTile, int yTile, int bits, MColor color);
 
 extern void renderTile32(int xp, int yp, int xTile, int yTile, int bits);
 extern void renderTile64(int xp, int yp, int xTile, int yTile, int bits);

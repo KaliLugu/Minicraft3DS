@@ -47,7 +47,7 @@ int loadTexture(char *filename) {
             imageIcons = NULL;
         }
 
-        Image image = loadImage(filename);
+        MImage image = loadImage(filename);
         if (image == NULL) {
             return 0;
         }
@@ -61,7 +61,7 @@ int loadTexture(char *filename) {
             imagePlayerSprites = NULL;
         }
 
-        Image image = loadImage(filename);
+        MImage image = loadImage(filename);
         if (image == NULL) {
             return 0;
         }
@@ -75,7 +75,7 @@ int loadTexture(char *filename) {
             imageFont = NULL;
         }
 
-        Image image = loadImage(filename);
+        MImage image = loadImage(filename);
         if (image == NULL) {
             return 0;
         }
@@ -89,7 +89,7 @@ int loadTexture(char *filename) {
             imageBottombg = NULL;
         }
 
-        Image image = loadImage(filename);
+        MImage image = loadImage(filename);
         if (image == NULL) {
             return 0;
         }

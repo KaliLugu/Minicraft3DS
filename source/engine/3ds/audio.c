@@ -2,7 +2,9 @@
 #include "../engine.h"
 
 #include <3ds.h>
+#include <opusfile.h>
 #include <stdio.h>
+#include <string.h>
 
 struct _sound {
     s16 *samples;
@@ -10,70 +12,94 @@ struct _sound {
 };
 
 struct _music {
-    u32 size;
-    u32 pos;
-    char *name;
+    OggOpusFile *opusFile;
 };
 
 #define SOUND_CHANNEL_MIN 15
 #define SOUND_CHANNEL_MAX 23
 #define MUSIC_CHANNEL 10
 
-#define MUSIC_STREAM_BUFFER_SIZE (65536 * 8)
-
 // sound channel data
 ndspWaveBuf *channelBuf;
 
-// music stream data
-sShort *musicBuffer1;
-sShort *musicBuffer2;
-sShort *musicBufferCurrent;
-sInt musicBufferCurrentSamples;
-ndspWaveBuf *streamBuffer1;
-ndspWaveBuf *streamBuffer2;
-ndspWaveBuf *streamBufferCurrent;
-Music currentMusic;
+static const int SAMPLE_RATE = 48000;
+static const int SAMPLES_PER_BUF = SAMPLE_RATE * 120 / 1000; // 120ms buffer
+static const int CHANNELS_PER_SAMPLE = 1;
 
-bool runMusicThread;
-Thread musicThread;
+static const size_t WAVEBUF_SIZE = SAMPLES_PER_BUF * CHANNELS_PER_SAMPLE * sizeof(int16_t); // Size of NDSP wavebufs
 
-void musicStreamThreadMain(void *arg) {
-    while (runMusicThread) {
-        if (!ndspChnIsPlaying(MUSIC_CHANNEL) && currentMusic != NULL) {
-            // play current buffer
-            streamBufferCurrent->data_pcm16 = musicBufferCurrent;
-            streamBufferCurrent->nsamples = musicBufferCurrentSamples;
-            ndspChnWaveBufAdd(MUSIC_CHANNEL, streamBufferCurrent);
+ndspWaveBuf s_waveBufs[3];
+int16_t *streamBuffer = NULL;
+static volatile MMusic currentMusic;
 
-            // switch buffer
-            if (musicBufferCurrent == musicBuffer1) {
-                musicBufferCurrent = musicBuffer2;
-                streamBufferCurrent = streamBuffer2;
-            } else {
-                musicBufferCurrent = musicBuffer1;
-                streamBufferCurrent = streamBuffer1;
-            }
+LightEvent s_event;
+static volatile bool runMusicThread;
+static Thread musicThread;
 
-            // load next buffer
-            sInt bufferSize = MUSIC_STREAM_BUFFER_SIZE;
-            if (currentMusic->size - currentMusic->pos < bufferSize) {
-                bufferSize = currentMusic->size - currentMusic->pos;
-            }
-            FILE *file = fopen(currentMusic->name, "rb");
-            if (file != NULL) {
-                fseek(file, currentMusic->pos, SEEK_SET);
-                fread(musicBufferCurrent, 1, bufferSize, file);
-                musicBufferCurrentSamples = bufferSize / 2;
+// Main audio decoding logic
+// This function pulls and decodes audio samples from opusFile_ to fill waveBuf_
+void fillBuffer(OggOpusFile *opusFile_, ndspWaveBuf *waveBuf_) {
+    // Decode samples until our waveBuf is full
+    int totalSamples = 0;
+    while (totalSamples < SAMPLES_PER_BUF) {
+        int16_t *buffer = waveBuf_->data_pcm16 + (totalSamples * CHANNELS_PER_SAMPLE);
+        const size_t bufferSize = (SAMPLES_PER_BUF - totalSamples) * CHANNELS_PER_SAMPLE;
 
-                currentMusic->pos = currentMusic->pos + bufferSize;
-                if (currentMusic->pos >= currentMusic->size) {
-                    currentMusic->pos = 0;
-                }
-            } else {
-                currentMusic = NULL;
-            }
-            fclose(file);
+        // Decode bufferSize samples from opusFile_ into buffer,
+        // storing the number of samples that were decoded (or error)
+        const int samples = op_read(opusFile_, buffer, bufferSize, NULL);
+        if (samples <= 0) {
+            if (samples == 0)
+                break; // No error here
+            break;
         }
+
+        totalSamples += samples;
+    }
+
+    // reached end of file
+    if (totalSamples == 0) {
+        op_pcm_seek(opusFile_, 0);
+    }
+
+    // Pass samples to NDSP
+    waveBuf_->nsamples = totalSamples;
+    ndspChnWaveBufAdd(MUSIC_CHANNEL, waveBuf_);
+    DSP_FlushDataCache(waveBuf_->data_pcm16, totalSamples * CHANNELS_PER_SAMPLE * sizeof(int16_t));
+}
+
+// NDSP audio frame callback
+// This signals the audioThread to decode more things
+// once NDSP has played a sound frame, meaning that there should be
+// one or more available waveBufs to fill with more data.
+void audioCallback(void *const nul_) {
+    if (!runMusicThread) {
+        return;
+    }
+
+    LightEvent_Signal(&s_event);
+}
+
+// Audio thread
+// This handles calling the decoder function to fill NDSP buffers as necessary
+void musicStreamThreadMain() {
+    while (runMusicThread) {
+        if (currentMusic != NULL) {
+            // search our waveBufs and fill any that aren't currently
+            // queued for playback (i.e, those that are 'done')
+            for (size_t i = 0; i < 3; ++i) {
+                if (s_waveBufs[i].status != NDSP_WBUF_DONE) {
+                    continue;
+                }
+
+                fillBuffer(currentMusic->opusFile, &s_waveBufs[i]);
+            }
+        }
+
+        // Wait for a signal that we're needed again before continuing,
+        // so that we can yield to other things that want to run
+        // (Note that the 3DS uses cooperative threading)
+        LightEvent_Wait(&s_event);
     }
 }
 
@@ -83,31 +109,54 @@ void initAudio() {
 
     channelBuf = linearAlloc(sizeof(ndspWaveBuf) * (SOUND_CHANNEL_MAX + 1));
     for (int c = SOUND_CHANNEL_MIN; c <= SOUND_CHANNEL_MAX; c++) {
-        ndspChnSetFormat(c, NDSP_FORMAT_MONO_PCM16);
         ndspChnSetRate(c, 44100);
+        ndspChnSetFormat(c, NDSP_FORMAT_MONO_PCM16);
     }
+    ndspChnSetInterp(MUSIC_CHANNEL, NDSP_INTERP_POLYPHASE);
+    ndspChnSetRate(MUSIC_CHANNEL, SAMPLE_RATE);
     ndspChnSetFormat(MUSIC_CHANNEL, NDSP_FORMAT_MONO_PCM16);
-    ndspChnSetRate(MUSIC_CHANNEL, 44100);
 
-    musicBuffer1 = linearAlloc(MUSIC_STREAM_BUFFER_SIZE);
-    musicBuffer2 = linearAlloc(MUSIC_STREAM_BUFFER_SIZE);
-    musicBufferCurrent = musicBuffer1;
-    streamBuffer1 = linearAlloc(sizeof(ndspWaveBuf));
-    streamBuffer2 = linearAlloc(sizeof(ndspWaveBuf));
-    streamBufferCurrent = streamBuffer1;
+    // Setup LightEvent for synchronisation of musicThread
+    LightEvent_Init(&s_event, RESET_ONESHOT);
+
+    // Allocate music buffer and ndsp buffers for streaming
+    const size_t bufferSize = WAVEBUF_SIZE * 3;
+    streamBuffer = linearAlloc(bufferSize);
+
+    memset(&s_waveBufs, 0, sizeof(s_waveBufs));
+    int16_t *buffer = streamBuffer;
+
+    for (size_t i = 0; i < 3; ++i) {
+        s_waveBufs[i].data_vaddr = buffer;
+        s_waveBufs[i].status = NDSP_WBUF_DONE;
+
+        buffer += WAVEBUF_SIZE / sizeof(buffer[0]);
+    }
     currentMusic = NULL;
+
+    // Set the ndsp sound frame callback which signals our audioThread
+    ndspSetCallback(audioCallback, NULL);
 
     // start streaming thread (with lower priority (->higher value) than main and importantly network thread)
     runMusicThread = true;
-    sInt prio = 0;
-    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    musicThread = threadCreate(musicStreamThreadMain, NULL, 1024, prio + 1, -2, false);
+
+    // Set the thread priority to the main thread's priority ...
+    s32 priority = 0x30;
+    svcGetThreadPriority(&priority, CUR_THREAD_HANDLE);
+    // ... then subtract 1, as lower number => higher actual priority ...
+    priority -= 1;
+    // ... finally, clamp it between 0x18 and 0x3F to guarantee that it's valid.
+    priority = priority < 0x18 ? 0x18 : priority;
+    priority = priority > 0x3F ? 0x3F : priority;
+
+    musicThread = threadCreate(musicStreamThreadMain, NULL, 32 * 1024, priority, -1, false);
 }
 
 void exitAudio() {
     // stop streaming thread
     if (runMusicThread) {
         runMusicThread = false;
+        LightEvent_Signal(&s_event);
         threadJoin(musicThread, U64_MAX);
         threadFree(musicThread);
     }
@@ -119,18 +168,15 @@ void exitAudio() {
     }
 
     // free buffers
-    linearFree(musicBuffer1);
-    linearFree(musicBuffer2);
-    linearFree(streamBuffer1);
-    linearFree(streamBuffer2);
+    linearFree(streamBuffer);
 
     linearFree(channelBuf);
 
     ndspExit();
 }
 
-Sound loadSound(char *name) {
-    Sound sound = linearAlloc(sizeof(_sound));
+MSound loadSound(char *name) {
+    MSound sound = linearAlloc(sizeof(_sound));
 
     FILE *file = fopen(name, "rb");
     if (file != NULL) {
@@ -145,7 +191,7 @@ Sound loadSound(char *name) {
     return sound;
 }
 
-void playSound(Sound sound) {
+void playSound(MSound sound) {
     if (sound == NULL)
         return;
     if (sound->samples == NULL)
@@ -161,7 +207,7 @@ void playSound(Sound sound) {
     }
 }
 
-void unloadSound(Sound sound) {
+void unloadSound(MSound sound) {
     if (sound == NULL)
         return;
     if (sound->samples != NULL) {
@@ -171,62 +217,29 @@ void unloadSound(Sound sound) {
     linearFree(sound);
 }
 
-Music loadMusic(char *name) {
-    Music music = linearAlloc(sizeof(_music));
-
-    FILE *file = fopen(name, "rb");
-    if (file != NULL) {
-        fseek(file, 0, SEEK_END);
-        music->size = ftell(file);
-        music->pos = 0;
-        music->name = name;
-    }
-    fclose(file);
-
+MMusic loadMusic(char *name) {
+    MMusic music = linearAlloc(sizeof(_music));
+    music->opusFile = op_open_file(name, NULL);
     return music;
 }
 
-void playMusic(Music music) {
+void playMusic(MMusic music) {
     if (currentMusic == music)
         return;
-
     stopMusic();
-
-    music->pos = 0;
-
-    // load first buffer
-    sInt bufferSize = MUSIC_STREAM_BUFFER_SIZE;
-    if (music->size - music->pos < bufferSize) {
-        bufferSize = music->size - music->pos;
-    }
-    FILE *file = fopen(music->name, "rb");
-    if (file != NULL) {
-        fseek(file, music->pos, SEEK_SET);
-        fread(musicBufferCurrent, 1, bufferSize, file);
-        musicBufferCurrentSamples = bufferSize / 2;
-
-        music->pos = music->pos + bufferSize;
-        if (music->pos >= music->size) {
-            music->pos = 0;
-        }
-        currentMusic = music;
-    } else {
-        currentMusic = NULL;
-    }
-    fclose(file);
+    currentMusic = music;
+    LightEvent_Signal(&s_event);
 }
 
 void stopMusic() {
-    ndspChnWaveBufClear(MUSIC_CHANNEL);
-    ndspChnReset(MUSIC_CHANNEL);
-    ndspChnSetFormat(MUSIC_CHANNEL, NDSP_FORMAT_MONO_PCM16);
-    ndspChnSetRate(MUSIC_CHANNEL, 44100);
     currentMusic = NULL;
+    ndspChnWaveBufClear(MUSIC_CHANNEL);
 }
 
-void unloadMusic(Music music) {
+void unloadMusic(MMusic music) {
     if (music == NULL)
         return;
+    op_free(music->opusFile);
     linearFree(music);
 }
 

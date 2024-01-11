@@ -594,7 +594,7 @@ void playerHeal(PlayerData *pd, int amount) {
     addEntityToList(newParticleText(healText, 0xFF00FF00, pd->entity.x, pd->entity.y, pd->entity.level), &eManager);
 }
 
-void playerDamage(PlayerData *pd, int damage, int dir, Color hurtColor, Entity *damager) {
+void playerDamage(PlayerData *pd, int damage, int dir, MColor hurtColor, Entity *damager) {
     if (TESTGODMODE)
         return;
     if (pd->entity.hurtTime > 0)

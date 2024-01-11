@@ -131,7 +131,7 @@ void editorOptionsRenderTop(int screen, int width, int height) {
     } else {
         for (int i = 2; i >= 0; --i) {
             char *msg = editorOptions[i];
-            Color color = 0x7F7F7FFF;
+            MColor color = 0x7F7F7FFF;
             if (i == editorOptionsSelection)
                 color = 0xFFFFFFFF;
             renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 56, color);

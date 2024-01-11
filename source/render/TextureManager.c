@@ -1,30 +1,30 @@
 #include "TextureManager.h"
 #include "../Globals.h"
 
-Texture bottomBGFull;
-Texture minimap[6];
-Texture font[256 / 8 * 2];
-Texture tiles8[(512 / 8) * (512 / 8)];
-Texture tiles16[(512 / 16) * (512 / 16)];
-Texture tiles32[(512 / 32) * (512 / 32)];
-Texture tiles64[(512 / 64) * (512 / 64)];
-Texture playerTiles[(736 / 16) * (160 / 16)];
+MTexture bottomBGFull;
+MTexture minimap[6];
+MTexture font[256 / 8 * 2];
+MTexture tiles8[(512 / 8) * (512 / 8)];
+MTexture tiles16[(512 / 16) * (512 / 16)];
+MTexture tiles32[(512 / 32) * (512 / 32)];
+MTexture tiles64[(512 / 64) * (512 / 64)];
+MTexture playerTiles[(736 / 16) * (160 / 16)];
 
-Color dirtColor[5];
-Color grassColor;
-Color sandColor;
-Color waterColor[2];
-Color lavaColor[2];
-Color rockColor[4];
-Color woodColor;
-Color ironColor;
-Color goldColor;
-Color gemColor;
-Color dungeonColor[2];
-Color myceliumColor;
-Color mushroomColor;
-Color snowColor;
-Color iceColor;
+MColor dirtColor[5];
+MColor grassColor;
+MColor sandColor;
+MColor waterColor[2];
+MColor lavaColor[2];
+MColor rockColor[4];
+MColor woodColor;
+MColor ironColor;
+MColor goldColor;
+MColor gemColor;
+MColor dungeonColor[2];
+MColor myceliumColor;
+MColor mushroomColor;
+MColor snowColor;
+MColor iceColor;
 
 static void reloadColors() {
     dirtColor[0] = getPixel(imageIcons, 16, 0);
@@ -63,13 +63,12 @@ static void reloadColors() {
     iceColor = getPixel(imageIcons, 25, 1);
 }
 
-static void reloadTiles(Texture tiles[], int size) {
-    int iHeight = imageHeight(imageIcons);
+static void reloadTiles(MTexture tiles[], int size) {
     for (int x = 0; x < 512 / size; x++) {
         for (int y = 0; y < 512 / size; y++) {
             int index = x + y * (512 / size);
             freeTexture(tiles[index]);
-            tiles[index] = createTexture(imageIcons, x * size, iHeight - size - y * size, x * size + size, iHeight - size - y * size + size);
+            tiles[index] = createTexture(imageIcons, x * size, y * size, x * size + size, y * size + size);
         }
     }
 }
@@ -83,12 +82,11 @@ void textureManagerReload() {
         minimap[i] = createFullTexture(imageMinimap[i]);
     }
 
-    int fiHeight = imageHeight(imageFont);
     for (int i = 0; i < (256 / 8) * 2; i++) {
         int x = i % (256 / 8);
         int y = i / (256 / 8);
         freeTexture(font[i]);
-        font[i] = createTexture(imageFont, x * 8, fiHeight - 8 - y * 8, x * 8 + 8, fiHeight - 8 - y * 8 + 8);
+        font[i] = createTexture(imageFont, x * 8, y * 8, x * 8 + 8, y * 8 + 8);
     }
 
     reloadTiles(tiles8, 8);
@@ -96,12 +94,11 @@ void textureManagerReload() {
     reloadTiles(tiles32, 32);
     reloadTiles(tiles64, 64);
 
-    int piHeight = imageHeight(imagePlayerSprites);
     for (int x = 0; x < 736 / 16; x++) {
         for (int y = 0; y < 160 / 16; y++) {
             int index = x + y * (736 / 16);
             freeTexture(playerTiles[index]);
-            playerTiles[index] = createTexture(imagePlayerSprites, x * 16, piHeight - 16 - y * 16, x * 16 + 16, piHeight - 16 - y * 16 + 16);
+            playerTiles[index] = createTexture(imagePlayerSprites, x * 16, y * 16, x * 16 + 16, y * 16 + 16);
         }
     }
 

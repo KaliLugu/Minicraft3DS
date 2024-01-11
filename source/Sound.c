@@ -1,25 +1,25 @@
 #include "Sound.h"
 
-Sound snd_playerHurt;
-Sound snd_playerDeath;
-Sound snd_monsterHurt;
-Sound snd_test;
-Sound snd_pickup;
-Sound snd_bossdeath;
-Sound snd_craft;
+MSound snd_playerHurt;
+MSound snd_playerDeath;
+MSound snd_monsterHurt;
+MSound snd_test;
+MSound snd_pickup;
+MSound snd_bossdeath;
+MSound snd_craft;
 
-Music music_menu;
-Music music_floor0;
-Music music_floor1;
-Music music_floor1_night;
-Music music_floor23;
-Music music_floor4;
+MMusic music_menu;
+MMusic music_floor0;
+MMusic music_floor1;
+MMusic music_floor1_night;
+MMusic music_floor23;
+MMusic music_floor4;
 
 int soundListenerLevel;
 int soundListenerX;
 int soundListenerY;
 
-void playSoundPositioned(Sound snd, uByte level, int x, int y) {
+void playSoundPositioned(MSound snd, uByte level, int x, int y) {
     if (level != soundListenerLevel)
         return;
     int xd = soundListenerX - x;
@@ -68,12 +68,12 @@ void loadSounds() {
     snd_bossdeath = loadSound("romfs:/bossdeath.raw");
     snd_craft = loadSound("romfs:/craft.raw");
 
-    music_menu = loadMusic("romfs:/music/menu.raw");
-    music_floor0 = loadMusic("romfs:/music/floor0.raw");
-    music_floor1 = loadMusic("romfs:/music/floor1.raw");
-    music_floor1_night = loadMusic("romfs:/music/floor1_night.raw");
-    music_floor23 = loadMusic("romfs:/music/floor2_3.raw");
-    music_floor4 = loadMusic("romfs:/music/floor4.raw");
+    music_menu = loadMusic("romfs:/music/menu" AUDIOFILES);
+    music_floor0 = loadMusic("romfs:/music/floor0" AUDIOFILES);
+    music_floor1 = loadMusic("romfs:/music/floor1" AUDIOFILES);
+    music_floor1_night = loadMusic("romfs:/music/floor1_night" AUDIOFILES);
+    music_floor23 = loadMusic("romfs:/music/floor2_3" AUDIOFILES);
+    music_floor4 = loadMusic("romfs:/music/floor4" AUDIOFILES);
 }
 
 void freeSounds() {

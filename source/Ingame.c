@@ -323,6 +323,8 @@ void renderGame(int screen, int width, int height) {
 
         if (getLocalPlayer()->ingameMenu != MENU_NONE) {
             ingameMenuRender(getLocalPlayer(), getLocalPlayer()->ingameMenu, screen, width, height);
+        } else if (getScreenCount() == 1) {
+            renderHealthAndStamina(getLocalPlayer(), 1, 1);
         }
 
         // game stalled -> most likely a player disconnected -> present option to exit game

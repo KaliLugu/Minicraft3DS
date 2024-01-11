@@ -1,17 +1,17 @@
 #include "RenderLights.h"
 
-Image playerLightBakeImage;
-Image lanternLightBakeImage;
-Image glowwormLightBakeImage;
-Image glowwormBigLightBakeImage;
+MImage playerLightBakeImage;
+MImage lanternLightBakeImage;
+MImage glowwormLightBakeImage;
+MImage glowwormBigLightBakeImage;
 
-Texture playerLightBake;
-Texture lanternLightBake;
-Texture glowwormLightBake;
-Texture glowwormBigLightBake;
+MTexture playerLightBake;
+MTexture lanternLightBake;
+MTexture glowwormLightBake;
+MTexture glowwormBigLightBake;
 
 // software rendering is slow -> bake light to texture
-static void bakeLight(Image image, int x, int y, int r) {
+static void bakeLight(MImage image, int x, int y, int r) {
     int x0 = x - r;
     int x1 = x + r;
     int y0 = y - r;
@@ -37,14 +37,14 @@ static void bakeLight(Image image, int x, int y, int r) {
             if (dist <= r * r) {
                 if (dist >= (r - (r / 8)) * (r - (r / 8))) {
                     if (xd % 2 == 0 && yd % 2 == 0) {
-                        setPixel(image, xx, yy, 0x000000FF); // set pixel to be lit
+                        setPixel(image, xx, yy, 0xFFFFFFFF); // set pixel to be lit
                     }
                 } else if (dist >= (r - (r / 4)) * (r - (r / 4))) {
                     if ((xd % 2 == 0 && yd % 2 != 0) || (xd % 2 != 0 && yd % 2 == 0)) {
-                        setPixel(image, xx, yy, 0x000000FF); // set pixel to be lit
+                        setPixel(image, xx, yy, 0xFFFFFFFF); // set pixel to be lit
                     }
                 } else {
-                    setPixel(image, xx, yy, 0x000000FF); // set pixel to be lit
+                    setPixel(image, xx, yy, 0xFFFFFFFF); // set pixel to be lit
                 }
             }
         }
@@ -126,7 +126,7 @@ void renderLightsToStencil(PlayerData *pd, bool force, bool invert, bool rplayer
     }
 }
 
-void renderLight(int x, int y, Texture texture) {
+void renderLight(int x, int y, MTexture texture) {
     drawTextureAt(texture, (x - (textureWidth(texture) / 2.0f) - offsetX) * 2, (y - (textureHeight(texture) / 2.0f) - offsetY) * 2, 2, 2, 0, 0xFFFFFFFF, 0);
 }
 

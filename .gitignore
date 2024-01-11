@@ -1,3 +1,29 @@
+# Dev
+*.elf
+*.lst
+
+# 3DS Dev
+*.3dsx
+*.smdh
+build_3ds
+
+# Switch Dev
+*.nro
+*.nacp
+build_switch
+
+# Eclipse
+.settings
+.cproject
+.project
+
+# VSCode
+.vscode
+
+# =========================
+# Operating System Files
+# =========================
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -16,10 +42,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# =========================
-# Operating System Files
-# =========================
 
 # OSX
 # =========================
@@ -41,18 +63,3 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-
-# 3DS Dev
-*.3dsx
-*.elf
-*.smdh
-*.lst
-build
-
-# Eclipse
-.settings
-.cproject
-.project
-
-# VSCode
-.vscode

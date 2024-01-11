@@ -134,7 +134,7 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTextCentered("Go up to a furniture and", 52, width);
             renderTextCentered("Press   to open the menu", 65, width);
             renderButtonIcon(biasedMenuXY(localInputs.k_menu.input), 47, 60);
-            renderTextCentered("Gather the required materials", 77, width);
+            renderTextCentered("Gather the required stuff", 77, width);
             renderTextCentered("then press   to craft it", 90, width);
             renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 89, 87);
             break;
@@ -203,7 +203,7 @@ void menuTutorialRender(int screen, int width, int height) {
             renderItemStuffWithText(TOOL_SWORD, 4, true, 40, 55);
             renderItemStuffWithText(ITEM_IRONORE, 3, false, 40, 63);
             renderItemStuffWithText(ITEM_IRONINGOT, 11, false, 40, 71);
-            drawRect(64, 110, 8, 12, 0x000000FF);
+            drawRect(64, 112, 8, 10, 0x191919FF);
             renderText(">", 32, 55);
             renderButtonIcon(biasedCirclePad(localInputs.k_up.input), 11, 32);
             renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 11, 52);

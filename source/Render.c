@@ -105,7 +105,7 @@ int getFrame(int a, int b, int s) {
     return (a == s) ? 0 : ((a < b - 1) ? 1 : 2);
 }
 
-void renderFrame(int x1, int y1, int x2, int y2, Color bgColor) {
+void renderFrame(int x1, int y1, int x2, int y2, MColor bgColor) {
     int startX = x1;
     int startY = y1;
     drawRect((x1 << 4) + 4 - (offsetX << 1),
@@ -162,20 +162,23 @@ void renderZoomedMap(PlayerData *pd) {
         drawRect(284, 210, 26, 20, 0x4F4F4F7F); // gray out minus button
 }
 
+void renderHealthAndStamina(PlayerData *pd, sInt x, sInt y) {
+    for (int i = 0; i < 10; ++i) {
+        if (i < pd->entity.p.health)
+            renderTile8(i * 8 + x, y, 21, 19, 0);
+        else
+            renderTile8(i * 8 + x, y, 22, 19, 0);
+        if (i < pd->entity.p.stamina)
+            renderTile8(i * 8 + x, y + 9, 23, 19, 0);
+        else
+            renderTile8(i * 8 + x, y + 9, 24, 19, 0);
+    }
+}
+
 char scoreT[32];
 void renderGui(PlayerData *pd) {
-    int i;
     // health and stamina
-    for (i = 0; i < 10; ++i) {
-        if (i < pd->entity.p.health)
-            renderTile8(i * 8 + 6, 5, 21, 19, 0);
-        else
-            renderTile8(i * 8 + 6, 5, 22, 19, 0);
-        if (i < pd->entity.p.stamina)
-            renderTile8(i * 8 + 6, 14, 23, 19, 0);
-        else
-            renderTile8(i * 8 + 6, 14, 24, 19, 0);
-    }
+    renderHealthAndStamina(pd, 6, 5);
 
     // minimap
     drawTexture(minimap[pd->entity.level], 10, 102);
@@ -198,7 +201,7 @@ void renderGui(PlayerData *pd) {
 
     Inventory *inv = &(pd->inventory);
     Item *item;
-    for (i = 0; i < 8; ++i) {
+    for (int i = 0; i < 8; ++i) {
         if ((inv->lastSlot) > i) {
             int xip = i % 4;
             int yip = i / 4;
@@ -625,9 +628,9 @@ void renderItemList(Inventory *inv, int xo, int yo, int x1, int y1, int selected
 
     if (drawCursor) {
         int yy = selected + 1 - io + yo;
-        drawRect((xo << 4) - (offsetX << 1), (yy << 4) - (offsetY << 1), 8, 12, 0x000000FF);
+        drawRect((xo << 4) - (offsetX << 1), (yy << 4) - (offsetY << 1) + 2, 8, 10, 0x191919FF);
         renderText(">", (xo << 3), yy << 3);
-        drawRect(((xo + w) << 4) - 8 - (offsetX << 1), (yy << 4) - (offsetY << 1), 8, 12, 0x000000FF);
+        drawRect(((xo + w) << 4) - 8 - (offsetX << 1), (yy << 4) - (offsetY << 1) + 2, 8, 10, 0x191919FF);
         renderText("<", ((xo + w) << 3) - 7, yy << 3);
     }
 }
@@ -675,9 +678,9 @@ void renderRecipes(RecipeManager *r, int xo, int yo, int x1, int y1, int selecte
     }
 
     int yy = selected + 1 - io + yo;
-    drawRect(xo << 4, yy << 4, 8, 12, 0x000000FF);
+    drawRect(xo << 4, (yy << 4) + 2, 8, 10, 0x191919FF);
     renderText(">", xo << 3, yy << 3);
-    drawRect(((xo + w) << 4) - 8, yy << 4, 8, 12, 0x000000FF);
+    drawRect(((xo + w) << 4) - 8, (yy << 4) + 2, 8, 10, 0x191919FF);
     renderText("<", ((xo + w) << 3) - 7, yy << 3);
 }
 

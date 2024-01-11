@@ -94,7 +94,7 @@ typedef struct
     sByte randWalkTime;
     sByte walkDist;
     sByte randAttackTime;
-    Color color;
+    MColor color;
 } HostileMob;
 
 typedef struct
@@ -178,7 +178,7 @@ typedef struct
     float zz;
     sShort age;
     char *text;
-    Color color;
+    MColor color;
 } TextParticleEntity;
 
 typedef struct
@@ -252,7 +252,7 @@ extern Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uBy
 extern Entity newEntityGlowworm(int x, int y, uByte level);
 extern Entity newEntityNPC(int type, int x, int y, uByte level);
 
-extern Entity newParticleText(char *str, Color color, int xa, int ya, uByte level);
+extern Entity newParticleText(char *str, MColor color, int xa, int ya, uByte level);
 extern Entity newParticleSmash(int xa, int ya, uByte level);
 
 extern void addEntityToList(Entity e, EntityManager *em);

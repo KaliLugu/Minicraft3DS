@@ -1,5 +1,4 @@
 #ifdef __3DS__
-#include "../input.h"
 #include "../engine.h"
 
 #include <3ds.h>
@@ -60,6 +59,9 @@ static bool check(sInt mask, u32 state) {
         return true;
 
     return false;
+}
+
+void initInput() {
 }
 
 void scanInputs() {

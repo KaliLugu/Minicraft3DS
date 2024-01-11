@@ -109,7 +109,7 @@ extern void tickPlayer(PlayerData *pd, bool inmenu);
 extern void playerSetActiveItem(PlayerData *pd, Item *item);
 extern bool playerUseEnergy(PlayerData *pd, int amount);
 extern void playerHeal(PlayerData *pd, int amount);
-extern void playerDamage(PlayerData *pd, int damage, int dir, Color hurtColor, Entity *damager);
+extern void playerDamage(PlayerData *pd, int damage, int dir, MColor hurtColor, Entity *damager);
 extern void playerSpawn(PlayerData *pd);
 
 // effects

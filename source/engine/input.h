@@ -32,6 +32,8 @@ enum Input {
     I_SR_RIGHT = 0x800000
 };
 
+extern void initInput();
+
 extern void scanInputs();
 extern bool inputIsPressed(sInt mask);
 extern bool inputWasClicked(sInt mask);

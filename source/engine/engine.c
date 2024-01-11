@@ -6,6 +6,7 @@
 
 void initEngine(PacketHandler ph) {
     initPlatform();
+    initInput();
     initGraphics();
     initAudio();
     initNetwork(ph);

@@ -63,14 +63,12 @@ void menuTitleRender(int screen, int width, int height) {
 
         for (int i = 5; i >= 0; --i) {
             char *msg = options[i];
-            Color color = 0x7F7F7FFF;
+            MColor color = 0x7F7F7FFF;
             if (i == currentSelection)
                 color = 0xFFFFFFFF;
             renderTextColor(msg, ((200 - (strlen(msg) * 8)) / 2) + 1, (i * 10 + 55) + 1, 0x000000FF);
             renderTextColor(msg, (200 - (strlen(msg) * 8)) / 2, i * 10 + 55, color);
         }
-
-        renderText(versionText, 2, 225);
     }
 
     /* Bottom Screen */

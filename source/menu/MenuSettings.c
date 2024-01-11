@@ -71,7 +71,7 @@ void menuSettingsRender(int screen, int width, int height) {
         renderText("Settings", (width / 2 - (8 * 8)) / 2, 15);
         for (int i = 4; i >= 0; --i) {
             char *msg = setOptions[i];
-            Color color = 0x7F7F7FFF;
+            MColor color = 0x7F7F7FFF;
             if (i == currentSelection)
                 color = 0xFFFFFFFF;
             if (i == 2) {

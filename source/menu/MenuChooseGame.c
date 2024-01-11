@@ -13,11 +13,15 @@ void menuChooseGameTick() {
 
     if (localInputs.k_up.clicked) {
         --currentSelection;
+        if ((currentSelection == 1 || currentSelection == 2) && !networkAvailable())
+            currentSelection = 0;
         if (currentSelection < 0)
             currentSelection = 3;
     }
     if (localInputs.k_down.clicked) {
         ++currentSelection;
+        if ((currentSelection == 1 || currentSelection == 2) && !networkAvailable())
+            currentSelection = 3;
         if (currentSelection > 3)
             currentSelection = 0;
     }
@@ -62,7 +66,9 @@ void menuChooseGameRender(int screen, int width, int height) {
 
         for (int i = 3; i >= 0; --i) {
             char *msg = gameOptions[i];
-            Color color = 0x7F7F7FFF;
+            MColor color = 0x7F7F7FFF;
+            if ((i == 1 || i == 2) && !networkAvailable())
+                color = 0x2F2F2FFF;
             if (i == currentSelection)
                 color = 0xFFFFFFFF;
             renderTextColor(msg, ((width / 2 - (strlen(msg) * 8)) / 2) + 1, ((8 + i) * 10 - 16) + 1, 0x000000FF);

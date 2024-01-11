@@ -357,7 +357,7 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
         renderTextCentered("Paused", 16, width);
         for (i = 3; i >= 0; --i) {
             char *msg = pOptions[i];
-            Color color = 0x7F7F7FFF;
+            MColor color = 0x7F7F7FFF;
             if (i == pd->ingameMenuSelection)
                 color = 0xFFFFFFFF;
             if ((i == 1 && dungeonActive())) {

@@ -14,7 +14,7 @@ static bool tur = false;
 static bool tdl = false;
 static bool tdr = false;
 
-inline void tileRender(int xp, int yp, Texture tile, int tileSize, int bits, float angle, Color color, float blend, float scale) {
+inline void tileRender(int xp, int yp, MTexture tile, int tileSize, int bits, float angle, MColor color, float blend, float scale) {
     xp -= offsetX;
     yp -= offsetY;
     int scaleX = 2, scaleY = 2;
@@ -43,7 +43,7 @@ void renderPlayerTile16(int xp, int yp, int xTile, int yTile, int bits, float sc
     tileRender(xp, yp, playerTiles[index], 16, bits, 0, 0xFFFFFFFF, 0, scale);
 }
 
-void renderTile16Blend(int xp, int yp, int xTile, int yTile, int bits, Color color) {
+void renderTile16Blend(int xp, int yp, int xTile, int yTile, int bits, MColor color) {
     int index = xTile + yTile * (512 / 16);
     tileRender(xp, yp, tiles16[index], 16, bits, 0, color, 1, 1);
 }

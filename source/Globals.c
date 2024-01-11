@@ -3,7 +3,7 @@
 #include "network/Synchronizer.h"
 #include "render/TextureManager.h"
 
-char versionText[34] = "Version 1.5.2";
+char versionText[34] = "Version 2.0.0";
 char fpsstr[34];
 uByte currentMenu = 0;
 
@@ -13,11 +13,11 @@ int loadedtp;
 
 bool shouldRenderDebug;
 
-Image imageIcons;
-Image imagePlayerSprites;
-Image imageFont;
-Image imageBottombg;
-Image imageMinimap[6];
+MImage imageIcons;
+MImage imagePlayerSprites;
+MImage imageFont;
+MImage imageBottombg;
+MImage imageMinimap[6];
 
 char currentFileName[256];
 uByte initGame;
@@ -160,7 +160,7 @@ bool moveMob(Entity *e, int xa, int ya) {
     return move(e, xa, ya);
 }
 
-void hurtEntity(Entity *e, int damage, int dir, Color hurtColor, Entity *damager) {
+void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damager) {
     if (e->type == ENTITY_PLAYER) {
         playerDamage(e->p.data, damage, dir, hurtColor, damager);
         return;
@@ -578,7 +578,7 @@ bool tileIsSolid(int tile, Entity *e) {
 }
 
 /* For minimap */
-Color getTileColor(int tile) {
+MColor getTileColor(int tile) {
     switch (tile) {
     case TILE_WATER:
         return waterColor[0];
@@ -1483,7 +1483,7 @@ bool getMinimapVisible(PlayerData *pd, uByte level, int x, int y) {
     return (pd->minimapData[x + y * 128] & (1 << level)) > 0;
 }
 
-Color getMinimapColor(PlayerData *pd, uByte level, int x, int y) {
+MColor getMinimapColor(PlayerData *pd, uByte level, int x, int y) {
     if (getMinimapVisible(pd, level, x, y) || (pd->entity.level == 0 && level == 1))
         return getTileColor(worldData.map[level][x + y * 128]);
     else

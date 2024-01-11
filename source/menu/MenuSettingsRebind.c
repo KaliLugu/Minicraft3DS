@@ -318,7 +318,7 @@ void menuSettingsRebindRender(int screen, int width, int height) {
             renderTextColor("Save changes?", (width / 2 - 13 * 8) / 2, 16, 0xAFAF00FF);
             for (int i = 2; i >= 0; --i) {
                 char *msg = keybOptions[i];
-                Color color = 0x4F4F4FFF;
+                MColor color = 0x4F4F4FFF;
                 if (i == curSaveSel)
                     color = 0xFFFFFFFF;
                 renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 46, color);

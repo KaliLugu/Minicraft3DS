@@ -19,7 +19,7 @@ void renderTextCentered(char *text, int y, int width) {
     renderText(text, (width / 2 - strlen(text) * 8) / 2, y);
 }
 
-void renderTextColor(char *msg, int x, int y, Color color) {
+void renderTextColor(char *msg, int x, int y, MColor color) {
     x -= offsetX;
     y -= offsetY;
     for (int i = 0; i < strlen(msg); ++i) {
@@ -30,7 +30,7 @@ void renderTextColor(char *msg, int x, int y, Color color) {
 }
 
 // Changes text color after the first space
-void renderTextColorSpecial(char *msg, int x, int y, Color color, Color color2) {
+void renderTextColorSpecial(char *msg, int x, int y, MColor color, MColor color2) {
     x -= offsetX;
     y -= offsetY;
     bool sOver = false;

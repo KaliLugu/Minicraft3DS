@@ -6,7 +6,7 @@
 
 void tickParticleText(Entity *e, PlayerData *nearestPlayer);
 
-Entity newParticleText(char *str, Color color, int x, int y, uByte level) {
+Entity newParticleText(char *str, MColor color, int x, int y, uByte level) {
     Entity e;
     e.type = ENTITY_TEXTPARTICLE;
     e.level = level;

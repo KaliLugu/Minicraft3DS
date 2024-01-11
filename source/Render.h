@@ -13,12 +13,13 @@
 extern int offsetX, offsetY;
 
 extern void renderTitle(int x, int y);
-extern void renderFrame(int x1, int y1, int x2, int y2, Color bgColor);
+extern void renderFrame(int x1, int y1, int x2, int y2, MColor bgColor);
 
 extern void renderWeather(uByte level, int xScroll, int yScroll);
 extern void renderDayNight(PlayerData *pd);
 extern void renderButtonIcon(sInt icon, int x, int y);
 
+extern void renderHealthAndStamina(PlayerData *pd, sInt x, sInt y);
 extern void renderGui(PlayerData *pd);
 extern void renderZoomedMap(PlayerData *pd);
 extern void renderPlayer(PlayerData *pd, float scale);

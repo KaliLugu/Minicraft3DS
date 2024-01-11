@@ -1,15 +1,82 @@
 #ifdef __SWITCH__
 #include "../engine.h"
 
+#include <switch.h>
+
+static PadState pad;
+static u64 down;
+static u64 held;
+
+static bool check(sInt mask, u64 state) {
+    if ((mask & I_A) != 0 && (state & HidNpadButton_A) != 0)
+        return true;
+    if ((mask & I_B) != 0 && (state & HidNpadButton_B) != 0)
+        return true;
+    if ((mask & I_X) != 0 && (state & HidNpadButton_X) != 0)
+        return true;
+    if ((mask & I_Y) != 0 && (state & HidNpadButton_Y) != 0)
+        return true;
+
+    if ((mask & I_START_PLUS) != 0 && (state & HidNpadButton_Plus) != 0)
+        return true;
+    if ((mask & I_SELECT_MINUS) != 0 && (state & HidNpadButton_Minus) != 0)
+        return true;
+
+    if ((mask & I_L) != 0 && (state & HidNpadButton_L) != 0)
+        return true;
+    if ((mask & I_R) != 0 && (state & HidNpadButton_R) != 0)
+        return true;
+    if ((mask & I_ZL) != 0 && (state & HidNpadButton_ZL) != 0)
+        return true;
+    if ((mask & I_ZR) != 0 && (state & HidNpadButton_ZR) != 0)
+        return true;
+
+    if ((mask & I_DP_UP) != 0 && (state & HidNpadButton_Up) != 0)
+        return true;
+    if ((mask & I_DP_DOWN) != 0 && (state & HidNpadButton_Down) != 0)
+        return true;
+    if ((mask & I_DP_LEFT) != 0 && (state & HidNpadButton_Left) != 0)
+        return true;
+    if ((mask & I_DP_RIGHT) != 0 && (state & HidNpadButton_Right) != 0)
+        return true;
+
+    if ((mask & I_SL_UP) != 0 && (state & HidNpadButton_StickLUp) != 0)
+        return true;
+    if ((mask & I_SL_DOWN) != 0 && (state & HidNpadButton_StickLDown) != 0)
+        return true;
+    if ((mask & I_SL_LEFT) != 0 && (state & HidNpadButton_StickLLeft) != 0)
+        return true;
+    if ((mask & I_SL_RIGHT) != 0 && (state & HidNpadButton_StickLRight) != 0)
+        return true;
+
+    if ((mask & I_SR_UP) != 0 && (state & HidNpadButton_StickRUp) != 0)
+        return true;
+    if ((mask & I_SR_DOWN) != 0 && (state & HidNpadButton_StickRDown) != 0)
+        return true;
+    if ((mask & I_SR_LEFT) != 0 && (state & HidNpadButton_StickRLeft) != 0)
+        return true;
+    if ((mask & I_SR_RIGHT) != 0 && (state & HidNpadButton_StickRRight) != 0)
+        return true;
+
+    return false;
+}
+
+void initInput() {
+    padInitializeDefault(&pad);
+}
+
 void scanInputs() {
+    padUpdate(&pad);
+    down = padGetButtonsDown(&pad);
+    held = padGetButtons(&pad);
 }
 
 bool inputIsPressed(sInt mask) {
-    return false;
+    return check(mask, held);
 }
 
 bool inputWasClicked(sInt mask) {
-    return false;
+    return check(mask, down);
 }
 
 bool inputHasTouch() {
