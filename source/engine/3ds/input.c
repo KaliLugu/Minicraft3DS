@@ -91,4 +91,20 @@ sInt inputGetTouchY() {
     return tp.py;
 }
 
+static char textBuffer[256] = {0};
+
+char *inputText(char *initial, uShort minLength, uShort maxLength, TextCallback check) {
+    SwkbdState kb;
+    swkbdInit(&kb, SWKBD_TYPE_NORMAL, 3, maxLength);
+    swkbdSetValidation(&kb, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
+    if (initial != NULL)
+        swkbdSetInitialText(&kb, initial);
+    SwkbdButton button = swkbdInputText(&kb, textBuffer, sizeof(textBuffer));
+    if (button == SWKBD_BUTTON_CONFIRM && check(textBuffer)) {
+        return textBuffer;
+    } else {
+        return NULL;
+    }
+}
+
 #endif

@@ -9,20 +9,20 @@
 
 #include "../SaveLoad.h"
 #include "../editor/Editor.h"
+#include "../network/Synchronizer.h"
 
-char fileNames[1000][256];
-int fileScore[1000];
-bool fileWin[1000];
-int worldFileCount = 0;
-bool enteringName = false;
-int errorFileName = 0;
+static char fileNames[1000][256];
+static sInt fileScore[1000];
+static bool fileWin[1000];
+static int worldFileCount = 0;
+static int errorFileName = 0;
 
-int loadGameTarget;
+static int loadGameTarget;
 
-bool areYouSure = false;
-bool areYouSureSave = false;
+static bool enteringName = false;
+static bool areYouSure = false;
 
-void readFiles() {
+static void readFiles() {
     memset(&fileNames, 0, sizeof(fileNames)); // reset fileNames
     worldFileCount = 0;
     DIR *d;
@@ -32,13 +32,8 @@ void readFiles() {
         while ((dir = readdir(d)) != NULL) {
             if (strncmp(dir->d_name + strlen(dir->d_name) - 4, ".msv", 4) == 0) { // Check if filename contains ".msv"
                 strncpy(fileNames[worldFileCount], dir->d_name, strlen(dir->d_name) - 4);
-                // TODO: This no longer works, update for new format:
-                // FILE * file = fopen(dir->d_name, "rb");
-                // fread(&fileScore[worldFileCount],sizeof(int), 1, file);
-                // fread(&fileWin[worldFileCount],sizeof(bool), 1, file);
-                // fclose(file);
-                fileScore[worldFileCount] = 0;
-                fileWin[worldFileCount] = false;
+
+                getWorldPlayerState(dir->d_name, &fileScore[worldFileCount], &fileWin[worldFileCount]);
 
                 ++worldFileCount;
             }
@@ -47,9 +42,29 @@ void readFiles() {
     }
 }
 
+static void createOrLoad(char *name) {
+    if (name == NULL)
+        return;
+
+    memset(&currentFileName, 0, 255); // reset currentFileName
+    sprintf(currentFileName, "%s.msv", name);
+    playSound(snd_test);
+    ++worldFileCount;
+
+    if (loadGameTarget == LOAD_TO_SINGLEPLAYER) {
+        initGame = 1;
+        currentMenu = MENU_LOADING;
+    } else if (loadGameTarget == LOAD_TO_MULTIPLAYER) {
+        initMPGame = 2;
+        currentMenu = MENU_LOADING;
+    } else if (loadGameTarget == LOAD_TO_EDITOR) {
+        editorInit();
+        currentMenu = MENU_EDITOR;
+    }
+}
+
 void menuLoadGameInit(int target) {
     currentSelection = 0;
-    enteringName = false;
     areYouSure = false;
 
     readFiles();
@@ -66,7 +81,16 @@ void menuLoadGameInit(int target) {
 }
 
 void menuLoadGameTick() {
-    if (!enteringName && !areYouSure) { // World select
+    if (enteringName) {
+        char *name = inputText("", 1, 20, isWorldNameValid);
+        enteringName = false;
+        if (name != NULL && checkFileNameForErrors(name) == 0) {
+            ++worldFileCount;
+            createOrLoad(name);
+        }
+    }
+
+    if (!areYouSure) { // World select
         if (localInputs.k_decline.clicked) {
             if (loadGameTarget == LOAD_TO_SINGLEPLAYER) {
                 currentMenu = MENU_CHOOSE_GAME;
@@ -98,60 +122,18 @@ void menuLoadGameTick() {
             if (currentSelection == worldFileCount) {
                 enteringName = true;
             } else {
-                memset(&currentFileName, 0, 255); // reset currentFileName
-                sprintf(currentFileName, "%s.msv", fileNames[currentSelection]);
-                playSound(snd_test);
-
-                if (loadGameTarget == LOAD_TO_SINGLEPLAYER) {
-                    initGame = 1;
-                    currentMenu = MENU_LOADING;
-                } else if (loadGameTarget == LOAD_TO_MULTIPLAYER) {
-                    initMPGame = 2;
-                    currentMenu = MENU_LOADING;
-                } else if (loadGameTarget == LOAD_TO_EDITOR) {
-                    editorInit();
-                    currentMenu = MENU_EDITOR;
-                }
+                createOrLoad(fileNames[currentSelection]);
             }
         }
-    } else if (areYouSure) {
+    } else {
         if (localInputs.k_decline.clicked || localInputs.k_delete.clicked)
             areYouSure = false;
         if (localInputs.k_accept.clicked) {
             sprintf(currentFileName, "%s.msv", fileNames[currentSelection]);
             remove(currentFileName);
             readFiles();
-            enteringName = false;
             areYouSure = false;
             memset(&currentFileName, 0, 255); // reset currentFileName
-        }
-    } else { // Enter new world name.
-        if (localInputs.k_decline.clicked)
-            enteringName = false;
-        if (localInputs.k_accept.clicked && errorFileName == 0) {
-            errorFileName = checkFileNameForErrors(fileNames[worldFileCount]);
-            if (errorFileName == 0) {             // If no errors are found with the filename, then start a new game!
-                memset(&currentFileName, 0, 255); // reset currentFileName
-                sprintf(currentFileName, "%s.msv", fileNames[worldFileCount]);
-                playSound(snd_test);
-                ++worldFileCount;
-
-                if (loadGameTarget == LOAD_TO_SINGLEPLAYER) {
-                    initGame = 1;
-                    currentMenu = MENU_LOADING;
-                } else if (loadGameTarget == LOAD_TO_MULTIPLAYER) {
-                    initMPGame = 2;
-                    currentMenu = MENU_LOADING;
-                } else if (loadGameTarget == LOAD_TO_EDITOR) {
-                    editorInit();
-                    currentMenu = MENU_EDITOR;
-                }
-            }
-        }
-
-        menuTickKeyboard(fileNames[worldFileCount], 24);
-        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
-            errorFileName = 0;
         }
     }
 }
@@ -180,7 +162,7 @@ void menuLoadGameRender(int screen, int width, int height) {
                 }
 
                 char scoreText[24];
-                sprintf(scoreText, "Score: %d", fileScore[i]);
+                sprintf(scoreText, "Score: %ld", fileScore[i]);
 
                 renderFrame(1, i * 4, 24, (i * 4) + 4, color);
                 if (i != worldFileCount) {
@@ -196,7 +178,7 @@ void menuLoadGameRender(int screen, int width, int height) {
             offsetY = 0;
         } else { // Enter new world name.
             renderTextCentered("Enter a name", 8, width);
-            renderTextCentered(fileNames[worldFileCount], 24, width);
+            // renderTextCentered(fileNames[worldFileCount], 24, width);
 
             if (errorFileName > 0) {
                 switch (errorFileName) {
@@ -239,13 +221,6 @@ void menuLoadGameRender(int screen, int width, int height) {
                 renderTextCentered("Press   to return", 75, width);
                 renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 70);
             }
-        } else { // Draw the "keyboard"
-            menuRenderKeyboard(screen, width, height);
-
-            renderTextCentered("Press   to confirm", 90, width);
-            renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 52, 85);
-            renderTextCentered("Press   to return", 105, width);
-            renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 100);
         }
     }
 }

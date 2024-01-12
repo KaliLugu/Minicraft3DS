@@ -32,9 +32,6 @@ extern void initMenus();
 extern void renderMenu(int menu, int screen, int width, int height);
 extern void tickMenu(int menu);
 
-extern void menuTickKeyboard(char *string, int maxLength);
-extern void menuRenderKeyboard(int screen, int width, int height);
-
 extern void menuInitMapBG();
 extern void menuUpdateMapBG();
 extern void menuRenderMapBGTop();

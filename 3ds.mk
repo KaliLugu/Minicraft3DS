@@ -11,7 +11,6 @@ include $(DEVKITARM)/3ds_rules
 
 TARGET		:=	Minicraft3DS
 BUILD		:=	build_3ds
-SOURCES		+=	source/engine/3ds
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -42,6 +41,8 @@ LIBDIRS	:= $(PORTLIBS) $(CTRULIB)
 #---------------------------------------------------------------------------------
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
+include shared.mk
+SOURCES		+=	source/engine/3ds
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
@@ -89,6 +90,8 @@ clean:
 
 #---------------------------------------------------------------------------------
 else
+include ../shared.mk
+SOURCES		+=	source/engine/3ds
 
 #---------------------------------------------------------------------------------
 # main targets

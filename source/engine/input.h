@@ -41,3 +41,6 @@ extern bool inputWasClicked(sInt mask);
 extern bool inputHasTouch();
 extern sInt inputGetTouchX();
 extern sInt inputGetTouchY();
+
+typedef bool (*TextCallback)(char *text);
+extern char *inputText(char *initial, uShort minLength, uShort maxLength, TextCallback check);

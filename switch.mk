@@ -15,7 +15,6 @@ include $(DEVKITPRO)/libnx/switch_rules
 
 TARGET		:=	MinicraftSwitch
 BUILD		:=	build_switch
-SOURCES		+=	source/engine/switch
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -46,6 +45,8 @@ LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 #---------------------------------------------------------------------------------
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
+include shared.mk
+SOURCES		+=	source/engine/switch
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
@@ -94,6 +95,8 @@ clean:
 
 #---------------------------------------------------------------------------------
 else
+include ../shared.mk
+SOURCES		+=	source/engine/switch
 
 #---------------------------------------------------------------------------------
 # main targets

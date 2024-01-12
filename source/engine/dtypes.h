@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 
 // TODO: replace "uncontrolled" data types in whole project (mainly int)
 typedef signed char sByte;         // on 3ds: s8

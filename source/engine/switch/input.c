@@ -1,6 +1,7 @@
 #ifdef __SWITCH__
 #include "../engine.h"
 
+#include <string.h>
 #include <switch.h>
 
 static PadState pad;
@@ -89,6 +90,42 @@ sInt inputGetTouchX() {
 
 sInt inputGetTouchY() {
     return 0;
+}
+
+static TextCallback checkCB;
+static char textBuffer[256] = {0};
+static SwkbdTextCheckResult validateText(char *text, size_t textBufferSize) {
+    if (!checkCB(text)) {
+        strncpy(text, "Invalid Input", textBufferSize);
+        return SwkbdTextCheckResult_Bad;
+    }
+    return SwkbdTextCheckResult_OK;
+}
+
+char *inputText(char *initial, uShort minLength, uShort maxLength, TextCallback check) {
+    checkCB = check;
+
+    SwkbdConfig kb;
+    Result result = swkbdCreate(&kb, 0);
+    if (R_SUCCEEDED(result)) {
+        swkbdConfigMakePresetDefault(&kb);
+        swkbdConfigSetTextCheckCallback(&kb, validateText);
+        if (initial != NULL)
+            swkbdConfigSetInitialText(&kb, initial);
+        swkbdConfigSetStringLenMax(&kb, minLength);
+        swkbdConfigSetStringLenMax(&kb, maxLength);
+
+        result = swkbdShow(&kb, textBuffer, sizeof(textBuffer));
+        swkbdClose(&kb);
+
+        if (R_SUCCEEDED(result)) {
+            return textBuffer;
+        } else {
+            return NULL;
+        }
+    } else {
+        return NULL;
+    }
 }
 
 #endif

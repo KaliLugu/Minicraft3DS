@@ -33,29 +33,22 @@ void editorOptionsInit() {
 void editorOptionsTick() {
     // changing filename
     if (editorOptionsChangeName) {
-        if (localInputs.k_decline.clicked)
-            editorOptionsChangeName = false;
-        if (localInputs.k_accept.clicked && editorErrorFileName == 0) {
-            editorErrorFileName = checkFileNameForErrors(editorCurrentFileName);
-            if (editorErrorFileName == 0) {       // If no errors are found with the filename, then start a new game!
-                memset(&currentFileName, 0, 255); // reset currentFileName
-                sprintf(currentFileName, "%s.msv", editorCurrentFileName);
-                editorOptionsChangeName = false;
-            }
+        char *name = inputText(editorCurrentFileName, 1, 24, isWorldNameValid);
+        editorOptionsChangeName = false;
+        if (name != NULL && checkFileNameForErrors(name) == 0) {
+            memset(&currentFileName, 0, 255); // reset currentFileName
+            sprintf(currentFileName, "%s.msv", name);
+            editorAreYouSureSave = true;
         }
-
-        menuTickKeyboard(editorCurrentFileName, 24);
-        if (localInputs.k_touchX > 0 || localInputs.k_touchY > 0) {
-            editorErrorFileName = 0;
-        }
-        // normal menu
     } else {
         if (editorAreYouSureSave) {
             if (localInputs.k_accept.clicked) {
                 // changed the filename -> copy old save so playerdata will be kept
                 if (strcmp(editorOrigFileName, currentFileName) != 0) {
-                    if (!saveFileCopy(currentFileName, editorOrigFileName)) {
+                    if (!renameWorld(editorOrigFileName, currentFileName)) {
                         return;
+                    } else {
+                        strcpy(editorOrigFileName, currentFileName);
                     }
                 }
                 saveWorld(currentFileName, &eManager, &worldData, players, playerCount);
@@ -156,15 +149,4 @@ void editorOptionsRenderTop(int screen, int width, int height) {
 }
 
 void editorOptionsRenderBottom(int screen, int width, int height) {
-    // changing filename
-    if (editorOptionsChangeName) { // Draw the "keyboard"
-        menuRenderKeyboard(screen, width, height);
-
-        renderTextCentered("Press   to confirm", 90, width);
-        renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 52, 85);
-        renderTextCentered("Press   to return", 105, width);
-        renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 55, 100);
-        // normal menu
-    } else {
-    }
 }

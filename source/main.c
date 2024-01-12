@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <time.h>
 
 #include "Data.h"
@@ -114,6 +115,13 @@ char debugText[34];
 char bossHealthText[34];
 int main() {
     initEngine(&processPacket);
+
+    // store all files in own directory in sdcard
+    struct stat st = {0};
+    if (stat("/minicraft", &st) == -1) {
+        mkdir("/minicraft", 0777);
+    }
+    chdir("minicraft/");
 
     FILE *file;
     shouldRenderDebug = false;

@@ -84,7 +84,7 @@ void saveDeleteTrackedFiles() {
     }
 }
 
-bool saveFileCopy(char *target, char *source) {
+static bool saveFileCopy(char *target, char *source) {
     char *buffer = malloc(SAVE_COPYBUFFER_SIZE);
     if (buffer == NULL) {
         return false;
@@ -97,7 +97,7 @@ bool saveFileCopy(char *target, char *source) {
     }
     FILE *out = fopen(target, "wb");
     if (out == NULL) {
-        fclose(out);
+        fclose(in);
         free(buffer);
         return false;
     }
@@ -116,6 +116,16 @@ bool saveFileCopy(char *target, char *source) {
     free(buffer);
 
     return true;
+}
+
+extern bool renameWorld(char *oldFilename, char *newFilename) {
+    FILE *file = fopen(newFilename, "rb");
+    if (file != NULL) {
+        fclose(file);
+        return false;
+    }
+
+    return rename(oldFilename, newFilename) == 0;
 }
 
 // internal save methods
@@ -517,7 +527,7 @@ WorldData *loadWorldData;
 PlayerData *loadPlayers;
 int loadPlayerCount;
 
-int loadFile(char *filename) {
+static int loadFile(char *filename) {
     // load world
     if (strcmp(filename, "main.wld") == 0) {
         loadWorldInternal(filename, loadEManager, loadWorldData);
@@ -533,6 +543,36 @@ int loadFile(char *filename) {
         if (strcmp(filename, playerFilename) == 0) {
             loadPlayerInternal(filename, loadPlayers + i, loadEManager);
         }
+    }
+
+    return 0;
+}
+
+static sInt *stateScore;
+static bool *stateWin;
+static int loadFileState(char *filename) {
+    char playerFilename[50];
+    playerFilename[0] = '\0';
+    sprintf(playerFilename, "%lu.plr", localUID);
+
+    if (strcmp(filename, playerFilename) == 0) {
+        FILE *file = fopen(filename, "rb"); // TODO: should be checked
+
+        // read savefile version
+        int version;
+        fread(&version, sizeof(int), 1, file);
+
+        // basic player info
+        bool dummy;
+        fread(stateScore, sizeof(int), 1, file);
+        fread(&dummy, sizeof(bool), 1, file);
+        fread(stateWin, sizeof(bool), 1, file);
+        // fread(&player->entity.p.health, sizeof(sShort), 1, file);
+        // fread(&player->entity.x, sizeof(sShort), 1, file);
+        // fread(&player->entity.y, sizeof(sShort), 1, file);
+        // fread(&player->entity.level, sizeof(sByte), 1, file);
+
+        fclose(file);
     }
 
     return 0;
@@ -567,14 +607,25 @@ bool loadWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
     return true;
 }
 
+void getWorldPlayerState(char *filename, sInt *score, bool *win) {
+    stateScore = score;
+    stateWin = win;
+    unzipAndLoad(filename, &loadFileState, SAVE_COMMENT, ZIPHELPER_CLEANUP_FILES);
+}
+
+bool isWorldNameValid(char *worldName) {
+    return checkFileNameForErrors(worldName) == 0;
+}
+
 int checkFileNameForErrors(char *filename) {
     int length = strlen(filename);
     if (length < 1)
         return 1; // Error: Length cannot be 0.
-    int i;
+    if (length > 64)
+        return 4; // Error: Length cannot be over 64
     bool isGood = false;
-    for (i = 0; i < length; ++i) {
-        if (isalnum((int)filename[i]))
+    for (int i = 0; i < length; ++i) {
+        if (isalnum(filename[i]))
             isGood = true;
     }
     if (!isGood)
