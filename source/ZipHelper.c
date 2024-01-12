@@ -1,7 +1,7 @@
 #include "ZipHelper.h"
 
-#include "minizip/unzip.h"
-#include "minizip/zip.h"
+#include <minizip/unzip.h>
+#include <minizip/zip.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

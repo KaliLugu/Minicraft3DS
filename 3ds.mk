@@ -26,7 +26,7 @@ CFLAGS	+=	$(INCLUDE) -D__3DS__ `$(PREFIX)pkg-config opusfile --cflags`
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lpng -lz -lcitro2d -lcitro3d -lctru -lm `$(PREFIX)pkg-config opusfile --libs` 
+LIBS	:= -lminizip -lpng -lz -lcitro2d -lcitro3d -lctru -lm `$(PREFIX)pkg-config opusfile --libs` 
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
