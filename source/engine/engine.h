@@ -11,13 +11,6 @@
 #include "network.h"
 #include "platform.h"
 
-#ifdef __3DS__
-#define AUDIOFILES ".opus"
-#endif
-#ifdef __SWITCH__
-#define AUDIOFILES ".ogg"
-#endif
-
 typedef bool (*TickCallback)();
 
 extern void initEngine(PacketHandler ph);

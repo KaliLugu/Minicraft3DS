@@ -68,12 +68,12 @@ void loadSounds() {
     snd_bossdeath = loadSound("romfs:/bossdeath.raw");
     snd_craft = loadSound("romfs:/craft.raw");
 
-    music_menu = loadMusic("romfs:/music/menu" AUDIOFILES);
-    music_floor0 = loadMusic("romfs:/music/floor0" AUDIOFILES);
-    music_floor1 = loadMusic("romfs:/music/floor1" AUDIOFILES);
-    music_floor1_night = loadMusic("romfs:/music/floor1_night" AUDIOFILES);
-    music_floor23 = loadMusic("romfs:/music/floor2_3" AUDIOFILES);
-    music_floor4 = loadMusic("romfs:/music/floor4" AUDIOFILES);
+    music_menu = loadMusic("romfs:/music/menu.ogg");
+    music_floor0 = loadMusic("romfs:/music/floor0.ogg");
+    music_floor1 = loadMusic("romfs:/music/floor1.ogg");
+    music_floor1_night = loadMusic("romfs:/music/floor1_night.ogg");
+    music_floor23 = loadMusic("romfs:/music/floor2_3.ogg");
+    music_floor4 = loadMusic("romfs:/music/floor4.ogg");
 }
 
 void freeSounds() {

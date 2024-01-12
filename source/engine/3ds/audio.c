@@ -1,8 +1,10 @@
 #ifdef __3DS__
 #include "../engine.h"
 
+#define STB_VORBIS_HEADER_ONLY
+#include "stb_vorbis.c"
+
 #include <3ds.h>
-#include <opusfile.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -12,7 +14,7 @@ struct _sound {
 };
 
 struct _music {
-    OggOpusFile *opusFile;
+    stb_vorbis *oggFile;
 };
 
 #define SOUND_CHANNEL_MIN 15
@@ -22,14 +24,14 @@ struct _music {
 // sound channel data
 ndspWaveBuf *channelBuf;
 
-static const int SAMPLE_RATE = 48000;
+static const int SAMPLE_RATE = 44100;
 static const int SAMPLES_PER_BUF = SAMPLE_RATE * 120 / 1000; // 120ms buffer
 static const int CHANNELS_PER_SAMPLE = 1;
 
-static const size_t WAVEBUF_SIZE = SAMPLES_PER_BUF * CHANNELS_PER_SAMPLE * sizeof(int16_t); // Size of NDSP wavebufs
+static const size_t WAVEBUF_SIZE = SAMPLES_PER_BUF * CHANNELS_PER_SAMPLE * sizeof(s16); // Size of NDSP wavebufs
 
 ndspWaveBuf s_waveBufs[3];
-int16_t *streamBuffer = NULL;
+s16 *streamBuffer = NULL;
 static volatile MMusic currentMusic;
 
 LightEvent s_event;
@@ -37,17 +39,16 @@ static volatile bool runMusicThread;
 static Thread musicThread;
 
 // Main audio decoding logic
-// This function pulls and decodes audio samples from opusFile_ to fill waveBuf_
-void fillBuffer(OggOpusFile *opusFile_, ndspWaveBuf *waveBuf_) {
+static void fillBuffer(stb_vorbis *oggFile, ndspWaveBuf *waveBuf_) {
     // Decode samples until our waveBuf is full
     int totalSamples = 0;
     while (totalSamples < SAMPLES_PER_BUF) {
-        int16_t *buffer = waveBuf_->data_pcm16 + (totalSamples * CHANNELS_PER_SAMPLE);
+        s16 *buffer = waveBuf_->data_pcm16 + (totalSamples * CHANNELS_PER_SAMPLE);
         const size_t bufferSize = (SAMPLES_PER_BUF - totalSamples) * CHANNELS_PER_SAMPLE;
 
-        // Decode bufferSize samples from opusFile_ into buffer,
+        // Decode bufferSize samples
         // storing the number of samples that were decoded (or error)
-        const int samples = op_read(opusFile_, buffer, bufferSize, NULL);
+        const int samples = stb_vorbis_get_samples_short_interleaved(oggFile, 1, buffer, bufferSize);
         if (samples <= 0) {
             if (samples == 0)
                 break; // No error here
@@ -59,20 +60,20 @@ void fillBuffer(OggOpusFile *opusFile_, ndspWaveBuf *waveBuf_) {
 
     // reached end of file
     if (totalSamples == 0) {
-        op_pcm_seek(opusFile_, 0);
+        stb_vorbis_seek_start(oggFile);
     }
 
     // Pass samples to NDSP
     waveBuf_->nsamples = totalSamples;
     ndspChnWaveBufAdd(MUSIC_CHANNEL, waveBuf_);
-    DSP_FlushDataCache(waveBuf_->data_pcm16, totalSamples * CHANNELS_PER_SAMPLE * sizeof(int16_t));
+    DSP_FlushDataCache(waveBuf_->data_pcm16, totalSamples * CHANNELS_PER_SAMPLE * sizeof(s16));
 }
 
 // NDSP audio frame callback
 // This signals the audioThread to decode more things
 // once NDSP has played a sound frame, meaning that there should be
 // one or more available waveBufs to fill with more data.
-void audioCallback(void *const nul_) {
+static void audioCallback(void *const nul_) {
     if (!runMusicThread) {
         return;
     }
@@ -82,7 +83,7 @@ void audioCallback(void *const nul_) {
 
 // Audio thread
 // This handles calling the decoder function to fill NDSP buffers as necessary
-void musicStreamThreadMain() {
+static void musicStreamThreadMain() {
     while (runMusicThread) {
         if (currentMusic != NULL) {
             // search our waveBufs and fill any that aren't currently
@@ -92,7 +93,7 @@ void musicStreamThreadMain() {
                     continue;
                 }
 
-                fillBuffer(currentMusic->opusFile, &s_waveBufs[i]);
+                fillBuffer(currentMusic->oggFile, &s_waveBufs[i]);
             }
         }
 
@@ -124,7 +125,7 @@ void initAudio() {
     streamBuffer = linearAlloc(bufferSize);
 
     memset(&s_waveBufs, 0, sizeof(s_waveBufs));
-    int16_t *buffer = streamBuffer;
+    s16 *buffer = streamBuffer;
 
     for (size_t i = 0; i < 3; ++i) {
         s_waveBufs[i].data_vaddr = buffer;
@@ -219,7 +220,12 @@ void unloadSound(MSound sound) {
 
 MMusic loadMusic(char *name) {
     MMusic music = linearAlloc(sizeof(_music));
-    music->opusFile = op_open_file(name, NULL);
+    int error;
+    music->oggFile = stb_vorbis_open_filename(name, &error, NULL);
+    if (music->oggFile == NULL) {
+        linearFree(music);
+        return NULL;
+    }
     return music;
 }
 
@@ -234,12 +240,15 @@ void playMusic(MMusic music) {
 void stopMusic() {
     currentMusic = NULL;
     ndspChnWaveBufClear(MUSIC_CHANNEL);
+    for (size_t i = 0; i < 3; ++i) {
+        s_waveBufs[i].status = NDSP_WBUF_DONE;
+    }
 }
 
 void unloadMusic(MMusic music) {
     if (music == NULL)
         return;
-    op_free(music->opusFile);
+    stb_vorbis_close(music->oggFile);
     linearFree(music);
 }
 

@@ -216,6 +216,7 @@ struct Entity {
         SmashParticleEntity smashParticle;
     };
 
+    // TODO: do not actually store these per entity but per type!
     // TODO: Move more "callbacks" to this "dynamic functions"
     // Note: These need to always be set (explicitly set to NULL if unused) or the game will crash
     void (*tickFunction)(Entity *e, PlayerData *pd);
