@@ -3,18 +3,21 @@
 #include "../Globals.h"
 #include "../Menu.h"
 #include "../Render.h"
+#include "../network/RP2P.h"
+#include "../network/Synchronizer.h"
 
 int menuScanTimer = 0;
+uShort menuLastScanCount = 0;
 
 void menuMultiplayerJoinTick() {
     if (menuScanTimer > 0) {
         menuScanTimer--;
     } else {
-        networkScan();
+        menuLastScanCount = networkScan();
         menuScanTimer = 30;
     }
-    if (currentSelection >= networkGetScanCount())
-        currentSelection = networkGetScanCount() - 1;
+    if (currentSelection >= menuLastScanCount)
+        currentSelection = menuLastScanCount - 1;
     if (currentSelection < 0)
         currentSelection = 0;
 
@@ -25,18 +28,19 @@ void menuMultiplayerJoinTick() {
     if (localInputs.k_up.clicked) {
         --currentSelection;
         if (currentSelection < 0)
-            currentSelection = (networkGetScanCount() > 0 ? networkGetScanCount() - 1 : 0);
+            currentSelection = (menuLastScanCount > 0 ? menuLastScanCount - 1 : 0);
     }
     if (localInputs.k_down.clicked) {
         ++currentSelection;
-        if (currentSelection >= networkGetScanCount())
+        if (currentSelection >= menuLastScanCount)
             currentSelection = 0;
     }
 
     if (localInputs.k_accept.clicked) {
-        if (networkGetScanCount() != 0) {
+        if (menuLastScanCount > currentSelection) {
             for (int t = 0; t < 10; t++) { // try to connect multiple times, because it will not work the first try every time
                 if (networkConnect(currentSelection)) {
+                    synchronizerStartMPClient();
                     currentMenu = MENU_MULTIPLAYER_WAIT;
                     currentSelection = 0;
                     break;
@@ -54,7 +58,7 @@ void menuMultiplayerJoinRender(int screen, int width, int height) {
         offsetX = 0;
         offsetY = (currentSelection * 32) - 48;
         renderTextCentered("Select a world", -16, width);
-        for (int i = 0; i < networkGetScanCount(); ++i) {
+        for (int i = 0; i < menuLastScanCount; ++i) {
             int color = 0x201092FF;
             char *text = malloc((50 + 8 + 1) * sizeof(char));
             memset(text, 0, (50 + 8 + 1) * sizeof(char));

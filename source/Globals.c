@@ -1496,7 +1496,6 @@ void initMinimapLevel(PlayerData *pd, uByte level) {
 
     for (int x = 0; x < 128; ++x) {
         for (int y = 0; y < 128; ++y) {
-            /* Minimaps */
             setPixel(imageMinimap[level], x, y, getMinimapColor(pd, level, x, y));
         }
     }

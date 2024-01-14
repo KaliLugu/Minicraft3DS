@@ -49,14 +49,12 @@ static void createOrLoad(char *name) {
     memset(&currentFileName, 0, 255); // reset currentFileName
     sprintf(currentFileName, "%s.msv", name);
     playSound(snd_test);
-    ++worldFileCount;
 
     if (loadGameTarget == LOAD_TO_SINGLEPLAYER) {
         initGame = 1;
         currentMenu = MENU_LOADING;
     } else if (loadGameTarget == LOAD_TO_MULTIPLAYER) {
         initMPGame = 2;
-        currentMenu = MENU_LOADING;
     } else if (loadGameTarget == LOAD_TO_EDITOR) {
         editorInit();
         currentMenu = MENU_EDITOR;

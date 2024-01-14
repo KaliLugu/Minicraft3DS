@@ -22,7 +22,7 @@ void menuAboutRender(int screen, int width, int height) {
         renderTextCentered("dedicated to my father.<3", 48, width);
         renderTextCentered("- Markus \"Notch\" Persson", 58, width);
 
-        renderTextColor("3DS Homebrew Edition", (width / 2 - 20 * 8) / 2, 80, 0x7FFF7FFF);
+        renderTextColor("Homebrew Edition", (width / 2 - 16 * 8) / 2, 80, 0x7FFF7FFF);
         renderTextColor("Remade by Andre Schweiger", (width / 2 - 25 * 8) / 2, 92, 0x00FF00FF);
         renderTextColor("over 2015-2024!", (width / 2 - 15 * 8) / 2, 102, 0x00FF00FF);
     }

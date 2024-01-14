@@ -16,7 +16,7 @@
 #include "Render.h"
 #include "SaveLoad.h"
 #include "engine/engine.h"
-#include "network/PacketHandler.h"
+#include "network/RP2P.h"
 #include "network/Synchronizer.h"
 #include "render/TextureManager.h"
 #include "texturepack.h"
@@ -28,40 +28,14 @@
 // TODO: Something still causes desyncs very rarely
 
 void setupGame() {
-    synchronizerInit(rand(), 1, 0);
-    synchronizerSetPlayerUID(0, localUID);
-    synchronizerStart();
-
     initGame = 0;
+    synchronizerStartSP();
 }
 
 void setupGameServer() {
-    size_t size;
-
-    networkHostStopConnections();
-
-    networkStart();
-
-    // send start info (seed)
-    size = writeStartPacket(networkWriteBuffer, rand());
-    networkSend(networkWriteBuffer, size);
-    processPacket(networkWriteBuffer, size);
-    networkSendWaitFlush();
-
-    // send save file if loading
-    FILE *file = fopen(currentFileName, "rb");
-    if (file != NULL) {
-        sendFile(file, 0, 0);
-        networkSendWaitFlush();
-        fclose(file);
-    }
-
-    // send start command
-    size = writeStartRequestPacket(networkWriteBuffer);
-    networkSend(networkWriteBuffer, size);
-    processPacket(networkWriteBuffer, size);
-
     initMPGame = 0;
+    networkHostStopConnections();
+    synchronizerStartMPHost();
 }
 
 void setupBGMap() {
@@ -114,7 +88,7 @@ void draw(int screen, int width, int height) {
 char debugText[34];
 char bossHealthText[34];
 int main() {
-    initEngine(&processPacket);
+    initEngine(&rp2pRecvRaw);
 
     // store all files in own directory in sdcard
     struct stat st = {0};

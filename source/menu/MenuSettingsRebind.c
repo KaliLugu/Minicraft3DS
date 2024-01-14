@@ -288,7 +288,7 @@ void menuSettingsRebindRender(int screen, int width, int height) {
             if ((currentSelection - 2) + i > 21 || (currentSelection - 2) + i < 0)
                 continue;
             renderButtonIcon(keys[(currentSelection - 2) + i], 16, (i * 17) + 36);
-            int ccol = 0xFF7F7F7F;
+            int ccol = 0x7F7F7FFF;
 
             sprintf(gameButText, "%s", getButtonFunctionGame(keys[(currentSelection - 2) + i]));
             sprintf(menuButText, "%s", getButtonFunctionMenu(keys[(currentSelection - 2) + i]));

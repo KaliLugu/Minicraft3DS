@@ -46,7 +46,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
             if (pd->inputs.k_accept.clicked) {
                 pd->ingameMenuTimer = 60;
 
-                if (playerLocalID == 0) {
+                if (playerLocalIndex == 0) {
                     saveWorld(currentFileName, &eManager, &worldData, players, playerCount);
                 }
                 pd->ingameMenuAreYouSureSave = false;

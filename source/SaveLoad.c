@@ -525,7 +525,7 @@ bool loadHadWorld;
 EntityManager *loadEManager;
 WorldData *loadWorldData;
 PlayerData *loadPlayers;
-int loadPlayerCount;
+uByte loadPlayerCount;
 
 static int loadFile(char *filename) {
     // load world
@@ -535,10 +535,10 @@ static int loadFile(char *filename) {
     }
 
     // load player data of active players
-    for (int i = 0; i < playerCount; i++) {
+    for (int i = 0; i < loadPlayerCount; i++) {
         char playerFilename[50];
         playerFilename[0] = '\0';
-        sprintf(playerFilename, "%lu.plr", players[i].id);
+        sprintf(playerFilename, "%lu.plr", loadPlayers[i].id);
 
         if (strcmp(filename, playerFilename) == 0) {
             loadPlayerInternal(filename, loadPlayers + i, loadEManager);

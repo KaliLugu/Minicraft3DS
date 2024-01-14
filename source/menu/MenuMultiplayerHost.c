@@ -28,24 +28,15 @@ void menuMultiplayerHostRender(int screen, int width, int height) {
     if (screen == 0) {
         drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-        networkUpdateStatus();
         renderTextCentered("Connected Players", 4, width);
-        int j = 0;
-        int lastj = 0;
         for (int i = 0; i < networkGetNodeCount(); i++) {
-            for (j = lastj + 1; j <= NETWORK_MAXNODES; j++) {
-                if (networkIsNodeConnected(j)) {
-                    char *text = malloc((50 + 8 + 1) * sizeof(char));
-                    memset(text, 0, (50 + 8 + 1) * sizeof(char));
-                    networkGetNodeName(j, text);
+            char *text = malloc((50 + 8 + 1) * sizeof(char));
+            memset(text, 0, (50 + 8 + 1) * sizeof(char));
+            networkGetNodeName(i, text);
 
-                    renderTextCentered(text, i * 13 + 16, width);
+            renderTextCentered(text, i * 13 + 16, width);
 
-                    free(text);
-                    lastj = j;
-                    break;
-                }
-            }
+            free(text);
         }
     }
 

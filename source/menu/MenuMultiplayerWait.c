@@ -18,14 +18,13 @@ void menuMultiplayerWaitRender(int screen, int width, int height) {
     if (screen == 0) {
         drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-        networkUpdateStatus();
-        renderTextCentered("Connected to", 1 * 13 + 16, width);
-        if (networkIsNodeConnected(1)) {
+        renderTextCentered("Connected Players", 4, width);
+        for (int i = 0; i < networkGetNodeCount(); i++) {
             char *text = malloc((50 + 8 + 1) * sizeof(char));
             memset(text, 0, (50 + 8 + 1) * sizeof(char));
-            networkGetNodeName(1, text);
+            networkGetNodeName(i, text);
 
-            renderTextCentered(text, 2 * 13 + 16, width);
+            renderTextCentered(text, i * 13 + 16, width);
 
             free(text);
         }

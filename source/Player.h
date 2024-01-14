@@ -41,9 +41,7 @@ typedef struct _plrefx {
 
 typedef struct _plrd {
     // for identification in save data and sync game start
-    int id;
-    bool idSet;
-    bool ready;
+    sInt id;
 
     // input/multiplayer/synchronization
     Inputs inputs;
@@ -94,7 +92,7 @@ typedef struct _plrd {
 
 extern PlayerData players[MAX_PLAYERS];
 extern int playerCount;
-extern int playerLocalID;
+extern int playerLocalIndex;
 
 extern void initPlayers();
 extern void freePlayers();

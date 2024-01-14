@@ -5,7 +5,7 @@
 
 PlayerData players[MAX_PLAYERS];
 int playerCount;
-int playerLocalID;
+int playerLocalIndex;
 
 void initPlayers() {
     for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -20,8 +20,7 @@ void freePlayers() {
 }
 
 void playerInitMiniMapData(uByte *minimapData) {
-    int i;
-    for (i = 0; i < 128 * 128; ++i) {
+    for (int i = 0; i < 128 * 128; i++) {
         minimapData[i] = 0;
     }
 }
@@ -168,7 +167,7 @@ PlayerData *getNearestPlayer(uByte level, int x, int y) {
 }
 
 PlayerData *getLocalPlayer() {
-    return players + playerLocalID;
+    return players + playerLocalIndex;
 }
 
 // player update functions

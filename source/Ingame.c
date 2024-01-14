@@ -75,8 +75,7 @@ void initNewMap() {
 }
 
 void initMiniMap(PlayerData *pd) {
-    int i;
-    for (i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i) {
         initMinimapLevel(pd, i);
     }
 }
@@ -105,9 +104,9 @@ void startGame(bool load, char *filename) {
     } else {
         if (!loadWorld(filename, &eManager, &worldData, players, playerCount)) {
             // TODO: What do?
-            networkDisconnect();
+            synchronizerReset();
 
-            setClearColor(0xFF000000);
+            setClearColor(0x000000FF);
             currentSelection = 0;
             currentMenu = MENU_TITLE;
         }
@@ -252,7 +251,7 @@ void tickGame() {
             if (localInputs.k_accept.clicked) {
                 if (stallAreYouSure) {
                     // create backup save
-                    if (playerLocalID == 0) {
+                    if (playerLocalIndex == 0) {
                         char backupSaveFileName[256 + 32];
                         backupSaveFileName[0] = '\0';
 
@@ -336,7 +335,7 @@ void renderGame(int screen, int width, int height) {
             sprintf(text, "Last response %is ago", stallCounter / 60);
             renderTextCentered(text, 32, width);
 
-            if (playerLocalID == 0) {
+            if (playerLocalIndex == 0) {
                 renderTextCentered("Press   to leave the game", 80, width);
                 renderButtonIcon(localInputs.k_accept.input & -localInputs.k_accept.input, 60, 80 - 4);
 
@@ -359,7 +358,7 @@ void renderGame(int screen, int width, int height) {
     }
 
     if (screen == 10) {
-        if (!players[playerLocalID].mapShouldRender) {
+        if (!players[playerLocalIndex].mapShouldRender) {
             drawTexture(bottomBGFull, 0, 0);
             renderGui(getLocalPlayer());
         } else {
@@ -369,10 +368,10 @@ void renderGame(int screen, int width, int height) {
 }
 
 void exitGame() {
-    networkDisconnect();
     synchronizerReset();
+    networkDisconnect();
 
-    setClearColor(0xFF000000);
+    setClearColor(0x000000FF);
     currentSelection = 0;
     currentMenu = MENU_TITLE;
 

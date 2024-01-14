@@ -11,7 +11,7 @@ void renderTitle(int x, int y) {
     for (int xt = 0; xt < 7; xt++) {
         renderTile16(x - 26 + xt * 16, y, xt, 15, 0);
     }
-    // 3DS HOMEBREW EDITION
+    // HOMEBREW EDITION
     for (int xt = 0; xt < 9; xt++) {
         renderTile16(x - 48 + xt * 16, y + 18, xt + 7, 15, 0);
     }
@@ -268,6 +268,9 @@ void renderPlayer(PlayerData *pd, float scale) {
     if (swimming) {
         renderTile8(xo, yo + 5, 6, 20 + ((pd->entity.p.swimTimer >> 4) & 1), 0);
         renderTile8(xo + 8, yo + 5, 7, 20 + ((pd->entity.p.swimTimer >> 4) & 1), 0);
+    } else {
+        renderTile8(xo, yo + 8, 0, 22, 0);
+        renderTile8(xo + 8, yo + 8, 1, 22, 0);
     }
 
     bool accFront[] = PLAYER_SPRITE_ACCS_FRONT;
@@ -416,13 +419,18 @@ void renderEntity(Entity *e, int x, int y) {
         if (e->entityItem.age >= 520)
             if (e->entityItem.age / 6 % 2 == 0)
                 return;
+        renderTile8(x - 4, y - 4, 2, 22, 0);
         renderItemIcon(e->entityItem.item.id, e->entityItem.item.countLevel,
                        x - 4, y - 4 - (int)e->entityItem.zz);
         break;
     case ENTITY_FURNITURE:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         renderFurniture(e->entityFurniture.itemID, x - 8, y - 8);
         break;
     case ENTITY_ZOMBIE:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         switch (e->hostile.dir) {
         case 0: // down
             renderTile16Blend(x - 8, y - 8, 4, 7, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
@@ -439,6 +447,8 @@ void renderEntity(Entity *e, int x, int y) {
         }
         break;
     case ENTITY_SKELETON:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         switch (e->hostile.dir) {
         case 0: // down
             renderTile16Blend(x - 8, y - 8, 0, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
@@ -455,6 +465,8 @@ void renderEntity(Entity *e, int x, int y) {
         }
         break;
     case ENTITY_KNIGHT:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         switch (e->hostile.dir) {
         case 0: // down
             renderTile16Blend(x - 8, y - 8, 4, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
@@ -471,6 +483,8 @@ void renderEntity(Entity *e, int x, int y) {
         }
         break;
     case ENTITY_SLIME:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         renderTile16Blend(x - 8, y - 8 - (e->hostile.randWalkTime > 0 ? 4 : 0), 8 + (e->hostile.randWalkTime > 0 ? 1 : 0), 7, 0, e->hostile.color);
         break;
     case ENTITY_AIRWIZARD:
@@ -482,6 +496,8 @@ void renderEntity(Entity *e, int x, int y) {
             if (syncTickCount / 5 % 4 < 2)
                 e->wizard.spriteAdjust = 1;
         }
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         switch (e->wizard.dir) {
         case 0: // down
             renderTile16(x - 8, y - 8, 10, 7 + e->wizard.spriteAdjust, ((e->wizard.walkDist >> 4) & 1) == 0 ? 0 : 1);
@@ -498,6 +514,8 @@ void renderEntity(Entity *e, int x, int y) {
         }
         break;
     case ENTITY_PASSIVE:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         switch (e->passive.dir) {
         case 0: // down
             renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 0, 6, ((e->passive.walkDist >> 4) & 1) == 0 ? 0 : 1);
@@ -550,6 +568,8 @@ void renderEntity(Entity *e, int x, int y) {
         }
         break;
     case ENTITY_MAGIC_PILLAR:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         renderTile16(x - 8, y - 8, 1, 20, 0);
         break;
     case ENTITY_ARROW:
@@ -570,6 +590,7 @@ void renderEntity(Entity *e, int x, int y) {
             abits += 2;
         }
 
+        renderTile8(x - 2, y, 2, 22, 0);
         switch (e->arrow.itemID) {
         case ITEM_ARROW_WOOD:
             renderTile8(x - 2, y - 2, 9, ayp, abits);
@@ -592,6 +613,8 @@ void renderEntity(Entity *e, int x, int y) {
         renderTile8(x - 4, y - 4, 28, 14, 0);
         break;
     case ENTITY_NPC:
+        renderTile8(x - 8, y, 0, 22, 0);
+        renderTile8(x, y, 1, 22, 0);
         renderTile16(x - 8, y - 8, e->npc.type, 4, 0);
     }
 }

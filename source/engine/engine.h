@@ -10,6 +10,7 @@
 #include "input.h"
 #include "network.h"
 #include "platform.h"
+#include "sync.h"
 
 typedef bool (*TickCallback)();
 
