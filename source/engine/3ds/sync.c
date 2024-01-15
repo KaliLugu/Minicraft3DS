@@ -32,24 +32,6 @@ void lockFree(Lock lock) {
     linearFree(lock);
 }
 
-Event eventCreate() {
-    Event event = linearAlloc(sizeof(_event));
-    LightEvent_Init(&event->event, RESET_ONESHOT);
-    return event;
-}
-
-void eventAwait(Event event) {
-    LightEvent_Wait(&event->event);
-}
-
-void eventSignal(Event event) {
-    LightEvent_Signal(&event->event);
-}
-
-void eventFree(Event event) {
-    linearFree(event);
-}
-
 MThread mthreadCreate(void (*main)(void), sInt stackSize) {
     sInt prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);

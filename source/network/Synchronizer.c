@@ -118,11 +118,11 @@ static void synchronizerHandleStart() {
     // host
     if (rp2pGetLocalPlayerIndex() == 0) {
         int seed = rand();
-        // synchronizerSendSaveFile();
-        // synchronizerSendStart(seed);
+        synchronizerSendSaveFile();
+        synchronizerSendStart(seed);
 
         // start locally
-        // synchronizerLoadWorld(seed, rp2pGetPlayerCount(), 0);
+        synchronizerLoadWorld(seed, rp2pGetPlayerCount(), 0);
     }
 }
 

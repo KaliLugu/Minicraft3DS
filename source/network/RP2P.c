@@ -36,7 +36,6 @@ static uShort sendNextSeq;
 static uShort seqSendConfirmed[NETWORK_MAXPLAYERS] = {0};
 static uShort seqLastRecieved[NETWORK_MAXPLAYERS] = {0};
 
-static Event sendEvent;
 static Lock sendBufferLock;
 static void *sendBuffer;
 static size_t sendBufferStartPos;
@@ -74,6 +73,7 @@ void rp2pInit(bool isHost, sInt localID, MessageHandler mh, Callback onStart) {
         rp2pData.localPlayerIndex = 0;
         rp2pData.playerCount = 1;
     } else {
+        rp2pData.localPlayerIndex = -1;
         rp2pData.playerCount = 0;
     }
 
@@ -82,7 +82,6 @@ void rp2pInit(bool isHost, sInt localID, MessageHandler mh, Callback onStart) {
     sendBufferWrapPos = 0;
     sendBuffer = malloc(SENDBUFFERSIZE);
 
-    sendEvent = eventCreate();
     sendBufferLock = lockCreate();
 
     rp2pData.sendThread = mthreadCreate(&handleSend, STACKSIZE);
@@ -100,12 +99,10 @@ void rp2pExit() {
 
     // exit thread
     rp2pData.state = rp2pUninitialzed;
-    eventSignal(sendEvent);
     mthreadJoin(rp2pData.sendThread);
 
     // cleanup
     free(sendBuffer);
-    eventFree(sendEvent);
     lockFree(sendBufferLock);
 }
 
@@ -188,7 +185,6 @@ void rp2pSend(void *packet, uShort size) {
 
 void rp2pFlush() {
     while (sendBufferStartPos != sendBufferEndPos) {
-        eventSignal(sendEvent);
         mthreadSleep(4500 * 1000);
     }
 }
@@ -284,22 +280,29 @@ static int fitInSendBuffer(uShort size) {
 
 static void handleSend() {
     while (true) {
-        eventAwait(sendEvent);
         if (rp2pData.state == rp2pUninitialzed)
             return;
 
-        while (sendBufferStartPos != sendBufferEndPos) {
+        // send acks
+        for(uByte i=0; i<rp2pData.playerCount; i++) {
+            if(i != rp2pData.localPlayerIndex) {
+                if(seqLastRecieved[i] != 0) {
+                    sendAck(rp2pData.players[i], seqLastRecieved[i]);
+                }
+            }
+        }
+
+        // send messages
+        if (sendBufferStartPos != sendBufferEndPos) {
             lockLock(sendBufferLock);
 
             uShort size = *((uShort *)(sendBuffer + sendBufferStartPos));
             networkSend(sendBuffer + sendBufferStartPos + sizeof(uShort), size);
 
             lockUnlock(sendBufferLock);
-
-            mthreadSleep(8 * 1000 * 1000);
-            if (rp2pData.state == rp2pUninitialzed)
-                return;
         }
+
+        mthreadSleep(8 * 1000 * 1000);
     }
 }
 
@@ -353,7 +356,6 @@ static void rp2pSendInternal(void *packet, uShort size, uByte type) {
     writePointer += size;
 
     lockUnlock(sendBufferLock);
-    eventSignal(sendEvent);
 }
 
 static void clearSendAckedBuffer() {

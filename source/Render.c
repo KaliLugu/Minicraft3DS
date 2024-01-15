@@ -268,7 +268,7 @@ void renderPlayer(PlayerData *pd, float scale) {
     if (swimming) {
         renderTile8(xo, yo + 5, 6, 20 + ((pd->entity.p.swimTimer >> 4) & 1), 0);
         renderTile8(xo + 8, yo + 5, 7, 20 + ((pd->entity.p.swimTimer >> 4) & 1), 0);
-    } else {
+    } else if(scale==1) {
         renderTile8(xo, yo + 8, 0, 22, 0);
         renderTile8(xo + 8, yo + 8, 1, 22, 0);
     }
