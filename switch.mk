@@ -30,7 +30,7 @@ CFLAGS	+=	$(INCLUDE) -D__SWITCH__
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lminizip -lraylib -lEGL -lGLESv2 -lglapi -ldrm_nouveau -lpng -lz -lnx
+LIBS	:= -lraylib -lEGL -lGLESv2 -lglapi -ldrm_nouveau -lpng -lz -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
