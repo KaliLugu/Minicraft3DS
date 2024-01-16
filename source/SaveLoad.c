@@ -596,7 +596,13 @@ bool loadWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
     loadPlayerCount = playerCount;
 
     // extract files
-    if (unzipAndLoad(filename, &loadFile, SAVE_COMMENT, ZIPHELPER_CLEANUP_FILES) != 0) {
+    int result = unzipAndLoad(filename, &loadFile, SAVE_COMMENT, ZIPHELPER_CLEANUP_FILES);
+    if (result != 0) {
+        FILE *errorfile;
+        if ((errorfile = fopen("m3ds_error.bin", "wb"))) {
+            fwrite(&result, sizeof(int), 1, errorfile);
+            fclose(errorfile);
+        }
         return false;
     }
 

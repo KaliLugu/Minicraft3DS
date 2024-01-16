@@ -55,7 +55,7 @@ void generatePass2() {
                 case TILE_STAIRS_DOWN:
                 case TILE_DUNGEON_ENTRANCE:
                     worldData.compassData[level][2] = worldData.compassData[level][2] + 1;
-                    if ((worldData.compassData[level][2] == 1) || (rand() % (worldData.compassData[level][2]) == 0)) {
+                    if ((worldData.compassData[level][2] == 1) || (syncRand() % (worldData.compassData[level][2]) == 0)) {
                         worldData.compassData[level][0] = x;
                         worldData.compassData[level][1] = y;
                     }
@@ -89,7 +89,12 @@ void startGame(bool load, char *filename) {
         initPlayer(players + i);
     }
 
-    if (!load) {
+    if (load) {
+        if (!loadWorld(filename, &eManager, &worldData, players, playerCount)) {
+            // TODO: What do?
+            exitGame();
+        }
+    } else {
         initNewMap();
         airWizardHealthDisplay = 2000;
         int i;
@@ -101,15 +106,6 @@ void startGame(bool load, char *filename) {
         worldData.day = 0;
         worldData.season = 0;
         worldData.rain = false;
-    } else {
-        if (!loadWorld(filename, &eManager, &worldData, players, playerCount)) {
-            // TODO: What do?
-            synchronizerReset();
-
-            setClearColor(0x000000FF);
-            currentSelection = 0;
-            currentMenu = MENU_TITLE;
-        }
     }
 
     // Spawn players
@@ -159,7 +155,7 @@ void syncedTick() {
                 worldData.season = 0;
         }
         worldData.rain = false;
-        if (worldData.season != 3 && rand() % 5 == 0)
+        if (worldData.season != 3 && syncRand() % 5 == 0)
             worldData.rain = true;
     }
 
@@ -179,8 +175,8 @@ void syncedTick() {
 
         // tick tiles
         for (i = 0; i < 324; ++i) {
-            int xx = rand() & 127;
-            int yy = rand() & 127;
+            int xx = syncRand() & 127;
+            int yy = syncRand() & 127;
             tickTile(level, xx, yy);
         }
     }

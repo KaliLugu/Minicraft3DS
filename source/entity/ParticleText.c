@@ -7,7 +7,7 @@
 void tickParticleText(Entity *e, PlayerData *nearestPlayer);
 
 Entity newParticleText(char *str, MColor color, int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_TEXTPARTICLE;
     e.level = level;
     e.textParticle.color = color;
@@ -20,9 +20,9 @@ Entity newParticleText(char *str, MColor color, int x, int y, uByte level) {
     e.textParticle.xx = x;
     e.textParticle.yy = y;
     e.textParticle.zz = 2;
-    e.textParticle.xa = gaussrand(false) * 0.3;
-    e.textParticle.ya = gaussrand(false) * 0.2;
-    e.textParticle.za = ((float)rand() / RAND_MAX) * 0.7 + 2;
+    e.textParticle.xa = syncGaussRand() * 0.3;
+    e.textParticle.ya = syncGaussRand() * 0.2;
+    e.textParticle.za = ((float)syncRand() / SYNC_RAND_MAX) * 0.7 + 2;
 
     e.tickFunction = &tickParticleText;
 

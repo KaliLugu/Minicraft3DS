@@ -3,7 +3,7 @@
 #include "../Data.h"
 
 Entity newEntityNPC(int type, int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_NPC;
     e.level = level;
     e.x = x;

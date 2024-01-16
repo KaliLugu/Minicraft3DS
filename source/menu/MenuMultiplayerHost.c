@@ -18,7 +18,6 @@ void menuMultiplayerHostTick() {
         if (networkGetNodeCount() > 1) {
             currentMenu = MENU_LOADGAME;
             menuLoadGameInit(LOAD_TO_MULTIPLAYER);
-            currentSelection = 0;
         }
     }
 }

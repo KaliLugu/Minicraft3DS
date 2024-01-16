@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Quests.h"
 #include "engine/engine.h"
+#include "network/Synchronizer.h"
 
 #define CIRCLEPAD 0xF0000
 #define CSTICK 0xF00000

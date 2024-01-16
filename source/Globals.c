@@ -195,15 +195,15 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->hostile.health -= damage;
         if (e->hostile.health < 1) {
             if (e->type == ENTITY_ZOMBIE) {
-                addItemsToWorld(newItem(ITEM_FLESH, 1), e->level, e->x + 8, e->y + 8, (rand() % 2) + 1);
+                addItemsToWorld(newItem(ITEM_FLESH, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->type == ENTITY_SKELETON) {
-                addItemsToWorld(newItem(ITEM_BONE, 1), e->level, e->x + 8, e->y + 8, (rand() % 2) + 1);
-                if (rand() % 2 == 0)
+                addItemsToWorld(newItem(ITEM_BONE, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                if (syncRand() % 2 == 0)
                     addItemsToWorld(newItem(ITEM_ARROW_STONE, 1), e->level, e->x + 8, e->y + 8, 1);
             } else if (e->type == ENTITY_KNIGHT) {
-                addItemsToWorld(newItem(ITEM_IRONINGOT, 1), e->level, e->x + 8, e->y + 8, (rand() % 2) + 1);
+                addItemsToWorld(newItem(ITEM_IRONINGOT, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->type == ENTITY_SLIME) {
-                addItemsToWorld(newItem(ITEM_SLIME, 1), e->level, e->x + 8, e->y + 8, (rand() % 2) + 1);
+                addItemsToWorld(newItem(ITEM_SLIME, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             }
             if (damager != NULL && damager->type == ENTITY_PLAYER)
                 damager->p.data->score += 50 * (e->hostile.lvl + 1);
@@ -217,7 +217,7 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->wizard.health -= damage;
         airWizardHealthDisplay = e->wizard.health;
         if (e->wizard.health < 1) {
-            addItemsToWorld(newItem(ITEM_MAGIC_DUST, 1), e->level, e->x + 8, e->y + 8, (rand() % 2) + 2);
+            addItemsToWorld(newItem(ITEM_MAGIC_DUST, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 2);
             removeEntityFromList(e, e->level, &eManager);
             playSound(snd_bossdeath);
 
@@ -236,12 +236,12 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->passive.health -= damage;
         if (e->passive.health < 1) {
             if (e->passive.mtype == 0) {
-                addItemsToWorld(newItem(ITEM_WOOL, 1), e->level, e->x + 8, e->y + 8, (rand() % 3) + 1);
+                addItemsToWorld(newItem(ITEM_WOOL, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 3) + 1);
             } else if (e->passive.mtype == 1) {
-                addItemsToWorld(newItem(ITEM_PORK_RAW, 1), e->level, e->x + 8, e->y + 8, (rand() % 2) + 1);
+                addItemsToWorld(newItem(ITEM_PORK_RAW, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->passive.mtype == 2) {
-                addItemsToWorld(newItem(ITEM_BEEF_RAW, 1), e->level, e->x + 8, e->y + 8, (rand() % 2) + 1);
-                if ((rand() % 2) == 0) {
+                addItemsToWorld(newItem(ITEM_BEEF_RAW, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                if ((syncRand() % 2) == 0) {
                     addItemsToWorld(newItem(ITEM_LEATHER, 1), e->level, e->x + 8, e->y + 8, 1);
                 }
             }
@@ -257,7 +257,7 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->dragon.health -= damage;
         if (e->dragon.health < 1) {
             addItemsToWorld(newItem(ITEM_DRAGON_EGG, 1), e->level, e->x + 8, e->y + 8, 1);
-            addItemsToWorld(newItem(ITEM_DRAGON_SCALE, 1), e->level, e->x + 8, e->y + 8, (rand() % 11) + 10);
+            addItemsToWorld(newItem(ITEM_DRAGON_SCALE, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 11) + 10);
             removeEntityFromList(e, e->level, &eManager);
             playSound(snd_bossdeath);
             for (i = 0; i < playerCount; i++) {
@@ -373,9 +373,9 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
         case ENTITY_AIRWIZARD:
         case ENTITY_DRAGON:
             if (playerUseEnergy(pd, 4 - item->countLevel))
-                hurtEntity(e, (item->countLevel + 1) * 2 + (rand() % 4), dir, 0xFF0000FF, &(pd->entity));
+                hurtEntity(e, (item->countLevel + 1) * 2 + (syncRand() % 4), dir, 0xFF0000FF, &(pd->entity));
             else
-                hurtEntity(e, 1 + rand() % 3, dir, 0xFF0000FF, &(pd->entity));
+                hurtEntity(e, 1 + syncRand() % 3, dir, 0xFF0000FF, &(pd->entity));
             return true;
 
         case ENTITY_MAGIC_PILLAR:
@@ -395,9 +395,9 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
         case ENTITY_AIRWIZARD:
         case ENTITY_DRAGON:
             if (playerUseEnergy(pd, 4 - item->countLevel))
-                hurtEntity(e, (item->countLevel + 1) * 3 + (rand() % (2 + item->countLevel * item->countLevel * 2)), dir, 0xFF0000FF, &(pd->entity));
+                hurtEntity(e, (item->countLevel + 1) * 3 + (syncRand() % (2 + item->countLevel * item->countLevel * 2)), dir, 0xFF0000FF, &(pd->entity));
             else
-                hurtEntity(e, 1 + rand() % 3, dir, 0xFF0000FF, &(pd->entity));
+                hurtEntity(e, 1 + syncRand() % 3, dir, 0xFF0000FF, &(pd->entity));
             return true;
 
         case ENTITY_MAGIC_PILLAR:
@@ -416,7 +416,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
         case ENTITY_SLIME:
         case ENTITY_AIRWIZARD:
         case ENTITY_DRAGON:
-            hurtEntity(e, 1 + rand() % 3, dir, 0xFF0000FF, &(pd->entity));
+            hurtEntity(e, 1 + syncRand() % 3, dir, 0xFF0000FF, &(pd->entity));
             return true;
 
         case ENTITY_MAGIC_PILLAR:
@@ -485,19 +485,19 @@ void EntityVsEntity(Entity *e1, Entity *e2) {
     case ENTITY_ARROW:
         switch (e1->arrow.itemID) {
         case ITEM_ARROW_WOOD:
-            damage = 1 + (rand() % 3);
+            damage = 1 + (syncRand() % 3);
             break;
         case ITEM_ARROW_STONE:
-            damage = 2 + (rand() % 4);
+            damage = 2 + (syncRand() % 4);
             break;
         case ITEM_ARROW_IRON:
-            damage = 8 + (rand() % 9);
+            damage = 8 + (syncRand() % 9);
             break;
         case ITEM_ARROW_GOLD:
-            damage = 16 + (rand() % 9);
+            damage = 16 + (syncRand() % 9);
             break;
         case ITEM_ARROW_GEM:
-            damage = 24 + (rand() % 9);
+            damage = 24 + (syncRand() % 9);
             break;
         }
 
@@ -666,14 +666,14 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
     switch (tile) {
     case TILE_TREE:
         if (item->id == TOOL_AXE && playerUseEnergy(pd, 4 - item->countLevel)) {
-            playerHurtTile(pd, tile, level, x, y, (rand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
+            playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
         break;
     case TILE_ROCK:
     case TILE_HARDROCK:
         if (item->id == TOOL_PICKAXE && playerUseEnergy(pd, 4 - item->countLevel)) {
-            playerHurtTile(pd, tile, level, x, y, (rand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
+            playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
         break;
@@ -697,7 +697,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         } else if (item->id == ITEM_FLOWER) {
             setTile(TILE_FLOWER, level, x, y);
             --item->countLevel;
-            setData(rand() % 4, level, x, y); // determines mirroring.
+            setData(syncRand() % 4, level, x, y); // determines mirroring.
             return 1;
         } else if (item->id == ITEM_WALL_WOOD) {
             setTile(TILE_WOOD_WALL, level, x, y);
@@ -722,10 +722,10 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         } else if (item->id == ITEM_BOOKSHELVES) {
             setTile(TILE_BOOKSHELVES, level, x, y);
             --item->countLevel;
-            setData(rand() % 3, level, x, y); // determines sprite
+            setData(syncRand() % 3, level, x, y); // determines sprite
             return 1;
         } else if (item->id == TOOL_SHOVEL && playerUseEnergy(pd, 4 - item->countLevel)) {
-            if (rand() % 5 == 0)
+            if (syncRand() % 5 == 0)
                 addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
             return 1;
@@ -769,7 +769,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         } else if (item->id == ITEM_BOOKSHELVES) {
             setTile(TILE_BOOKSHELVES, level, x, y);
             --item->countLevel;
-            setData(rand() % 3, level, x, y); // determines sprite
+            setData(syncRand() % 3, level, x, y); // determines sprite
             return 1;
         } else if (item->id == ITEM_WOOD) {
             setTile(TILE_WOOD_FLOOR, level, x, y);
@@ -837,15 +837,15 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         if (item->id == TOOL_HOE) {
             if (getData(level, x, y) > -1) {
                 int age = getData(level, x, y);
-                int count = (rand() % 2);
+                int count = (syncRand() % 2);
                 if (age >= 80)
-                    count = (rand() % 2) + 1;
+                    count = (syncRand() % 2) + 1;
                 addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
-                    count = (rand() % 3) + 2;
+                    count = (syncRand() % 3) + 2;
                 else if (age >= 80)
-                    count = (rand() % 2) + 1;
+                    count = (syncRand() % 2) + 1;
                 addItemsToWorld(newItem(ITEM_WHEAT, 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 setTile(TILE_DIRT, level, x, y);
             }
@@ -854,7 +854,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
     case TILE_WOOD_WALL:
     case TILE_BOOKSHELVES:
         if (item->id == TOOL_AXE && playerUseEnergy(pd, 4 - item->countLevel)) {
-            playerHurtTile(pd, tile, level, x, y, (rand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
+            playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
         break;
@@ -863,7 +863,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
     case TILE_GOLD_WALL:
     case TILE_GEM_WALL:
         if (item->id == TOOL_PICKAXE && playerUseEnergy(pd, 4 - item->countLevel)) {
-            playerHurtTile(pd, tile, level, x, y, (rand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
+            playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
         break;
@@ -892,11 +892,10 @@ void tickTile(uByte level, int x, int y) {
         }
         break;
     case TILE_TREE:
-        if (eManager.lastSlot[level] < 800 && (worldData.daytime > 18000 || worldData.daytime < 5000) && rand() % 800 == 0) {
+        if (eManager.lastSlot[level] < 800 && (worldData.daytime > 18000 || worldData.daytime < 5000) && syncRand() % 800 == 0) {
             // check for nearby glowworms
             // TODO: This should really use getEntities
-            int i = 0;
-            for (i = 0; i < eManager.lastSlot[level]; ++i) {
+            for (int i = 0; i < eManager.lastSlot[level]; i++) {
                 Entity *e = &eManager.entities[level][i];
                 if (e->type == ENTITY_GLOWWORM && ((e->x) - (x << 4)) * ((e->x) - (x << 4)) + ((e->y) - (y << 4)) * ((e->y) - (y << 4)) < (2 << 4) * (2 << 4))
                     return;
@@ -926,7 +925,7 @@ void tickTile(uByte level, int x, int y) {
             setTile(TILE_WATER, level, x, y + 1);
         if (getTile(level, x, y - 1) == TILE_HOLE)
             setTile(TILE_WATER, level, x, y - 1);
-        if (level == 1 && worldData.season == 3 && rand() % 12 == 0) {
+        if (level == 1 && worldData.season == 3 && syncRand() % 12 == 0) {
             if (getTile(level, x + 1, y) != TILE_WATER)
                 setTile(TILE_ICE, level, x, y);
             if (getTile(level, x - 1, y) != TILE_WATER)
@@ -963,16 +962,16 @@ void tickTile(uByte level, int x, int y) {
         break;
     case TILE_GRASS:
         if (getTile(level, x + 1, y) == TILE_DIRT)
-            if ((rand() % 25) == 0)
+            if ((syncRand() % 25) == 0)
                 setTile(TILE_GRASS, level, x + 1, y);
         if (getTile(level, x - 1, y) == TILE_DIRT)
-            if ((rand() % 25) == 0)
+            if ((syncRand() % 25) == 0)
                 setTile(TILE_GRASS, level, x - 1, y);
         if (getTile(level, x, y + 1) == TILE_DIRT)
-            if ((rand() % 25) == 0)
+            if ((syncRand() % 25) == 0)
                 setTile(TILE_GRASS, level, x, y + 1);
         if (getTile(level, x, y - 1) == TILE_DIRT)
-            if ((rand() % 25) == 0)
+            if ((syncRand() % 25) == 0)
                 setTile(TILE_GRASS, level, x, y - 1);
         break;
     case TILE_SAND:
@@ -980,7 +979,7 @@ void tickTile(uByte level, int x, int y) {
             setData(--data, level, x, y);
         break;
     case TILE_CLOUD:
-        if ((rand() % 24000) == 0)
+        if ((syncRand() % 24000) == 0)
             setTile(TILE_CLOUDCACTUS, level, x, y);
         break;
     case TILE_MAGIC_BARRIER:
@@ -995,7 +994,7 @@ void tickTile(uByte level, int x, int y) {
         }
         if (data == 0)
             setTile(TILE_DUNGEON_FLOOR, level, x, y);
-        setData(rand() % 2, level, x, y);
+        setData(syncRand() % 2, level, x, y);
         break;
     case TILE_ICE:
         if (worldData.season != 3) {
@@ -1031,8 +1030,8 @@ void trySpawn(int count, uByte level) {
             minLevel = maxLevel = 4;
         }
 
-        int rx = rand() % 128;
-        int ry = rand() % 128;
+        int rx = syncRand() % 128;
+        int ry = syncRand() % 128;
         int ex = (rx << 4) + 8;
         int ey = (ry << 4) + 8;
 
@@ -1044,10 +1043,10 @@ void trySpawn(int count, uByte level) {
 
         // spawn if tile is free
         if (!tileIsSolid(worldData.map[level][rx + ry * 128], &e)) {
-            if (level == 1 && (rand() % 2) == 0) { // passive entities on overworld
-                e = newEntityPassive(rand() % 3, ex, ey, level);
+            if (level == 1 && (syncRand() % 2) == 0) { // passive entities on overworld
+                e = newEntityPassive(syncRand() % 3, ex, ey, level);
             } else {
-                int lvl = (rand() % (maxLevel - minLevel + 1)) + minLevel;
+                int lvl = (syncRand() % (maxLevel - minLevel + 1)) + minLevel;
                 int randMax = 1;
 
                 if (level > 1 || level == 0)
@@ -1055,7 +1054,7 @@ void trySpawn(int count, uByte level) {
                 if (level > 3)
                     randMax = 3;
 
-                switch (rand() % (randMax + 1)) {
+                switch (syncRand() % (randMax + 1)) {
                 case 0:
                     e = newEntitySlime(lvl, ex, ey, level);
                     break;
@@ -1141,20 +1140,20 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
     // TODO: Most of this can be combined a lot
     switch (tile) {
     case TILE_TREE:
-        if (rand() % 120 == 0)
+        if (syncRand() % 120 == 0)
             addEntityToList(newEntityItem(newItem(ITEM_APPLE, 1), (xt << 4) + 8, (yt << 4) + 8, level), &eManager);
-        damageAndBreakTile(level, xt, yt, damage, 20, TILE_GRASS, 2, newItem(ITEM_WOOD, 1), rand() % 2 + 1, newItem(ITEM_ACORN, 1), rand() % 2);
+        damageAndBreakTile(level, xt, yt, damage, 20, TILE_GRASS, 2, newItem(ITEM_WOOD, 1), syncRand() % 2 + 1, newItem(ITEM_ACORN, 1), syncRand() % 2);
         break;
     case TILE_CACTUS:
-        damageAndBreakTile(level, xt, yt, damage, 10, TILE_SAND, 1, newItem(ITEM_CACTUS, 1), rand() % 2 + 1);
+        damageAndBreakTile(level, xt, yt, damage, 10, TILE_SAND, 1, newItem(ITEM_CACTUS, 1), syncRand() % 2 + 1);
         break;
     case TILE_ROCK:
-        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 2, newItem(ITEM_STONE, 1), rand() % 4 + 1, newItem(ITEM_COAL, 1), rand() % 2);
+        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 2, newItem(ITEM_STONE, 1), syncRand() % 4 + 1, newItem(ITEM_COAL, 1), syncRand() % 2);
         break;
     case TILE_HARDROCK:
         if ((pd->activeItem->id != TOOL_PICKAXE || pd->activeItem->countLevel < 4) && !TESTGODMODE)
             damage = 0;
-        damageAndBreakTile(level, xt, yt, damage, 200, TILE_DIRT, 2, newItem(ITEM_STONE, 1), rand() % 4 + 1, newItem(ITEM_COAL, 1), rand() % 2);
+        damageAndBreakTile(level, xt, yt, damage, 200, TILE_DIRT, 2, newItem(ITEM_STONE, 1), syncRand() % 4 + 1, newItem(ITEM_COAL, 1), syncRand() % 2);
         break;
     case TILE_IRONORE:
     case TILE_GOLDORE:
@@ -1164,8 +1163,8 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
         addSmashParticles(level, xt << 4, yt << 4, damage);
         setData(getData(level, xt, yt) + damage, level, xt, yt);
         if (getData(level, xt, yt) > 0) {
-            int count = rand() & 1;
-            if (getData(level, xt, yt) >= (rand() % 10) + 3) {
+            int count = syncRand() & 1;
+            if (getData(level, xt, yt) >= (syncRand() % 10) + 3) {
                 if (level != 5)
                     setTile(TILE_DIRT, level, xt, yt);
                 else
@@ -1186,8 +1185,8 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
         addSmashParticles(level, xt << 4, yt << 4, damage);
         setData(getData(level, xt, yt) + damage, level, xt, yt);
         if (getData(level, xt, yt) > 0) {
-            int count = rand() % 3;
-            if (getData(level, xt, yt) >= (rand() % 10) + 3) {
+            int count = syncRand() % 3;
+            if (getData(level, xt, yt) >= (syncRand() % 10) + 3) {
                 setTile(TILE_CLOUD, level, xt, yt);
                 count += 3;
             }
@@ -1206,15 +1205,15 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
     case TILE_WHEAT:
         if (getData(level, xt, yt) > -1) {
             int age = getData(level, xt, yt);
-            int count = (rand() % 2);
+            int count = (syncRand() % 2);
             if (age >= 80)
-                count = (rand() % 2) + 1;
+                count = (syncRand() % 2) + 1;
             addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             count = 0;
             if (age == 100)
-                count = (rand() % 3) + 2;
+                count = (syncRand() % 3) + 2;
             else if (age >= 80)
-                count = (rand() % 2) + 1;
+                count = (syncRand() % 2) + 1;
             addItemsToWorld(newItem(ITEM_WHEAT, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             setTile(TILE_DIRT, level, xt, yt);
         }
@@ -1328,17 +1327,17 @@ void entityTileInteract(Entity *e, int tile, uByte level, int x, int y) {
         return;
     case TILE_WHEAT:
         if (e->type == ENTITY_PLAYER || e->type == ENTITY_ZOMBIE) {
-            if (getData(level, x, y) > -1 && rand() % 20 == 0) {
+            if (getData(level, x, y) > -1 && syncRand() % 20 == 0) {
                 int age = getData(level, x, y);
-                int count = (rand() % 2);
+                int count = (syncRand() % 2);
                 if (age >= 80)
-                    count = (rand() % 2) + 1;
+                    count = (syncRand() % 2) + 1;
                 addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
-                    count = (rand() % 3) + 2;
+                    count = (syncRand() % 3) + 2;
                 else if (age >= 80)
-                    count = (rand() % 2) + 1;
+                    count = (syncRand() % 2) + 1;
                 addItemsToWorld(newItem(ITEM_WHEAT, 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 setTile(TILE_DIRT, level, x, y);
             }
@@ -1346,7 +1345,7 @@ void entityTileInteract(Entity *e, int tile, uByte level, int x, int y) {
         return;
     case TILE_FARM:
         if (e->type == ENTITY_PLAYER || e->type == ENTITY_ZOMBIE) {
-            if (rand() % 20 == 0)
+            if (syncRand() % 20 == 0)
                 setTile(TILE_DIRT, level, x, y);
         }
         return;

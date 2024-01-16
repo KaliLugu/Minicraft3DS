@@ -6,7 +6,7 @@
 void tickEntityPassive(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityPassive(int type, int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_PASSIVE;
     e.level = level;
     e.x = x;
@@ -62,10 +62,10 @@ void tickEntityPassive(Entity *e, PlayerData *nearestPlayer) {
         e->passive.walkDist++;
 
     int pspeed = syncTickCount & 1;
-    if (!moveMob(e, e->passive.xa * pspeed, e->passive.ya * pspeed) || (rand() % 100) == 0) {
+    if (!moveMob(e, e->passive.xa * pspeed, e->passive.ya * pspeed) || (syncRand() % 100) == 0) {
         e->passive.randWalkTime = 60;
-        e->passive.xa = ((rand() % 3) - 1) * (rand() % 2);
-        e->passive.ya = ((rand() % 3) - 1) * (rand() % 2);
+        e->passive.xa = ((syncRand() % 3) - 1) * (syncRand() % 2);
+        e->passive.ya = ((syncRand() % 3) - 1) * (syncRand() % 2);
     }
     if (e->passive.randWalkTime > 0)
         e->passive.randWalkTime--;

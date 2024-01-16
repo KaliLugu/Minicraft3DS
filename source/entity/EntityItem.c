@@ -7,7 +7,7 @@
 void tickEntityItem(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityItem(Item item, int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_ITEM;
     e.level = level;
     e.entityItem.age = 0;
@@ -23,9 +23,9 @@ Entity newEntityItem(Item item, int x, int y, uByte level) {
     e.entityItem.xx = x;
     e.entityItem.yy = y;
     e.entityItem.zz = 2;
-    e.entityItem.xa = gaussrand(false) * 0.1;
-    e.entityItem.ya = gaussrand(false) * 0.1;
-    e.entityItem.za = ((float)rand() / RAND_MAX) * 0.45 + 1;
+    e.entityItem.xa = syncGaussRand() * 0.1;
+    e.entityItem.ya = syncGaussRand() * 0.1;
+    e.entityItem.za = ((float)syncRand() / SYNC_RAND_MAX) * 0.45 + 1;
 
     return e;
 }

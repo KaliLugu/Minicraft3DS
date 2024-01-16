@@ -6,7 +6,7 @@
 void tickEntityAirWizard(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityAirWizard(int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_AIRWIZARD;
     e.level = level;
     e.x = x;
@@ -89,10 +89,10 @@ void tickEntityAirWizard(Entity *e, PlayerData *nearestPlayer) {
     }
 
     int wSpeed = (syncTickCount % 4) == 0 ? 0 : 1;
-    if (!moveMob(e, e->wizard.xa * wSpeed, e->wizard.ya * wSpeed) || (rand() % 100) == 0) {
+    if (!moveMob(e, e->wizard.xa * wSpeed, e->wizard.ya * wSpeed) || (syncRand() % 100) == 0) {
         e->wizard.randWalkTime = 30;
-        e->wizard.xa = ((rand() % 3) - 1) * (rand() % 2);
-        e->wizard.ya = ((rand() % 3) - 1) * (rand() % 2);
+        e->wizard.xa = ((syncRand() % 3) - 1) * (syncRand() % 2);
+        e->wizard.ya = ((syncRand() % 3) - 1) * (syncRand() % 2);
     }
 
     if (e->wizard.xa != 0 || e->wizard.ya != 0) {
@@ -115,7 +115,7 @@ void tickEntityAirWizard(Entity *e, PlayerData *nearestPlayer) {
         if (e->wizard.randWalkTime == 0 && nearestPlayer != NULL) {
             int xd = nearestPlayer->entity.x - e->x;
             int yd = nearestPlayer->entity.y - e->y;
-            if (rand() % 4 == 0 && xd * xd + yd * yd < 50 * 50) {
+            if (syncRand() % 4 == 0 && xd * xd + yd * yd < 50 * 50) {
                 if (e->wizard.attackDelay == 0 && e->wizard.attackTime == 0)
                     e->wizard.attackDelay = 120;
             }

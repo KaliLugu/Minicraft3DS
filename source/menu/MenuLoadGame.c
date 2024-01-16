@@ -54,7 +54,7 @@ static void createOrLoad(char *name) {
         initGame = 1;
         currentMenu = MENU_LOADING;
     } else if (loadGameTarget == LOAD_TO_MULTIPLAYER) {
-        initMPGame = 2;
+        initMPGame = 1;
     } else if (loadGameTarget == LOAD_TO_EDITOR) {
         editorInit();
         currentMenu = MENU_EDITOR;
@@ -83,7 +83,6 @@ void menuLoadGameTick() {
         char *name = inputText("", 1, 20, isWorldNameValid);
         enteringName = false;
         if (name != NULL && checkFileNameForErrors(name) == 0) {
-            ++worldFileCount;
             createOrLoad(name);
         }
     }

@@ -6,7 +6,7 @@
 void tickEntityDragon(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityDragon(int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_DRAGON;
     e.level = level;
     e.x = x;
@@ -44,7 +44,7 @@ void tickEntityDragon(Entity *e, PlayerData *nearestPlayer) {
     if (e->dragon.attackDelay > 0) {
         e->dragon.attackDelay--;
         if (e->dragon.attackDelay <= 0) {
-            e->dragon.attackType = rand() % 2;
+            e->dragon.attackType = syncRand() % 2;
             e->dragon.attackTime = 121;
         }
         return;
@@ -84,7 +84,7 @@ void tickEntityDragon(Entity *e, PlayerData *nearestPlayer) {
                 else if (e->dragon.dir == 3)
                     dfdir = 0 * 3.141592 / 2;
 
-                dfdir += 0.03141592 * ((rand() % 33) - 16);
+                dfdir += 0.03141592 * ((syncRand() % 33) - 16);
 
                 addEntityToList(newEntityDragonFire(e, e->dragon.attackType, e->x + cos(dfdir) * 14, e->y + sin(dfdir) * 14, cos(dfdir), sin(dfdir)), &eManager);
             }
@@ -136,10 +136,10 @@ void tickEntityDragon(Entity *e, PlayerData *nearestPlayer) {
     }
 
     int dSpeed = (syncTickCount % 4) == 0 ? 0 : 1;
-    if (!moveMob(e, e->dragon.xa * dSpeed, e->dragon.ya * dSpeed) || (rand() % 120) == 0) {
+    if (!moveMob(e, e->dragon.xa * dSpeed, e->dragon.ya * dSpeed) || (syncRand() % 120) == 0) {
         e->dragon.randWalkTime = 30;
-        e->dragon.xa = ((rand() % 3) - 1) * (rand() % 2);
-        e->dragon.ya = ((rand() % 3) - 1) * (rand() % 2);
+        e->dragon.xa = ((syncRand() % 3) - 1) * (syncRand() % 2);
+        e->dragon.ya = ((syncRand() % 3) - 1) * (syncRand() % 2);
     }
 
     if (e->dragon.xa != 0 || e->dragon.ya != 0) {
@@ -161,7 +161,7 @@ void tickEntityDragon(Entity *e, PlayerData *nearestPlayer) {
     if (nearestPlayer != NULL) {
         int xd = nearestPlayer->entity.x - e->x;
         int yd = nearestPlayer->entity.y - e->y;
-        if (rand() % 12 == 0 && xd * xd + yd * yd < 50 * 50) {
+        if (syncRand() % 12 == 0 && xd * xd + yd * yd < 50 * 50) {
             if (e->dragon.attackDelay == 0 && e->dragon.attackTime == 0)
                 e->dragon.attackDelay = 40;
         }

@@ -5,7 +5,7 @@
 void tickParticleSmash(Entity *e, PlayerData *nearestPlayer);
 
 Entity newParticleSmash(int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_SMASHPARTICLE;
     e.level = level;
     e.smashParticle.age = 0;

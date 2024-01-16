@@ -6,7 +6,7 @@
 void tickEntityGlowworm(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityGlowworm(int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_GLOWWORM;
     e.level = level;
     e.glowworm.xa = 0;
@@ -16,6 +16,7 @@ Entity newEntityGlowworm(int x, int y, uByte level) {
     e.x = x;
     e.y = y;
     e.canPass = true;
+    e.canSwim = false;
 
     e.tickFunction = &tickEntityGlowworm;
 
@@ -24,7 +25,7 @@ Entity newEntityGlowworm(int x, int y, uByte level) {
 
 void tickEntityGlowworm(Entity *e, PlayerData *nearestPlayer) {
     if (worldData.daytime > 5000 && worldData.daytime < 6000) {
-        if (rand() % 200 == 0) {
+        if (syncRand() % 200 == 0) {
             removeEntityFromList(e, e->level, &eManager);
             return;
         }
@@ -34,14 +35,14 @@ void tickEntityGlowworm(Entity *e, PlayerData *nearestPlayer) {
     }
 
     int gspeed = (((syncTickCount & 0x3) == 3) ? 1 : 0);
-    if (!moveMob(e, e->glowworm.xa * gspeed, e->glowworm.ya * gspeed) || (e->glowworm.randWalkTime == 0) || (rand() % 20) == 0) {
+    if (!moveMob(e, e->glowworm.xa * gspeed, e->glowworm.ya * gspeed) || (e->glowworm.randWalkTime == 0) || (syncRand() % 20) == 0) {
         if (e->glowworm.randWalkTime != 0) {
-            e->glowworm.waitTime = 20 + (rand() % 60);
+            e->glowworm.waitTime = 20 + (syncRand() % 60);
         }
         if (e->glowworm.waitTime == 0 || getTile(e->level, (e->x) >> 4, (e->y) >> 4) != TILE_TREE) {
             e->glowworm.randWalkTime = 20;
-            e->glowworm.xa = ((rand() % 3) - 1) * (rand() % 2);
-            e->glowworm.ya = ((rand() % 3) - 1) * (rand() % 2);
+            e->glowworm.xa = ((syncRand() % 3) - 1) * (syncRand() % 2);
+            e->glowworm.ya = ((syncRand() % 3) - 1) * (syncRand() % 2);
         } else {
             e->glowworm.xa = 0;
             e->glowworm.ya = 0;
@@ -50,7 +51,7 @@ void tickEntityGlowworm(Entity *e, PlayerData *nearestPlayer) {
     if (e->glowworm.randWalkTime > 0) {
         e->glowworm.randWalkTime--;
         if (e->glowworm.randWalkTime == 0 && (e->glowworm.xa != 0 || e->glowworm.xa != 0)) {
-            e->glowworm.waitTime = 120 + (rand() % 60);
+            e->glowworm.waitTime = 120 + (syncRand() % 60);
         }
     } else if (e->glowworm.waitTime > 0) {
         e->glowworm.waitTime--;

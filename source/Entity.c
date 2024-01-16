@@ -9,7 +9,7 @@ Entity nullEntity;
 void addEntityToList(Entity e, EntityManager *em) {
     e.slotNum = em->lastSlot[e.level];
     em->entities[e.level][em->lastSlot[e.level]] = e;
-    ++em->lastSlot[e.level];
+    em->lastSlot[e.level]++;
 }
 
 void removeEntityFromList(Entity *e, uByte level, EntityManager *em) {

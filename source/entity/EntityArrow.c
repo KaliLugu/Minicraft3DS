@@ -6,7 +6,7 @@
 void tickEntityArrow(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_ARROW;
     e.level = level;
     e.arrow.age = 0;

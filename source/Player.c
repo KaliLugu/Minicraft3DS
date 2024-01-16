@@ -157,6 +157,8 @@ PlayerData *getNearestPlayer(uByte level, int x, int y) {
         if (dist < nearestDist) {
             nearest = i;
             nearestDist = dist;
+        } else if (dist == nearestDist && players[i].id < players[nearest].id) {
+            nearest = i;
         }
     }
 
@@ -253,7 +255,7 @@ bool playerUseItem(PlayerData *pd) {
             return true;
         break;
     case ITEM_FLESH:
-        if (_playerUseItemEat(pd, 4 + (rand() % 4), 1))
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
         break;
     case ITEM_BREAD:
@@ -261,7 +263,7 @@ bool playerUseItem(PlayerData *pd) {
             return true;
         break;
     case ITEM_PORK_RAW:
-        if (_playerUseItemEat(pd, 4 + (rand() % 4), 1))
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
         break;
     case ITEM_PORK_COOKED:
@@ -269,7 +271,7 @@ bool playerUseItem(PlayerData *pd) {
             return true;
         break;
     case ITEM_BEEF_RAW:
-        if (_playerUseItemEat(pd, 4 + (rand() % 4), 1))
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
         break;
     case ITEM_BEEF_COOKED:
@@ -404,7 +406,7 @@ void playerAttack(PlayerData *pd) {
     // breaking tiles
     if (pd->activeItem == &noItem || pd->activeItem->id == TOOL_SWORD || pd->activeItem->id == TOOL_AXE) {
         if (xt >= 0 && yt >= 0 && xt < 128 && 128) {
-            playerHurtTile(pd, getTile(pd->entity.level, xt, yt), pd->entity.level, xt, yt, (rand() % 3) + 1, pd->entity.p.dir);
+            playerHurtTile(pd, getTile(pd->entity.level, xt, yt), pd->entity.level, xt, yt, (syncRand() % 3) + 1, pd->entity.p.dir);
         }
     }
 }
@@ -668,8 +670,8 @@ void playerDamage(PlayerData *pd, int damage, int dir, MColor hurtColor, Entity 
 
 void playerSpawn(PlayerData *pd) {
     while (true) {
-        int rx = rand() % 128;
-        int ry = rand() % 128;
+        int rx = syncRand() % 128;
+        int ry = syncRand() % 128;
         if (getTile(pd->entity.level, rx, ry) == TILE_GRASS) {
             pd->entity.x = (rx << 4) + 8;
             pd->entity.y = (ry << 4) + 8;

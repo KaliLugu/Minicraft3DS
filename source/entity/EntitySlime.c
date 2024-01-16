@@ -6,7 +6,7 @@
 void tickEntitySlime(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntitySlime(int lvl, int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_SLIME;
     e.level = level;
     e.x = x;
@@ -46,10 +46,10 @@ void tickEntitySlime(Entity *e, PlayerData *nearestPlayer) {
     if (e->hurtTime > 0)
         e->hurtTime--;
 
-    if (!moveMob(e, e->hostile.xa, e->hostile.ya) || (rand() % 10) == 0) {
+    if (!moveMob(e, e->hostile.xa, e->hostile.ya) || (syncRand() % 10) == 0) {
         if (e->hostile.randWalkTime <= -10) {
-            e->hostile.xa = ((rand() % 3) - 1);
-            e->hostile.ya = ((rand() % 3) - 1);
+            e->hostile.xa = ((syncRand() % 3) - 1);
+            e->hostile.ya = ((syncRand() % 3) - 1);
 
             if (nearestPlayer != NULL) {
                 int xd = nearestPlayer->entity.x - e->x;

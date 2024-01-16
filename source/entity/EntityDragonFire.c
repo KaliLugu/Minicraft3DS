@@ -6,7 +6,7 @@
 void tickEntityDragonFire(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityDragonFire(Entity *parent, uByte type, int x, int y, float xa, float ya) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_DRAGONPROJECTILE;
     e.level = parent->level;
     e.dragonFire.age = 0;

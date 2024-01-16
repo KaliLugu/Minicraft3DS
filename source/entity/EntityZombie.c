@@ -6,7 +6,7 @@
 void tickEntityZombie(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityZombie(int lvl, int x, int y, uByte level) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_ZOMBIE;
     e.level = level;
     e.x = x;
@@ -78,10 +78,10 @@ void tickEntityZombie(Entity *e, PlayerData *nearestPlayer) {
         e->hostile.walkDist++;
 
     int speed = syncTickCount & 1;
-    if (!moveMob(e, e->hostile.xa * speed, e->hostile.ya * speed) || (rand() % 100) == 0) {
+    if (!moveMob(e, e->hostile.xa * speed, e->hostile.ya * speed) || (syncRand() % 100) == 0) {
         e->hostile.randWalkTime = 60;
-        e->hostile.xa = ((rand() % 3) - 1) * (rand() % 2);
-        e->hostile.ya = ((rand() % 3) - 1) * (rand() % 2);
+        e->hostile.xa = ((syncRand() % 3) - 1) * (syncRand() % 2);
+        e->hostile.ya = ((syncRand() % 3) - 1) * (syncRand() % 2);
     }
     if (e->hostile.randWalkTime > 0)
         e->hostile.randWalkTime--;

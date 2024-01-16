@@ -6,7 +6,7 @@
 void tickEntitySpark(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntitySpark(Entity *parent, float xa, float ya) {
-    Entity e;
+    Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_SPARK;
     e.level = parent->level;
     e.spark.age = 0;

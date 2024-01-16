@@ -16,12 +16,13 @@
 
 int syncTickCount;
 
-static uByte synchronizerWriteBuffer[NETWORK_MAXDATASIZE + 1];
+static uByte synchronizerWriteBuffer[RP2P_MAXDATASIZE] = {0};
 static FILE *synchronizerRecvFile;
 static sInt synchronizerRecvFileSize;
 
 static sInt synchronizerLocalTurn;
 static sInt synchronizerNextSeed;
+static bool synchronizerRandValid = false;
 static bool synchronizerRunning = false;
 
 static int synchronizerCurrentTicks;
@@ -39,6 +40,8 @@ static void synchronizerSendSaveFile();
 static void synchronizerSendStart(sInt seed);
 static void synchronizerSendLocalInputs();
 
+static void synchronizerSetSeed(sInt seed);
+
 void synchronizerStartSP() {
     // switch menu
     currentMenu = MENU_LOADING;
@@ -48,11 +51,13 @@ void synchronizerStartSP() {
 }
 
 void synchronizerStartMPHost() {
-    rp2pInit(true, localUID, &synchronizerHandleMessage, &synchronizerHandleStart);
+    synchronizerRunning = false;
+    rp2pInit(true, localUID, &synchronizerHandleStart, &synchronizerHandleMessage);
 }
 
 void synchronizerStartMPClient() {
-    rp2pInit(false, localUID, &synchronizerHandleMessage, &synchronizerHandleStart);
+    synchronizerRunning = false;
+    rp2pInit(false, localUID, &synchronizerHandleStart, &synchronizerHandleMessage);
 }
 
 void synchronizerTick(void (*gtick)(void)) {
@@ -60,15 +65,14 @@ void synchronizerTick(void (*gtick)(void)) {
         synchronizerNextTurn();
 
         // reset random generators
-        srand(synchronizerNextSeed);
-        gaussrand(true);
-
-        syncTickCount++;
+        synchronizerSetSeed(synchronizerNextSeed);
+        synchronizerRandValid = true;
 
         // call game tick
         (*gtick)();
 
-        synchronizerNextSeed = rand();
+        synchronizerNextSeed = syncRand();
+        synchronizerRandValid = false;
     }
 }
 
@@ -86,29 +90,37 @@ bool synchronizerIsRunning() {
 // helpers for random numbers
 // TODO: this is in a wierd place currently
 #define PI 3.141592654
-double gaussrand(bool reset) {
-    static double U, V;
-    static int phase = 0;
-    double Z;
+static unsigned long int rNext = 1;
+static double grU, grV;
+static int grPhase = 0;
 
-    if (reset) {
-        U = 0;
-        V = 0;
-        phase = 0;
+sInt syncRand() {
+    if (synchronizerRunning && !synchronizerRandValid)
         return 0;
-    }
+    rNext = rNext * 1103515245 + 12345;
+    return (sInt)((rNext / 65536) % 32768);
+}
 
-    if (phase == 0) {
-        U = (rand() + 1.) / (RAND_MAX + 2.);
-        V = rand() / (RAND_MAX + 1.);
-        Z = sqrt(-2 * log(U)) * sin(2 * PI * V);
+double syncGaussRand() {
+    double grZ;
+    if (grPhase == 0) {
+        grU = (syncRand() + 1.) / (SYNC_RAND_MAX + 2.);
+        grV = syncRand() / (SYNC_RAND_MAX + 1.);
+        grZ = sqrt(-2 * log(grU)) * sin(2 * PI * grV);
     } else {
-        Z = sqrt(-2 * log(U)) * cos(2 * PI * V);
+        grZ = sqrt(-2 * log(grU)) * cos(2 * PI * grV);
     }
 
-    phase = 1 - phase;
+    grPhase = 1 - grPhase;
 
-    return Z;
+    return grZ;
+}
+
+void synchronizerSetSeed(sInt seed) {
+    rNext = seed;
+    grU = 0;
+    grV = 0;
+    grPhase = 0;
 }
 
 static void synchronizerHandleStart() {
@@ -117,12 +129,9 @@ static void synchronizerHandleStart() {
 
     // host
     if (rp2pGetLocalPlayerIndex() == 0) {
-        int seed = rand();
+        sInt seed = rand();
         synchronizerSendSaveFile();
         synchronizerSendStart(seed);
-
-        // start locally
-        synchronizerLoadWorld(seed, rp2pGetPlayerCount(), 0);
     }
 }
 
@@ -138,6 +147,7 @@ static void synchronizerLoadWorld(sInt seed, uByte initPlayerCount, uByte initPl
         resetKeys(&(players[i].inputs));
         for (int j = 0; j < MAX_INPUT_BUFFER; j++) {
             resetKeys(&(players[i].nextInputs[j]));
+            players[i].nextTurnReady[j] = false;
         }
         players[i].nextTurnReady[0] = true;
         if (rp2pIsActive())
@@ -166,9 +176,11 @@ static void synchronizerLoadWorld(sInt seed, uByte initPlayerCount, uByte initPl
         }
     }
 
+    // clear menu
+    currentMenu = MENU_NONE;
+
     // reset random generators
-    srand(synchronizerNextSeed);
-    gaussrand(true);
+    synchronizerSetSeed(synchronizerNextSeed);
 
     // start the game
     startGame(doLoad, loadName);
@@ -182,10 +194,7 @@ static void synchronizerLoadWorld(sInt seed, uByte initPlayerCount, uByte initPl
         }
     }
 
-    // clear menu
-    currentMenu = MENU_NONE;
-
-    synchronizerCurrentTicks = 1;
+    synchronizerCurrentTicks = 0;
     synchronizerRunning = true;
 }
 
@@ -288,6 +297,8 @@ static void synchronizerNextTurn() {
         // send local input
         synchronizerSendLocalInputs();
     }
+
+    syncTickCount++;
 }
 
 static int synchronizerGetTurnIndex(sInt turn) {
@@ -345,36 +356,38 @@ static void synchronizerSendSaveFile() {
     FILE *file = fopen(currentFileName, "rb");
     if (file != NULL) {
         fseek(file, 0, SEEK_END); // seek to end of file
-        sInt fsize = ftell(file); // get current file pointer
+        sInt fsize = ftell(file); // get current file pointer for size
         fseek(file, 0, SEEK_SET); // seek back to beginning of file
 
         // send file header
-        void *buffer = synchronizerWriteBuffer;
+        void *allocedBuffer = malloc(RP2P_MAXDATASIZE);
+        void *buffer = allocedBuffer;
         uShort size = 0;
         buffer = writeUByte(buffer, &size, SYNC_FILE_START);
         buffer = writeSInt(buffer, &size, fsize);
-        rp2pSend(synchronizerWriteBuffer, size);
+        rp2pSend(allocedBuffer, size);
 
         // send file data
         while (fsize > 0) {
-            buffer = synchronizerWriteBuffer;
+            buffer = allocedBuffer;
             size = 0;
             buffer = writeUByte(buffer, &size, SYNC_FILE_DATA);
 
             // read file data
-            sShort towrite = NETWORK_MAXDATASIZE - size;
+            sShort towrite = RP2P_MAXDATASIZE - size;
             if (towrite > fsize)
                 towrite = fsize;
 
-            fread(buffer, 1, towrite, file);
+            sShort actuallyWritten = fread(buffer, 1, towrite, file);
 
-            size += towrite;
-            fsize -= towrite;
+            size += actuallyWritten;
+            fsize -= actuallyWritten;
 
             // send file data
-            rp2pSend(synchronizerWriteBuffer, size);
+            rp2pSend(allocedBuffer, size);
         }
         rp2pFlush();
+        free(allocedBuffer);
         fclose(file);
     }
 }
@@ -385,5 +398,6 @@ static void synchronizerSendStart(sInt seed) {
     buffer = writeUByte(buffer, &size, SYNC_START);
     buffer = writeSInt(buffer, &size, seed);
     rp2pSend(synchronizerWriteBuffer, size);
+    synchronizerHandleMessage(localUID, rp2pGetLocalPlayerIndex(), synchronizerWriteBuffer, size);
     rp2pFlush();
 }

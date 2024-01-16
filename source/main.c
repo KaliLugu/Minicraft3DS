@@ -64,6 +64,8 @@ bool tick() {
     if (initBGMap > 0 && --initBGMap == 0)
         setupBGMap();
 
+    rp2pTick();
+
     if (currentMenu == MENU_NONE) {
         tickGame();
     } else {
@@ -114,7 +116,9 @@ int main() {
         fread(&localUID, sizeof(sInt), 1, file);
         fclose(file);
     } else {
-        localUID = (((sInt)(rand() % 256)) << 24) | (((sInt)(rand() % 256)) << 16) | (((sInt)(rand() % 256)) << 8) | (((sInt)(rand() % 256)));
+        do {
+            localUID = (((sInt)(rand() % 256)) << 24) | (((sInt)(rand() % 256)) << 16) | (((sInt)(rand() % 256)) << 8) | (((sInt)(rand() % 256)));
+        } while (localUID == 0);
 
         if ((file = fopen("m3ds_uid.bin", "wb"))) {
             fwrite(&localUID, sizeof(sInt), 1, file);

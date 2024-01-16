@@ -1,4 +1,5 @@
 #include "MapGen.h"
+#include "network/Synchronizer.h"
 
 int featureX;
 int featureY;
@@ -11,7 +12,7 @@ uByte randomTile[] = {0, 0, 0, 0, 0, 0, 0, 1, 1, 2};
 int randomTileSize = 10;
 
 float nextFloat() {
-    return (float)rand() / RAND_MAX;
+    return (float)syncRand() / SYNC_RAND_MAX;
 }
 
 double sample(double *values, int x, int y) {
@@ -214,14 +215,14 @@ void createTopMap(int w, int h, uByte level, uByte *map, uByte *data) {
     }
 
     for (i = 0; i < w * h / 2800; ++i) {
-        int xs = rand() % w;
-        int ys = rand() % h;
+        int xs = syncRand() % w;
+        int ys = syncRand() % h;
         for (k = 0; k < 10; ++k) {
-            x = xs + (rand() % 21) - 10;
-            y = ys + (rand() % 21) - 10;
+            x = xs + (syncRand() % 21) - 10;
+            y = ys + (syncRand() % 21) - 10;
             for (j = 0; j < 100; ++j) {
-                int xo = x + (rand() % 5) - (rand() % 5);
-                int yo = y + (rand() % 5) - (rand() % 5);
+                int xo = x + (syncRand() % 5) - (syncRand() % 5);
+                int yo = y + (syncRand() % 5) - (syncRand() % 5);
                 for (yy = yo - 1; yy <= yo + 1; ++yy) {
                     for (xx = xo - 1; xx <= xo + 1; ++xx) {
                         if (xx >= 0 && yy >= 0 && xx < w && yy < h)
@@ -236,11 +237,11 @@ void createTopMap(int w, int h, uByte level, uByte *map, uByte *data) {
     createVillage(w, h, level, map, data);
 
     for (i = 0; i < w * h / 400; ++i) {
-        x = rand() % w;
-        y = rand() % h;
+        x = syncRand() % w;
+        y = syncRand() % h;
         for (j = 0; j < 200; ++j) {
-            xx = x + (rand() % 15) - (rand() % 15);
-            yy = y + (rand() % 15) - (rand() % 15);
+            xx = x + (syncRand() % 15) - (syncRand() % 15);
+            yy = y + (syncRand() % 15) - (syncRand() % 15);
             if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
                 if (map[xx + yy * w] == TILE_GRASS) {
                     map[xx + yy * w] = TILE_TREE;
@@ -250,23 +251,23 @@ void createTopMap(int w, int h, uByte level, uByte *map, uByte *data) {
     }
 
     for (i = 0; i < w * h / 800; ++i) {
-        x = rand() % w;
-        y = rand() % h;
+        x = syncRand() % w;
+        y = syncRand() % h;
         for (j = 0; j < 30; ++j) {
-            xx = x + (rand() % 5) - (rand() % 5);
-            yy = y + (rand() % 5) - (rand() % 5);
+            xx = x + (syncRand() % 5) - (syncRand() % 5);
+            yy = y + (syncRand() % 5) - (syncRand() % 5);
             if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
                 if (map[xx + yy * w] == TILE_GRASS) {
                     map[xx + yy * w] = TILE_FLOWER;
-                    data[xx + yy * w] = rand() % 4; // determines mirroring.
+                    data[xx + yy * w] = syncRand() % 4; // determines mirroring.
                 }
             }
         }
     }
 
     for (i = 0; i < w * h / 100; ++i) {
-        xx = rand() % w;
-        yy = rand() % h;
+        xx = syncRand() % w;
+        yy = syncRand() % h;
         if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
             if (map[xx + yy * w] == TILE_SAND) {
                 map[xx + yy * w] = TILE_CACTUS;
@@ -276,8 +277,8 @@ void createTopMap(int w, int h, uByte level, uByte *map, uByte *data) {
 
     int sCount, attempts = 0;
     for (sCount = 0; sCount < 4;) {
-        xx = rand() % w;
-        yy = rand() % h;
+        xx = syncRand() % w;
+        yy = syncRand() % h;
         if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
             if (map[xx + yy * w] == TILE_ROCK) {
                 map[xx + yy * w] = TILE_STAIRS_DOWN;
@@ -368,22 +369,22 @@ void createUndergroundMap(int w, int h, int depthLevel, uByte level, uByte *map,
         // generate mushroom patches
     } else if (depthLevel == 2) {
         for (i = 0; i < w * h / 5400; ++i) {
-            int xs = rand() % w;
-            int ys = rand() % h;
+            int xs = syncRand() % w;
+            int ys = syncRand() % h;
             for (k = 0; k < 10; ++k) {
-                x = xs + (rand() % 13) - 6;
-                y = ys + (rand() % 13) - 6;
+                x = xs + (syncRand() % 13) - 6;
+                y = ys + (syncRand() % 13) - 6;
                 for (j = 0; j < 100; ++j) {
-                    int xo = x + (rand() % 5) - (rand() % 5);
-                    int yo = y + (rand() % 5) - (rand() % 5);
+                    int xo = x + (syncRand() % 5) - (syncRand() % 5);
+                    int yo = y + (syncRand() % 5) - (syncRand() % 5);
                     for (yy = yo - 1; yy <= yo + 1; ++yy) {
                         for (xx = xo - 1; xx <= xo + 1; ++xx) {
                             if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
                                 if (map[xx + yy * w] == TILE_DIRT) {
                                     map[xx + yy * w] = TILE_MYCELIUM;
-                                    if (rand() % 20 == 0) {
-                                        map[xx + yy * w] = TILE_MUSHROOM_BROWN + rand() % 2; // BROWN or RED (=BROWN+1)
-                                        data[xx + yy * w] = rand() % 2;
+                                    if (syncRand() % 20 == 0) {
+                                        map[xx + yy * w] = TILE_MUSHROOM_BROWN + syncRand() % 2; // BROWN or RED (=BROWN+1)
+                                        data[xx + yy * w] = syncRand() % 2;
                                     }
                                 }
                             }
@@ -396,11 +397,11 @@ void createUndergroundMap(int w, int h, int depthLevel, uByte level, uByte *map,
 
     // generate ores
     for (i = 0; i < w * h / 400; ++i) {
-        int x = rand() % w;
-        int y = rand() % h;
+        int x = syncRand() % w;
+        int y = syncRand() % h;
         for (j = 0; j < 30; ++j) {
-            int xx = x + (rand() % 5) - (rand() % 5);
-            int yy = y + (rand() % 5) - (rand() % 5);
+            int xx = x + (syncRand() % 5) - (syncRand() % 5);
+            int yy = y + (syncRand() % 5) - (syncRand() % 5);
             if (xx >= 2 && yy >= 2 && xx < w - 2 && yy < h - 2) {
                 if (map[xx + yy * w] == TILE_ROCK) {
                     map[xx + yy * w] = TILE_IRONORE + depthLevel - 1;
@@ -413,8 +414,8 @@ void createUndergroundMap(int w, int h, int depthLevel, uByte level, uByte *map,
     if (depthLevel < 3) {
         int sCount, attempts = 0;
         for (sCount = 0; sCount < 4;) {
-            int xx = rand() % w;
-            int yy = rand() % h;
+            int xx = syncRand() % w;
+            int yy = syncRand() % h;
             if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
                 if (map[xx + yy * w] == TILE_ROCK) {
                     map[xx + yy * w] = TILE_STAIRS_DOWN;
@@ -475,7 +476,7 @@ void createDungeonMap(int w, int h, uByte level, uByte *map, uByte *data) {
             // Startroom
             if (x >= (w / 2 - 5) && x <= (w / 2 + 5) && y >= (h / 2 - 5) && y <= (h / 2 + 5)) {
                 map[i] = TILE_DUNGEON_FLOOR;
-                data[i] = randomTile[rand() % randomTileSize];
+                data[i] = randomTile[syncRand() % randomTileSize];
             } else {
                 map[i] = TILE_DUNGEON_WALL;
                 data[i] = 0;
@@ -497,7 +498,7 @@ void createDungeonMap(int w, int h, uByte level, uByte *map, uByte *data) {
 
             if (map[i] == 255) {
                 map[i] = TILE_DUNGEON_FLOOR;
-                data[i] = randomTile[rand() % randomTileSize];
+                data[i] = randomTile[syncRand() % randomTileSize];
             }
         }
     }
@@ -547,8 +548,8 @@ void createSkyMap(int w, int h, uByte level, uByte *map, uByte *data) {
     }
     int i;
     for (i = 0; i < w * h / 50; ++i) {
-        int xx = rand() % w;
-        int yy = rand() % h;
+        int xx = syncRand() % w;
+        int yy = syncRand() % h;
         if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
             if (map[xx + yy * w] == TILE_CLOUD)
                 map[xx + yy * w] = TILE_CLOUDCACTUS;
@@ -556,8 +557,8 @@ void createSkyMap(int w, int h, uByte level, uByte *map, uByte *data) {
     }
     int sCount, attempts = 0;
     for (sCount = 0; sCount < 2;) {
-        int xx = rand() % w;
-        int yy = rand() % h;
+        int xx = syncRand() % w;
+        int yy = syncRand() % h;
         if (xx >= 0 && yy >= 0 && xx < w && yy < h) {
             if (map[xx + yy * w] == TILE_CLOUD) {
                 map[xx + yy * w] = TILE_STAIRS_DOWN;
@@ -588,8 +589,8 @@ void findFeatureLocation(int fw, int fh, int *accepted, int aLength, int maxTrie
 
     // find the location with the least non fitting tiles out of some randomly tried ones
     for (tries = 0; tries < maxTries; ++tries) {
-        int x = rand() % (w - fw);
-        int y = rand() % (h - fh);
+        int x = syncRand() % (w - fw);
+        int y = syncRand() % (h - fh);
         int nonFitting = 0;
         int xp;
         int yp;
@@ -695,29 +696,29 @@ void createVillage(int w, int h, uByte level, uByte *map, uByte *data) {
     //"paths" outwards leading to the "houses"
     // left
     px = cx - 1;
-    py = cy - 1 + rand() % 3;
+    py = cy - 1 + syncRand() % 3;
     while (px > x) {
         map[px + py * w] = TILE_SAND;
         --px;
     }
-    hw = 4 + rand() % 2;
-    hh = 4 + rand() % 2;
+    hw = 4 + syncRand() % 2;
+    hh = 4 + syncRand() % 2;
     hx = px + 1;
-    hy = py - hh + 2 + rand() % (hh - 2);
+    hy = py - hh + 2 + syncRand() % (hh - 2);
     ex = px + hw;
     ey = py;
     createVillageHouse(0, hx, hy, hw, hh, ex, ey, w, h, level, map, data);
 
     // top
-    px = cx - 1 + rand() % 3;
+    px = cx - 1 + syncRand() % 3;
     py = cy - 1;
     while (py > y) {
         map[px + py * w] = TILE_SAND;
         --py;
     }
-    hw = 5 + rand() % 2;
-    hh = 4 + rand() % 2;
-    hx = px - hw + 2 + rand() % (hw - 2);
+    hw = 5 + syncRand() % 2;
+    hh = 4 + syncRand() % 2;
+    hx = px - hw + 2 + syncRand() % (hw - 2);
     hy = py + 1;
     ex = px;
     ey = py + hh;
@@ -725,15 +726,15 @@ void createVillage(int w, int h, uByte level, uByte *map, uByte *data) {
 
     // right
     px = cx + 1;
-    py = cy - 1 + rand() % 3;
+    py = cy - 1 + syncRand() % 3;
     while (px < x + vw) {
         map[px + py * w] = TILE_SAND;
         ++px;
     }
-    hw = 4 + rand() % 2;
-    hh = 4 + rand() % 2;
+    hw = 4 + syncRand() % 2;
+    hh = 4 + syncRand() % 2;
     hx = px - hw;
-    hy = py - hh + 2 + rand() % (hh - 2);
+    hy = py - hh + 2 + syncRand() % (hh - 2);
     ex = px - hw;
     ey = py;
     createVillageHouse(2, hx, hy, hw, hh, ex, ey, w, h, level, map, data);
@@ -777,12 +778,12 @@ void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte
     int tries;
 
     for (tries = 0; tries < 100; ++tries) {
-        int x = 5 + (rand() % (w - 10 - 10));
-        int y = 5 + (rand() % (h - 10 - 10));
+        int x = 5 + (syncRand() % (w - 10 - 10));
+        int y = 5 + (syncRand() % (h - 10 - 10));
         int xr;
         int yr;
-        int wr = 10 + (rand() % 11);
-        int hr = 10 + (rand() & 11);
+        int wr = 10 + (syncRand() % 11);
+        int hr = 10 + (syncRand() & 11);
         int xp;
         int yp;
         int i;
@@ -791,8 +792,8 @@ void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte
         if (dragon) {
             wr = 20;
             hr = 20;
-            x = 5 + (rand() % 2) * (w - 5 * 2 - wr);
-            y = 5 + (rand() % 2) * (h - 5 * 2 - hr);
+            x = 5 + (syncRand() % 2) * (w - 5 * 2 - wr);
+            y = 5 + (syncRand() % 2) * (h - 5 * 2 - hr);
         }
 
         if (x + wr > w - 5)
@@ -824,7 +825,7 @@ void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte
                 i = xr + yr * w;
 
                 map[i] = TILE_DUNGEON_FLOOR;
-                data[i] = randomTile[rand() % randomTileSize];
+                data[i] = randomTile[syncRand() % randomTileSize];
             }
         }
 
@@ -833,7 +834,7 @@ void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte
         yp = y + hr / 2;
         i = xp + yp * w;
         bool checkForFloor = false;
-        bool xFirst = (rand() % 2) == 0;
+        bool xFirst = (syncRand() % 2) == 0;
         while ((checkForFloor && (map[i] != TILE_DUNGEON_FLOOR && map[i] != 255)) || (!checkForFloor && (map[i] == TILE_DUNGEON_FLOOR || map[i] == 255))) {
             if (checkForFloor) {
                 // make connection
@@ -890,9 +891,9 @@ void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte
         }
 
         // dekorate room
-        bool lava = (rand() % 4) == 0;
-        bool pillars = (rand() % 4) == 0;
-        bool books = (rand() % 4) == 0;
+        bool lava = (syncRand() % 4) == 0;
+        bool pillars = (syncRand() % 4) == 0;
+        bool books = (syncRand() % 4) == 0;
         for (xr = x; xr < x + wr; ++xr) {
             for (yr = y; yr < y + hr; ++yr) {
                 i = xr + yr * w;
@@ -905,8 +906,8 @@ void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte
                     data[i] = 0;
                 } else if (books && (xr > x && xr < x + wr - 1 && yr > y && yr < y + hr - 1 && yr % 2 == 0)) {
                     map[i] = TILE_BOOKSHELVES;
-                    data[i] = rand() % 3;
-                    if (!hasNPC && rand() % 50) {
+                    data[i] = syncRand() % 3;
+                    if (!hasNPC && syncRand() % 50) {
                         hasNPC = true;
                         addEntityToList(newEntityNPC(NPC_LIBRARIAN, (xr << 4) + 8, ((yr + 1) << 4) + 8, level), &eManager);
                     }
@@ -928,8 +929,8 @@ void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte
                         continue;
                     }
 
-                    if (rand() % 50 == 0)
-                        map[i] = TILE_IRONORE + (rand() % 3);
+                    if (syncRand() % 50 == 0)
+                        map[i] = TILE_IRONORE + (syncRand() % 3);
                 }
             }
         }

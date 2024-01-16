@@ -105,9 +105,9 @@ float menuya = 0;
 void menuInitMapBG() {
     menuHasMapLoaded = true;
     while (menuxa == 0)
-        menuxa = (rand() % 3 - 1) * 0.25;
+        menuxa = (syncRand() % 3 - 1) * 0.25;
     while (menuya == 0)
-        menuya = (rand() % 3 - 1) * 0.25;
+        menuya = (syncRand() % 3 - 1) * 0.25;
 }
 
 void menuUpdateMapBG() {
