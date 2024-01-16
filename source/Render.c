@@ -268,7 +268,7 @@ void renderPlayer(PlayerData *pd, float scale) {
     if (swimming) {
         renderTile8(xo, yo + 5, 6, 20 + ((pd->entity.p.swimTimer >> 4) & 1), 0);
         renderTile8(xo + 8, yo + 5, 7, 20 + ((pd->entity.p.swimTimer >> 4) & 1), 0);
-    } else if(scale==1) {
+    } else if (scale == 1) {
         renderTile8(xo, yo + 8, 0, 22, 0);
         renderTile8(xo + 8, yo + 8, 1, 22, 0);
     }
@@ -331,27 +331,27 @@ void renderPlayer(PlayerData *pd, float scale) {
 void renderWeather(uByte level, int xScroll, int yScroll) {
     if (level == 1) {
         if (worldData.season == 3) {
-            int xp = -128 + ((syncTickCount >> 2) - xScroll * 2) % 128;
-            int yp = -128 + ((syncTickCount >> 1) - yScroll * 2) % 128;
-            int xp2 = 0 - ((syncTickCount >> 2) + xScroll * 2) % 128;
-            int yp2 = -128 + ((syncTickCount >> 1) + 64 - yScroll * 2) % 128;
-            for (int xt = 0; xt < 4; ++xt) {
-                for (int yt = 0; yt < 3; ++yt) {
-                    renderTile64(xp + xt * 128, yp + yt * 128, 3, 0, 0);
-                    renderTile64(xp2 + xt * 128, yp2 + yt * 128, 3, 0, 0);
+            int xp = -64 + ((syncTickCount >> 3) - xScroll) % 64 + offsetX;
+            int yp = -64 + ((syncTickCount >> 2) - yScroll) % 64 + offsetY;
+            int xp2 = 0 - ((syncTickCount >> 3) + xScroll) % 64 + offsetX;
+            int yp2 = -64 + ((syncTickCount >> 2) + 32 - yScroll) % 64 + offsetY;
+            for (int xt = 0; xt < 5; ++xt) {
+                for (int yt = 0; yt < 4; ++yt) {
+                    renderTile64(xp + xt * 64, yp + yt * 64, 3, 0, 0);
+                    renderTile64(xp2 + xt * 64, yp2 + yt * 64, 3, 0, 0);
                 }
             }
         }
 
         if (worldData.rain) {
-            int xp = -((xScroll * 2) % 128);
-            int yp = -128 + ((syncTickCount << 2) - yScroll * 2) % 128;
-            int xp2 = -((xScroll * 2 + 8) % 128);
-            int yp2 = -128 + ((syncTickCount << 1) + 64 - yScroll * 2) % 128;
-            for (int xt = 0; xt < 4; ++xt) {
-                for (int yt = 0; yt < 3; ++yt) {
-                    renderTile64(xp + xt * 128, yp + yt * 128, 2, 0, 0);
-                    renderTile64(xp2 + xt * 128, yp2 + yt * 128, 2, 0, 0);
+            int xp = -((xScroll) % 64) + offsetX;
+            int yp = -64 + ((syncTickCount << 1) - yScroll) % 64 + offsetY;
+            int xp2 = -((xScroll + 8) % 64) + offsetX;
+            int yp2 = -64 + ((syncTickCount << 0) + 32 - yScroll) % 64 + offsetY;
+            for (int xt = 0; xt < 5; ++xt) {
+                for (int yt = 0; yt < 4; ++yt) {
+                    renderTile64(xp + xt * 64, yp + yt * 64, 2, 0, 0);
+                    renderTile64(xp2 + xt * 64, yp2 + yt * 64, 2, 0, 0);
                 }
             }
         }

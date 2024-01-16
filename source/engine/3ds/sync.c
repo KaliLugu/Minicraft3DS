@@ -6,10 +6,6 @@ struct _lock {
     LightLock lock;
 };
 
-struct _event {
-    LightEvent event;
-};
-
 struct _thread {
     Thread thread;
 };
