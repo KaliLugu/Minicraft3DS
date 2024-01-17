@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdbool.h"
+#include "engine/dtypes.h"
 
 extern void startGame(bool load, char *filename);
 extern void tickGame();

@@ -5,31 +5,10 @@
 #include <dirent.h>
 #include <stdio.h>
 
-// TODO: Loading of most older saves is broken, and even copying tje loading code from a working release (1.5.2) does not fix this problem, but the release itself works
-
-bool entityIsImportant(Entity *e) {
-    switch (e->type) {
-    case ENTITY_AIRWIZARD:
-    case ENTITY_SLIME:
-    case ENTITY_ZOMBIE:
-    case ENTITY_SKELETON:
-    case ENTITY_KNIGHT:
-    case ENTITY_ITEM:
-    case ENTITY_FURNITURE:
-    case ENTITY_PASSIVE:
-    case ENTITY_GLOWWORM:
-    case ENTITY_DRAGON:
-    case ENTITY_NPC:
-        return true;
-    default:
-        return false;
-    }
-}
-
 sShort calculateImportantEntites(EntityManager *eManager, uByte level) {
     sShort count = 0;
     for (int i = 0; i < eManager->lastSlot[level]; i++) {
-        if (entityIsImportant(&eManager->entities[level][i])) {
+        if (persistEntity(&eManager->entities[level][i])) {
             count++;
         }
     }
@@ -199,7 +178,7 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
         int amount = calculateImportantEntites(eManager, i);
         fwrite(&amount, sizeof(sShort), 1, file); // read amount of entities in level.
         for (j = 0; j < eManager->lastSlot[i]; ++j) {
-            if (!entityIsImportant(&eManager->entities[i][j]))
+            if (!persistEntity(&eManager->entities[i][j]))
                 continue;
 
             saveEntity(&eManager->entities[i][j], eManager, file);
@@ -279,10 +258,6 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
     for (int j = 0; j < inv->lastSlot; ++j) {
         fread(&(inv->items[j].id), sizeof(sShort), 1, file);         // write ID of item
         fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
-        if (version <= 1) {                                          // read legacy value
-            bool onlyOne;
-            fread(&onlyOne, sizeof(bool), 1, file);
-        }
 
         inv->items[j].invPtr = (int *)inv;    // setup Inventory pointer
         inv->items[j].slotNum = j;            // setup slot number
@@ -439,17 +414,14 @@ void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     fread(&(player->sprite.arms), sizeof(uByte), 1, file);
     fread(&(player->sprite.head), sizeof(uByte), 1, file);
     fread(&(player->sprite.eyes), sizeof(uByte), 1, file);
-    if (version >= 2)
-        fread(&(player->sprite.accs), sizeof(sByte), 1, file);
+    fread(&(player->sprite.accs), sizeof(sByte), 1, file);
 
     // Effect Data
-    if (version >= 2) {
-        int esize;
-        fread(&esize, sizeof(int), 1, file);
-        for (i = 0; i < esize; i++) {
-            fread(&(player->effects[i].level), sizeof(uByte), 1, file);
-            fread(&(player->effects[i].time), sizeof(sInt), 1, file);
-        }
+    int esize;
+    fread(&esize, sizeof(int), 1, file);
+    for (i = 0; i < esize; i++) {
+        fread(&(player->effects[i].level), sizeof(uByte), 1, file);
+        fread(&(player->effects[i].time), sizeof(sInt), 1, file);
     }
 
     // Minimap Data
@@ -567,10 +539,6 @@ static int loadFileState(char *filename) {
         fread(stateScore, sizeof(int), 1, file);
         fread(&dummy, sizeof(bool), 1, file);
         fread(stateWin, sizeof(bool), 1, file);
-        // fread(&player->entity.p.health, sizeof(sShort), 1, file);
-        // fread(&player->entity.x, sizeof(sShort), 1, file);
-        // fread(&player->entity.y, sizeof(sShort), 1, file);
-        // fread(&player->entity.level, sizeof(sByte), 1, file);
 
         fclose(file);
     }

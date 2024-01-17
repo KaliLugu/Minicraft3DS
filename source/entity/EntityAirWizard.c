@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntityAirWizard(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntityAirWizard(int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -24,8 +23,6 @@ Entity newEntityAirWizard(int x, int y, uByte level) {
     e.xr = 4;
     e.yr = 3;
     e.canPass = true;
-
-    e.tickFunction = &tickEntityAirWizard;
 
     return e;
 }
@@ -120,5 +117,31 @@ void tickEntityAirWizard(Entity *e, PlayerData *nearestPlayer) {
                     e->wizard.attackDelay = 120;
             }
         }
+    }
+}
+
+void renderEntityAirWizard(Entity *e, sInt x, sInt y) {
+    e->wizard.spriteAdjust = 0;
+    if (e->wizard.health < 200) {
+        if (syncTickCount / 4 % 3 < 2)
+            e->wizard.spriteAdjust = 1;
+    } else if (e->wizard.health < 1000) {
+        if (syncTickCount / 5 % 4 < 2)
+            e->wizard.spriteAdjust = 1;
+    }
+    renderEntityShadow(x, y);
+    switch (e->wizard.dir) {
+    case 0: // down
+        renderTile16(x - 8, y - 8, 10, 7 + e->wizard.spriteAdjust, ((e->wizard.walkDist >> 4) & 1) == 0 ? 0 : 1);
+        break;
+    case 1: // up
+        renderTile16(x - 8, y - 8, 11, 7 + e->wizard.spriteAdjust, ((e->wizard.walkDist >> 4) & 1) == 0 ? 0 : 1);
+        break;
+    case 2: // left
+        renderTile16(x - 8, y - 8, 12 + ((e->wizard.walkDist >> 4) & 1), 7 + e->wizard.spriteAdjust, 1);
+        break;
+    case 3: // right
+        renderTile16(x - 8, y - 8, 12 + ((e->wizard.walkDist >> 4) & 1), 7 + e->wizard.spriteAdjust, 0);
+        break;
     }
 }

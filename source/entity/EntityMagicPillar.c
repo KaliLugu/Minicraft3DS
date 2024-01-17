@@ -1,6 +1,7 @@
 #include "../Entity.h"
 
 #include "../Data.h"
+#include "../Render.h"
 
 Entity newEntityMagicPillar(int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -12,7 +13,10 @@ Entity newEntityMagicPillar(int x, int y, uByte level) {
     e.yr = 3;
     e.canPass = false;
 
-    e.tickFunction = NULL;
-
     return e;
+}
+
+void renderEntityMagicPillar(Entity *e, sInt x, sInt y) {
+    renderEntityShadow(x, y);
+    renderTile16(x - 8, y - 8, 1, 20, 0);
 }

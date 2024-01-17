@@ -1,6 +1,5 @@
 #pragma once
-
-#include <stdbool.h>
+#include "engine/dtypes.h"
 
 typedef struct _questline {
     int currentQuest;

@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntitySpark(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntitySpark(Entity *parent, float xa, float ya) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -18,8 +17,6 @@ Entity newEntitySpark(Entity *parent, float xa, float ya) {
     e.xr = 3;
     e.yr = 3;
     e.canPass = true;
-
-    e.tickFunction = &tickEntitySpark;
 
     return e;
 }
@@ -39,4 +36,11 @@ void tickEntitySpark(Entity *e, PlayerData *nearestPlayer) {
         EntityVsEntity(e, &(nearestPlayer->entity));
         removeEntityFromList(e, e->level, &eManager);
     }
+}
+
+void renderEntitySpark(Entity *e, sInt x, sInt y) {
+    if (e->spark.age >= 200)
+        if (e->spark.age / 6 % 2 == 0)
+            return;
+    renderTile8Rotated(x, y, 25, 19, 0, e->spark.age * 0.0349);
 }

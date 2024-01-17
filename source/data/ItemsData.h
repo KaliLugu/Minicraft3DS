@@ -1,6 +1,5 @@
 #pragma once
-
-#include <stdbool.h>
+#include "../engine/dtypes.h"
 
 // NOTE: Items 0-6, 28-50, 101-1000 are for unstackable (tools, furniture) items
 #define ITEM_NULL 0

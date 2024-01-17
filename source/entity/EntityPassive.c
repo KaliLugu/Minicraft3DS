@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntityPassive(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntityPassive(int type, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -22,8 +21,6 @@ Entity newEntityPassive(int type, int x, int y, uByte level) {
     e.xr = 4;
     e.yr = 3;
     e.canPass = false;
-
-    e.tickFunction = &tickEntityPassive;
 
     return e;
 }
@@ -69,4 +66,22 @@ void tickEntityPassive(Entity *e, PlayerData *nearestPlayer) {
     }
     if (e->passive.randWalkTime > 0)
         e->passive.randWalkTime--;
+}
+
+void renderEntityPassive(Entity *e, sInt x, sInt y) {
+    renderEntityShadow(x, y);
+    switch (e->passive.dir) {
+    case 0: // down
+        renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 0, 6, ((e->passive.walkDist >> 4) & 1) == 0 ? 0 : 1);
+        break;
+    case 1: // up
+        renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 1, 6, ((e->passive.walkDist >> 4) & 1) == 0 ? 0 : 1);
+        break;
+    case 2: // left
+        renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 2 + ((e->passive.walkDist >> 4) & 1), 6, 1);
+        break;
+    case 3: // right
+        renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 2 + ((e->passive.walkDist >> 4) & 1), 6, 0);
+        break;
+    }
 }

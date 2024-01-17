@@ -1,8 +1,8 @@
 #include "../Entity.h"
 
 #include "../Data.h"
-
-void tickParticleSmash(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
+#include "../Sound.h"
 
 Entity newParticleSmash(int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -14,8 +14,6 @@ Entity newParticleSmash(int x, int y, uByte level) {
     e.canPass = true;
     playSoundPositioned(snd_monsterHurt, e.level, e.x, e.y); // TODO: This is a wierd location for the effect
 
-    e.tickFunction = &tickParticleSmash;
-
     return e;
 }
 
@@ -25,4 +23,8 @@ void tickParticleSmash(Entity *e, PlayerData *nearestPlayer) {
         removeEntityFromList(e, e->level, &eManager);
         return;
     }
+}
+
+void renderParticleSmash(Entity *e, sInt x, sInt y) {
+    renderTile16(x, y, 0, 10, 0);
 }

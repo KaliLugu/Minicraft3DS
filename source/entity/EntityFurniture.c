@@ -1,6 +1,8 @@
 #include "../Entity.h"
 
 #include "../Data.h"
+#include "../Item.h"
+#include "../Render.h"
 
 void assignInventory(Entity *e) {
     if (eManager.nextInv > 300)
@@ -28,7 +30,10 @@ Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, uByte lev
             e.entityFurniture.inv = invPtr;
     }
 
-    e.tickFunction = NULL;
-
     return e;
+}
+
+void renderEntityFurniture(Entity *e, sInt x, sInt y) {
+    renderEntityShadow(x, y);
+    renderFurniture(e->entityFurniture.itemID, x - 8, y - 8);
 }

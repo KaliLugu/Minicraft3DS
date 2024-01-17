@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntityZombie(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntityZombie(int lvl, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -36,8 +35,6 @@ Entity newEntityZombie(int lvl, int x, int y, uByte level) {
         e.hostile.color = 0x95DB95FF;
         break;
     }
-
-    e.tickFunction = &tickEntityZombie;
 
     return e;
 }
@@ -85,4 +82,22 @@ void tickEntityZombie(Entity *e, PlayerData *nearestPlayer) {
     }
     if (e->hostile.randWalkTime > 0)
         e->hostile.randWalkTime--;
+}
+
+void renderEntityZombie(Entity *e, sInt x, sInt y) {
+    renderEntityShadow(x, y);
+    switch (e->hostile.dir) {
+    case 0: // down
+        renderTile16Blend(x - 8, y - 8, 4, 7, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
+        break;
+    case 1: // up
+        renderTile16Blend(x - 8, y - 8, 5, 7, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
+        break;
+    case 2: // left
+        renderTile16Blend(x - 8, y - 8, 6 + ((e->hostile.walkDist >> 4) & 1), 7, 1, e->hostile.color);
+        break;
+    case 3: // right
+        renderTile16Blend(x - 8, y - 8, 6 + ((e->hostile.walkDist >> 4) & 1), 7, 0, e->hostile.color);
+        break;
+    }
 }

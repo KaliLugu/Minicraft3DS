@@ -1,14 +1,19 @@
 #pragma once
+#include "engine/engine.h"
 
 #include "Data.h"
+
 #include "Entity.h"
 #include "Inputs.h"
 #include "MapGen.h"
 #include "Menu.h"
 #include "Player.h"
 #include "Quests.h"
-#include "engine/engine.h"
+#include "Sound.h"
 #include "network/Synchronizer.h"
+
+#include <stdio.h>
+#include <string.h>
 
 #define CIRCLEPAD 0xF0000
 #define CSTICK 0xF00000
@@ -89,8 +94,6 @@ extern void tickTile(uByte level, int x, int y);
 extern bool tileIsSolid(int tile, Entity *e);
 
 extern int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, int y, int px, int py, int dir);
-
-extern void tickEntity(Entity *e);
 
 extern void trySpawn(int count, uByte level);
 

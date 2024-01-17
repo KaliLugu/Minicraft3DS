@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntitySkeleton(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntitySkeleton(int lvl, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -37,8 +36,6 @@ Entity newEntitySkeleton(int lvl, int x, int y, uByte level) {
         e.hostile.color = 0xFFFFFFFF;
         break;
     }
-
-    e.tickFunction = &tickEntitySkeleton;
 
     return e;
 }
@@ -109,4 +106,22 @@ void tickEntitySkeleton(Entity *e, PlayerData *nearestPlayer) {
     }
     if (e->hostile.randWalkTime > 0)
         e->hostile.randWalkTime--;
+}
+
+void renderEntitySkeleton(Entity *e, sInt x, sInt y) {
+    renderEntityShadow(x, y);
+    switch (e->hostile.dir) {
+    case 0: // down
+        renderTile16Blend(x - 8, y - 8, 0, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
+        break;
+    case 1: // up
+        renderTile16Blend(x - 8, y - 8, 1, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
+        break;
+    case 2: // left
+        renderTile16Blend(x - 8, y - 8, 2 + ((e->hostile.walkDist >> 4) & 1), 5, 1, e->hostile.color);
+        break;
+    case 3: // right
+        renderTile16Blend(x - 8, y - 8, 2 + ((e->hostile.walkDist >> 4) & 1), 5, 0, e->hostile.color);
+        break;
+    }
 }

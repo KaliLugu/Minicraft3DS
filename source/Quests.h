@@ -3,8 +3,6 @@
 #include "Crafting.h"
 #include "Player.h"
 #include "QuestsData.h"
-#include <stdbool.h>
-#include <stdlib.h>
 
 #define NPC_MENU_TALK 0
 

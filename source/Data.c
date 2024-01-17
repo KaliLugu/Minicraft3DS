@@ -4,4 +4,5 @@ void initData() {
     itemsDataInit();
     tilesDataInit();
     effectsDataInit();
+    entityDataInit();
 }

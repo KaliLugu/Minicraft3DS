@@ -2,9 +2,8 @@
 
 #include "../Data.h"
 #include "../Globals.h"
+#include "../Render.h"
 #include "../network/Synchronizer.h"
-
-void tickEntityItem(Entity *e, PlayerData *nearestPlayer);
 
 Entity newEntityItem(Item item, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -17,8 +16,6 @@ Entity newEntityItem(Item item, int x, int y, uByte level) {
     e.xr = 3;
     e.yr = 3;
     e.canPass = false;
-
-    e.tickFunction = &tickEntityItem;
 
     e.entityItem.xx = x;
     e.entityItem.yy = y;
@@ -62,4 +59,12 @@ void tickEntityItem(Entity *e, PlayerData *nearestPlayer) {
     int goty = e->y - oy;
     e->entityItem.xx += gotx - expectedx;
     e->entityItem.yy += goty - expectedy;
+}
+
+void renderEntityItem(Entity *e, sInt x, sInt y) {
+    if (e->entityItem.age >= 520)
+        if (e->entityItem.age / 6 % 2 == 0)
+            return;
+    renderEntityShadowSmall(x, y);
+    renderItemIcon(e->entityItem.item.id, e->entityItem.item.countLevel, x - 4, y - 4 - (int)e->entityItem.zz);
 }

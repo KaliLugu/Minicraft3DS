@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 
 #include "../Render.h"
+#include <ctype.h>
 
 static char *fontChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ      0123456789.,!?'\"-+=/\\%()<>:;    ";
 

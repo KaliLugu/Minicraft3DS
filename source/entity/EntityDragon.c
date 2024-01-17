@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntityDragon(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntityDragon(int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -25,8 +24,6 @@ Entity newEntityDragon(int x, int y, uByte level) {
     e.xr = 8;
     e.yr = 8;
     e.canPass = false;
-
-    e.tickFunction = &tickEntityDragon;
 
     return e;
 }
@@ -168,4 +165,21 @@ void tickEntityDragon(Entity *e, PlayerData *nearestPlayer) {
     }
     //    }
     //}
+}
+
+void renderEntityDragon(Entity *e, sInt x, sInt y) {
+    switch (e->dragon.dir) {
+    case 0: // down
+        renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 8, 2);
+        break;
+    case 1: // up
+        renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 8, 0);
+        break;
+    case 2: // left
+        renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 9, 1);
+        break;
+    case 3: // right
+        renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 9, 0);
+        break;
+    }
 }

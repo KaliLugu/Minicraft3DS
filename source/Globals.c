@@ -1,6 +1,5 @@
 #include "Globals.h"
 
-#include "network/Synchronizer.h"
 #include "render/TextureManager.h"
 
 char versionText[34] = "Version 2.0.0";
@@ -1001,14 +1000,6 @@ void tickTile(uByte level, int x, int y) {
             setTile(TILE_WATER, level, x, y);
         }
         break;
-    }
-}
-
-void tickEntity(Entity *e) {
-    if (e->tickFunction != NULL) {
-        PlayerData *nearestPlayer = getNearestPlayer(e->level, e->x, e->y);
-        (*(e->tickFunction))(e, nearestPlayer);
-        return;
     }
 }
 

@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntityGlowworm(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntityGlowworm(int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -17,8 +16,6 @@ Entity newEntityGlowworm(int x, int y, uByte level) {
     e.y = y;
     e.canPass = true;
     e.canSwim = false;
-
-    e.tickFunction = &tickEntityGlowworm;
 
     return e;
 }
@@ -56,4 +53,8 @@ void tickEntityGlowworm(Entity *e, PlayerData *nearestPlayer) {
     } else if (e->glowworm.waitTime > 0) {
         e->glowworm.waitTime--;
     }
+}
+
+void renderEntityGlowworm(Entity *e, sInt x, sInt y) {
+    renderTile8(x - 4, y - 4, 28, 14, 0);
 }

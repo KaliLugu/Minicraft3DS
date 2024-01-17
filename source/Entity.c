@@ -1,10 +1,9 @@
 #include "Entity.h"
 
 #include "Data.h"
-#include "network/Synchronizer.h"
 
 EntityManager eManager;
-Entity nullEntity;
+Entity nullEntity = {0};
 
 void addEntityToList(Entity e, EntityManager *em) {
     e.slotNum = em->lastSlot[e.level];

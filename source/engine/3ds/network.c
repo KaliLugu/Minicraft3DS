@@ -29,7 +29,7 @@ static udsBindContext networkBindCtx;
 
 static udsConnectionStatus networkStatus;
 
-// async internal send/recieve handling
+// async internal recieve handling
 static Thread networkThread;
 static volatile bool networkRunThread;
 

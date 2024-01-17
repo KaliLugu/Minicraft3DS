@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntitySlime(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntitySlime(int lvl, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -36,8 +35,6 @@ Entity newEntitySlime(int lvl, int x, int y, uByte level) {
         e.hostile.color = 0x95DB95FF;
         break;
     }
-
-    e.tickFunction = &tickEntitySlime;
 
     return e;
 }
@@ -86,4 +83,9 @@ void tickEntitySlime(Entity *e, PlayerData *nearestPlayer) {
         e->hostile.xa = 0;
         e->hostile.ya = 0;
     }
+}
+
+void renderEntitySlime(Entity *e, sInt x, sInt y) {
+    renderEntityShadow(x, y);
+    renderTile16Blend(x - 8, y - 8 - (e->hostile.randWalkTime > 0 ? 4 : 0), 8 + (e->hostile.randWalkTime > 0 ? 1 : 0), 7, 0, e->hostile.color);
 }

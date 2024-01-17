@@ -1,7 +1,7 @@
 #pragma once
+#include "Data.h"
 
 #include "Crafting.h"
-#include "Data.h"
 #include "Entity.h"
 #include "Inputs.h"
 #include "QuestsData.h"

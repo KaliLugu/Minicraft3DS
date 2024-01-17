@@ -1,6 +1,5 @@
 #pragma once
 #include "dtypes.h"
-#include <stdbool.h>
 #include <stddef.h>
 
 #define NETWORK_WLANCOMMID 0x11441850

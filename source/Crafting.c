@@ -1,6 +1,7 @@
 #include "Crafting.h"
 
 #include "Data.h"
+#include <string.h>
 
 RecipeManager workbenchRecipes;
 RecipeManager furnaceRecipes;

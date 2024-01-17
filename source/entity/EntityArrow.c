@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntityArrow(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -21,8 +20,6 @@ Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uByte leve
     e.canPass = false;
     e.canSwim = true;
 
-    e.tickFunction = &tickEntityArrow;
-
     return e;
 }
 
@@ -34,5 +31,43 @@ void tickEntityArrow(Entity *e, PlayerData *nearestPlayer) {
             addItemsToWorld(newItem(e->arrow.itemID, 1), e->level, e->x + 4, e->y + 4, 1);
         removeEntityFromList(e, e->level, &eManager);
         return;
+    }
+}
+
+void renderEntityArrow(Entity *e, sInt x, sInt y) {
+    if (e->arrow.age >= 200)
+        if (e->arrow.age / 6 % 2 == 0)
+            return;
+
+    int abits = 0;
+    int ayp = 21;
+    if (e->arrow.xa < 0) {
+        abits += 1;
+    }
+    if (e->arrow.ya < 0) {
+        ayp += 1;
+    }
+    if (e->arrow.ya > 0) {
+        ayp += 1;
+        abits += 2;
+    }
+
+    renderEntityShadowSmall(x + 2, y + 4);
+    switch (e->arrow.itemID) {
+    case ITEM_ARROW_WOOD:
+        renderTile8(x - 2, y - 2, 9, ayp, abits);
+        break;
+    case ITEM_ARROW_STONE:
+        renderTile8(x - 2, y - 2, 10, ayp, abits);
+        break;
+    case ITEM_ARROW_IRON:
+        renderTile8(x - 2, y - 2, 11, ayp, abits);
+        break;
+    case ITEM_ARROW_GOLD:
+        renderTile8(x - 2, y - 2, 12, ayp, abits);
+        break;
+    case ITEM_ARROW_GEM:
+        renderTile8(x - 2, y - 2, 13, ayp, abits);
+        break;
     }
 }

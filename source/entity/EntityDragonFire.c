@@ -2,8 +2,7 @@
 
 #include "../Data.h"
 #include "../Globals.h"
-
-void tickEntityDragonFire(Entity *e, PlayerData *nearestPlayer);
+#include "../Render.h"
 
 Entity newEntityDragonFire(Entity *parent, uByte type, int x, int y, float xa, float ya) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
@@ -22,8 +21,6 @@ Entity newEntityDragonFire(Entity *parent, uByte type, int x, int y, float xa, f
     e.yr = 3;
     e.canPass = true;
 
-    e.tickFunction = &tickEntityDragonFire;
-
     return e;
 }
 
@@ -41,5 +38,13 @@ void tickEntityDragonFire(Entity *e, PlayerData *nearestPlayer) {
     if (nearestPlayer != NULL && intersects(nearestPlayer->entity, e->x + e->dragonFire.xa - e->xr, e->y + e->dragonFire.ya - e->yr, e->x + e->dragonFire.xa + e->xr, e->y + e->dragonFire.ya + e->yr)) {
         EntityVsEntity(e, &(nearestPlayer->entity));
         removeEntityFromList(e, e->level, &eManager);
+    }
+}
+
+void renderEntityDragonFire(Entity *e, sInt x, sInt y) {
+    if (e->dragonFire.type == 0) {
+        renderTile8Rotated(x, y, 0, 40, 0, e->dragonFire.age * 0.349);
+    } else {
+        renderTile8(x, y, 1, 40 + (e->dragonFire.age / 10), 0);
     }
 }

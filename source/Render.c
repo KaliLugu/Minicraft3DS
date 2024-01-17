@@ -412,211 +412,13 @@ void renderFurniture(int itemID, int x, int y) {
     }
 }
 
-char ertxt[20];
-void renderEntity(Entity *e, int x, int y) {
-    switch (e->type) {
-    case ENTITY_ITEM:
-        if (e->entityItem.age >= 520)
-            if (e->entityItem.age / 6 % 2 == 0)
-                return;
-        renderTile8(x - 4, y - 4, 2, 22, 0);
-        renderItemIcon(e->entityItem.item.id, e->entityItem.item.countLevel,
-                       x - 4, y - 4 - (int)e->entityItem.zz);
-        break;
-    case ENTITY_FURNITURE:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        renderFurniture(e->entityFurniture.itemID, x - 8, y - 8);
-        break;
-    case ENTITY_ZOMBIE:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        switch (e->hostile.dir) {
-        case 0: // down
-            renderTile16Blend(x - 8, y - 8, 4, 7, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
-            break;
-        case 1: // up
-            renderTile16Blend(x - 8, y - 8, 5, 7, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
-            break;
-        case 2: // left
-            renderTile16Blend(x - 8, y - 8, 6 + ((e->hostile.walkDist >> 4) & 1), 7, 1, e->hostile.color);
-            break;
-        case 3: // right
-            renderTile16Blend(x - 8, y - 8, 6 + ((e->hostile.walkDist >> 4) & 1), 7, 0, e->hostile.color);
-            break;
-        }
-        break;
-    case ENTITY_SKELETON:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        switch (e->hostile.dir) {
-        case 0: // down
-            renderTile16Blend(x - 8, y - 8, 0, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
-            break;
-        case 1: // up
-            renderTile16Blend(x - 8, y - 8, 1, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
-            break;
-        case 2: // left
-            renderTile16Blend(x - 8, y - 8, 2 + ((e->hostile.walkDist >> 4) & 1), 5, 1, e->hostile.color);
-            break;
-        case 3: // right
-            renderTile16Blend(x - 8, y - 8, 2 + ((e->hostile.walkDist >> 4) & 1), 5, 0, e->hostile.color);
-            break;
-        }
-        break;
-    case ENTITY_KNIGHT:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        switch (e->hostile.dir) {
-        case 0: // down
-            renderTile16Blend(x - 8, y - 8, 4, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
-            break;
-        case 1: // up
-            renderTile16Blend(x - 8, y - 8, 5, 5, ((e->hostile.walkDist >> 4) & 1) == 0 ? 0 : 1, e->hostile.color);
-            break;
-        case 2: // left
-            renderTile16Blend(x - 8, y - 8, 6 + ((e->hostile.walkDist >> 4) & 1), 5, 1, e->hostile.color);
-            break;
-        case 3: // right
-            renderTile16Blend(x - 8, y - 8, 6 + ((e->hostile.walkDist >> 4) & 1), 5, 0, e->hostile.color);
-            break;
-        }
-        break;
-    case ENTITY_SLIME:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        renderTile16Blend(x - 8, y - 8 - (e->hostile.randWalkTime > 0 ? 4 : 0), 8 + (e->hostile.randWalkTime > 0 ? 1 : 0), 7, 0, e->hostile.color);
-        break;
-    case ENTITY_AIRWIZARD:
-        e->wizard.spriteAdjust = 0;
-        if (e->wizard.health < 200) {
-            if (syncTickCount / 4 % 3 < 2)
-                e->wizard.spriteAdjust = 1;
-        } else if (e->wizard.health < 1000) {
-            if (syncTickCount / 5 % 4 < 2)
-                e->wizard.spriteAdjust = 1;
-        }
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        switch (e->wizard.dir) {
-        case 0: // down
-            renderTile16(x - 8, y - 8, 10, 7 + e->wizard.spriteAdjust, ((e->wizard.walkDist >> 4) & 1) == 0 ? 0 : 1);
-            break;
-        case 1: // up
-            renderTile16(x - 8, y - 8, 11, 7 + e->wizard.spriteAdjust, ((e->wizard.walkDist >> 4) & 1) == 0 ? 0 : 1);
-            break;
-        case 2: // left
-            renderTile16(x - 8, y - 8, 12 + ((e->wizard.walkDist >> 4) & 1), 7 + e->wizard.spriteAdjust, 1);
-            break;
-        case 3: // right
-            renderTile16(x - 8, y - 8, 12 + ((e->wizard.walkDist >> 4) & 1), 7 + e->wizard.spriteAdjust, 0);
-            break;
-        }
-        break;
-    case ENTITY_PASSIVE:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        switch (e->passive.dir) {
-        case 0: // down
-            renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 0, 6, ((e->passive.walkDist >> 4) & 1) == 0 ? 0 : 1);
-            break;
-        case 1: // up
-            renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 1, 6, ((e->passive.walkDist >> 4) & 1) == 0 ? 0 : 1);
-            break;
-        case 2: // left
-            renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 2 + ((e->passive.walkDist >> 4) & 1), 6, 1);
-            break;
-        case 3: // right
-            renderTile16(x - 8, y - 8, (e->passive.mtype * 4) + 2 + ((e->passive.walkDist >> 4) & 1), 6, 0);
-            break;
-        }
-        break;
-    case ENTITY_TEXTPARTICLE:
-        renderTextColor(e->textParticle.text, x + 1, y - (int)e->textParticle.zz + 1, 0x000000FF);
-        renderTextColor(e->textParticle.text, x, y - (int)e->textParticle.zz, e->textParticle.color);
-        break;
-    case ENTITY_SMASHPARTICLE:
-        renderTile16(x, y, 0, 10, 0);
-        break;
-    case ENTITY_SPARK:
-        if (e->spark.age >= 200)
-            if (e->spark.age / 6 % 2 == 0)
-                return;
-        renderTile8Rotated(x, y, 25, 19, 0, e->spark.age * 0.0349);
-        break;
-    case ENTITY_DRAGON:
-        switch (e->dragon.dir) {
-        case 0: // down
-            renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 8, 2);
-            break;
-        case 1: // up
-            renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 8, 0);
-            break;
-        case 2: // left
-            renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 9, 1);
-            break;
-        case 3: // right
-            renderTile32(x - 16, y - 16, 0 + (e->dragon.animTimer / 4), 9, 0);
-            break;
-        }
-        break;
-    case ENTITY_DRAGONPROJECTILE:
-        if (e->dragonFire.type == 0) {
-            renderTile8Rotated(x, y, 0, 40, 0, e->dragonFire.age * 0.349);
-        } else {
-            renderTile8(x, y, 1, 40 + (e->dragonFire.age / 10), 0);
-        }
-        break;
-    case ENTITY_MAGIC_PILLAR:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        renderTile16(x - 8, y - 8, 1, 20, 0);
-        break;
-    case ENTITY_ARROW:
-        if (e->arrow.age >= 200)
-            if (e->arrow.age / 6 % 2 == 0)
-                return;
+void renderEntityShadow(sInt x, sInt y) {
+    renderTile8(x - 8, y, 0, 22, 0);
+    renderTile8(x, y, 1, 22, 0);
+}
 
-        int abits = 0;
-        int ayp = 21;
-        if (e->arrow.xa < 0) {
-            abits += 1;
-        }
-        if (e->arrow.ya < 0) {
-            ayp += 1;
-        }
-        if (e->arrow.ya > 0) {
-            ayp += 1;
-            abits += 2;
-        }
-
-        renderTile8(x - 2, y, 2, 22, 0);
-        switch (e->arrow.itemID) {
-        case ITEM_ARROW_WOOD:
-            renderTile8(x - 2, y - 2, 9, ayp, abits);
-            break;
-        case ITEM_ARROW_STONE:
-            renderTile8(x - 2, y - 2, 10, ayp, abits);
-            break;
-        case ITEM_ARROW_IRON:
-            renderTile8(x - 2, y - 2, 11, ayp, abits);
-            break;
-        case ITEM_ARROW_GOLD:
-            renderTile8(x - 2, y - 2, 12, ayp, abits);
-            break;
-        case ITEM_ARROW_GEM:
-            renderTile8(x - 2, y - 2, 13, ayp, abits);
-            break;
-        }
-        break;
-    case ENTITY_GLOWWORM:
-        renderTile8(x - 4, y - 4, 28, 14, 0);
-        break;
-    case ENTITY_NPC:
-        renderTile8(x - 8, y, 0, 22, 0);
-        renderTile8(x, y, 1, 22, 0);
-        renderTile16(x - 8, y - 8, e->npc.type, 4, 0);
-    }
+void renderEntityShadowSmall(sInt x, sInt y) {
+    renderTile8(x - 4, y - 4, 2, 22, 0);
 }
 
 void renderEntities(uByte level, int x, int y, EntityManager *em) {
@@ -645,8 +447,7 @@ void renderItemList(Inventory *inv, int xo, int yo, int x1, int y1, int selected
     if (io < 0)
         io = 0;
 
-    int i;
-    for (i = 0; i < i1; ++i)
+    for (int i = 0; i < i1; ++i)
         renderItemWithText(&inv->items[i + io], (1 + xo) << 3, (i + 1 + yo) << 3);
 
     if (drawCursor) {
@@ -675,8 +476,8 @@ void renderRecipes(RecipeManager *r, int xo, int yo, int x1, int y1, int selecte
     if (io < 0)
         io = 0;
 
-    int i, col;
-    for (i = 0; i < i1; ++i) {
+    MColor col;
+    for (int i = 0; i < i1; ++i) {
         int x = (1 + xo) << 3, y = (i + 1 + yo) << 3;
         renderItemIcon(r->recipes[i + io].itemResult, r->recipes[i + io].itemAmountLevel, x, y);
         if (r->recipes[i + io].canCraft)

@@ -1,7 +1,7 @@
 #pragma once
-#include "Crafting.h"
+
+#include "Item.h"
 #include "engine/engine.h"
-#include <stdlib.h>
 
 // Entity types
 #define ENTITY_NULL 0
@@ -27,7 +27,6 @@
 #define ENTITY_NPC 18
 
 typedef struct Entity Entity;
-
 typedef struct _plrd PlayerData; // in order to not include Player.h and cause all sorts of problems
 
 typedef struct
@@ -215,15 +214,6 @@ struct Entity {
         TextParticleEntity textParticle;
         SmashParticleEntity smashParticle;
     };
-
-    // TODO: do not actually store these per entity but per type!
-    // TODO: Move more "callbacks" to this "dynamic functions"
-    // Note: These need to always be set (explicitly set to NULL if unused) or the game will crash
-    void (*tickFunction)(Entity *e, PlayerData *pd);
-    // TODO: onDeathFunction
-    // TODO: renderFunction
-    // TODO: saveFunction
-    // TODO: loadFunction
 };
 
 typedef struct

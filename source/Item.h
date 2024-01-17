@@ -1,9 +1,5 @@
 #pragma once
-#include "Sound.h"
-#include <math.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
+#include "engine/dtypes.h"
 
 typedef struct Inventory Inventory;
 

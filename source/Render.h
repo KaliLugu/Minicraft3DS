@@ -1,14 +1,11 @@
 #pragma once
 
+#include "engine/dtypes.h"
 #include "render/RenderLights.h"
 #include "render/RenderText.h"
 #include "render/RenderTiles.h"
 
 #include "Globals.h"
-#include "MapGen.h"
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
 
 extern int offsetX, offsetY;
 
@@ -25,7 +22,8 @@ extern void renderZoomedMap(PlayerData *pd);
 extern void renderPlayer(PlayerData *pd, float scale);
 
 extern void renderFurniture(int itemID, int x, int y);
-extern void renderEntity(Entity *e, int x, int y);
+extern void renderEntityShadow(sInt x, sInt y);
+extern void renderEntityShadowSmall(sInt x, sInt y);
 extern void renderEntities(uByte level, int x, int y, EntityManager *em);
 
 extern void renderRecipes(RecipeManager *r, int xo, int yo, int x1, int y1, int selected);

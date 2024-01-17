@@ -1,6 +1,5 @@
 #pragma once
-
-#include <stdbool.h>
+#include "dtypes.h"
 
 extern void initPlatform();
 extern void exitPlatform();

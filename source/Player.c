@@ -31,7 +31,6 @@ void playerInitEntity(PlayerData *pd) {
     pd->entity.xr = 4;
     pd->entity.yr = 3;
     pd->entity.canSwim = true;
-    pd->entity.tickFunction = NULL;
     pd->entity.p.ax = 0;
     pd->entity.p.ay = 0;
     pd->entity.p.health = 10;

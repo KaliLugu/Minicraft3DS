@@ -1,6 +1,5 @@
 #pragma once
 #include "dtypes.h"
-#include <stdbool.h>
 
 enum Input {
     I_A = 0x1,
