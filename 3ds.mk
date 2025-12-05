@@ -19,6 +19,8 @@ ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -O2 -mword-relocations \
 			-ffunction-sections \
+			-Wno-error \
+			-Wno-error=incompatible-pointer-types \
 			$(ARCH)
 
 CFLAGS	+=	$(INCLUDE) -D__3DS__
@@ -32,8 +34,7 @@ LIBS	:= -lpng -lz -lcitro2d -lcitro3d -lctru -lm
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(CTRULIB)
-
+LIBDIRS	:=	$(DEVKITPRO)/portlibs/3ds $(CTRULIB)
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -41,7 +42,7 @@ LIBDIRS	:= $(PORTLIBS) $(CTRULIB)
 #---------------------------------------------------------------------------------
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
-include shared.mk
+include $(TOPDIR)/shared.mk
 SOURCES		+=	source/engine/3ds
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
@@ -54,7 +55,7 @@ CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ and libEGL dependent projects
 #---------------------------------------------------------------------------------
-export LD	:=	$(CXX)
+export LD	:=	$(CC)
 #---------------------------------------------------------------------------------
 
 export OFILES_SOURCES 	:=	$(CFILES:.c=.o)
@@ -72,6 +73,8 @@ export APP_ICON := $(TOPDIR)/icon.png
 export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
 export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 
+# Export DEPSDIR to fix dependency file path issue
+export DEPSDIR  := $(CURDIR)/$(BUILD)
 
 .PHONY: $(BUILD) clean all
 
@@ -86,12 +89,15 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean 3ds build files ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TAR).smdh $(TARGET).elf
+	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf
 
 #---------------------------------------------------------------------------------
 else
-include ../shared.mk
-SOURCES		+=	source/engine/3ds
+
+include $(TOPDIR)/shared.mk
+SOURCES     +=  source/engine/3ds
+
+DEPSDIR ?= .
 
 #---------------------------------------------------------------------------------
 # main targets
