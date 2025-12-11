@@ -46,6 +46,8 @@ void tilesDataInit() {
     _tileRegister(TILE_MUSHROOM_BROWN, "Brown Mushroom");
     _tileRegister(TILE_MUSHROOM_RED, "Red Mushroom");
     _tileRegister(TILE_ICE, "Ice");
+    _tileRegister(TILE_WOOD_DOOR_CLOSED, "Wood Door Closed");
+    _tileRegister(TILE_WOOD_DOOR_OPENED, "Wood Door Opened");
 }
 
 char *tileGetName(int id) {

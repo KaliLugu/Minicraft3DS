@@ -70,7 +70,7 @@ void playerInitInventory(PlayerData *pd) {
         int i;
         for (i = 7; i < 28; ++i)
             addItemToInventory(newItem(i, 50), &(pd->inventory));
-        for (i = 51; i < 76; ++i)
+        for (i = 51; i < 77; ++i)
             addItemToInventory(newItem(i, 50), &(pd->inventory));
         for (i = 1001; i < 1007; ++i)
             addItemToInventory(newItem(i, 50), &(pd->inventory));
