@@ -9,8 +9,8 @@ static bool _itemSingle[MAX_ITEM_ID + 1];
 
 static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;
-    _itemIconX[id] = iconX;
-    _itemIconY[id] = iconY;
+    _itemIconX[id] = iconX; // sur la largeur
+    _itemIconY[id] = iconY; // sur la hauteur
     _itemSingle[id] = isSingle;
 }
 

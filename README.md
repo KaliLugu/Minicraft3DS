@@ -1,6 +1,6 @@
 # Minicraft3DS
 3DS Homebrew port of Notch's ludum dare game "Minicraft"  
-Current Version: Version 1.5.1  
+Current Version: Version 2.0.0
 
 
 ----------
@@ -8,7 +8,7 @@ Current Version: Version 1.5.1
 **Download:**
 
 If you just want to download the game prebuilt check the releases tab in Github:  
-https://github.com/andre111/Minicraft3DS/releases  
+https://github.com/KaliLugu/Minicraft3DS/releases
 For building the game yourself look below.  
 
 ----------

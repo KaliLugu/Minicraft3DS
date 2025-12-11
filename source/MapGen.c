@@ -624,6 +624,7 @@ void findFeatureLocation(int fw, int fh, int *accepted, int aLength, int maxTrie
     }
 }
 
+// TODO add door for houses
 void createVillageHouse(int hid, int x, int y, int hw, int hh, int ex, int ey, int w, int h, uByte level, uByte *map, uByte *data) {
     // create wall and floor
     int xp = x;
