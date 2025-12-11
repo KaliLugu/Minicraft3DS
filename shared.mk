@@ -4,4 +4,4 @@ ROMFS		:=	resources
 
 APP_TITLE	:= Minicraft
 APP_DESCRIPTION	:= Minicraft was originally created by Markus "Notch" Perrson.
-APP_AUTHOR	:= adrien
+APP_AUTHOR	:= Davideesk/andre111/adrien
