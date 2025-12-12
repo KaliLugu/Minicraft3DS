@@ -84,6 +84,7 @@ void itemsDataInit() {
     _itemRegister(ITEM_BOOKSHELVES, "Bookshelves", 29, 18, false);
     _itemRegister(ITEM_MAGIC_DUST, "Magic Dust", 25, 19, false);
     _itemRegister(ITEM_COIN, "Coin", 26, 19, false);
+    _itemRegister(ITEM_DOOR_WOOD, "Wood Door", 22, 20, true);
 
     // tools 2
     _itemRegister(TOOL_BUCKET, "Bucket", 25, 18, true);

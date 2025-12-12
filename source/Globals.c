@@ -572,6 +572,9 @@ bool tileIsSolid(int tile, Entity *e) {
     case TILE_HOLE:
         if (e != NULL && e->type != ENTITY_PLAYER && e->type != ENTITY_ARROW)
             return true;
+    case TILE_WOOD_DOOR_CLOSED:
+        if (e->type != ENTITY_PLAYER)
+            return true;
     }
     return false;
 }
@@ -643,6 +646,10 @@ MColor getTileColor(int tile) {
         return mushroomColor;
     case TILE_ICE:
         return iceColor;
+    case TILE_WOOD_DOOR_CLOSED:
+        return woodColor;
+    case TILE_WOOD_DOOR_OPENED:
+        return woodColor;
 
     default:
         return 0x111111FF;
@@ -700,6 +707,10 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             return 1;
         } else if (item->id == ITEM_WALL_WOOD) {
             setTile(TILE_WOOD_WALL, level, x, y);
+            --item->countLevel;
+            return 1;
+        } else if (item->id == ITEM_DOOR_WOOD) {
+            setTile(TILE_WOOD_DOOR_CLOSED, level, x, y);
             --item->countLevel;
             return 1;
         } else if (item->id == ITEM_WALL_STONE) {
@@ -851,6 +862,8 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         }
         break;
     case TILE_WOOD_WALL:
+    case TILE_WOOD_DOOR_CLOSED:
+    case TILE_WOOD_DOOR_OPENED:
     case TILE_BOOKSHELVES:
         if (item->id == TOOL_AXE && playerUseEnergy(pd, 4 - item->countLevel)) {
             playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
@@ -1215,6 +1228,10 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
         break;
     case TILE_WOOD_WALL:
         damageAndBreakTile(level, xt, yt, damage, 20, TILE_DIRT, 1, newItem(ITEM_WALL_WOOD, 1), 1);
+        break;
+    case TILE_WOOD_DOOR_CLOSED:
+    case TILE_WOOD_DOOR_OPENED:
+        damageAndBreakTile(level, xt, yt, damage, 15, TILE_DIRT, 1, newItem(ITEM_DOOR_WOOD, 1), 1);
         break;
     case TILE_STONE_WALL:
         damageAndBreakTile(level, xt, yt, damage, 30, TILE_DIRT, 1, newItem(ITEM_WALL_STONE, 1), 1);
