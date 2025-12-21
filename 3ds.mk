@@ -68,7 +68,7 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-export APP_ICON := $(TOPDIR)/icon.png
+export APP_ICON := $(TOPDIR)/icons-banners/icon.png
 
 export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
 export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
