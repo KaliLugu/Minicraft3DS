@@ -83,7 +83,7 @@ static void audioCallback(void *const nul_) {
 
 // Audio thread
 // This handles calling the decoder function to fill NDSP buffers as necessary
-static void musicStreamThreadMain() {
+static void musicStreamThreadMain(void *arg) {
     while (runMusicThread) {
         if (currentMusic != NULL) {
             // search our waveBufs and fill any that aren't currently

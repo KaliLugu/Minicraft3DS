@@ -68,7 +68,7 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-export APP_ICON := $(TOPDIR)/icon.png
+export APP_ICON := $(TOPDIR)/icons-banners/icon.png
 
 export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
 export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
@@ -89,7 +89,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean 3ds build files ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf
+	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds
 
 #---------------------------------------------------------------------------------
 else
