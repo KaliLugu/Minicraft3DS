@@ -72,7 +72,7 @@ export INCLUDE	:=	-I$(RAYLIB_NX)/src -I$(RAYLIB_NX)/src/switch-nx \
 
 export LIBPATHS	:=	-L$(RAYLIB_NX)/src -L$(RAYLIB_NX)/src/switch-nx $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-export APP_ICON := $(TOPDIR)/icon.png
+export APP_ICON := $(TOPDIR)/icons-banners/icon.png
 
 export NROFLAGS += --icon=$(APP_ICON)
 export NROFLAGS += --nacp=$(CURDIR)/$(TARGET).nacp

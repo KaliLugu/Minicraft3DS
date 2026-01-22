@@ -6,6 +6,8 @@
 *.3dsx
 *.smdh
 build_3ds
+Minicraft3DS.cia
+Minicraft3DS.3ds
 
 # Switch Dev
 *.nro
@@ -64,10 +66,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Linux executable file
-bannertool
-ctrtool
-makerom
-
-# Windows executable file
+# executables
 *.exe
+makerom
+ctrtool
+bannertool
