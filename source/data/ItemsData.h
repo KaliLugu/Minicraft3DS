@@ -1,5 +1,85 @@
 #pragma once
 #include "../engine/dtypes.h"
+#include <stdint.h>
+
+// TODO HERE 
+//
+// mettre une boucle for pour générer automatiquement les id des items et ne plus devoir les setup a la main
+// commencé a écrire une doc sur le futur système d'item dans le doc "docs/ItemSystem.md"
+
+typedef struct { // structure pour définir un item
+    const char* base_name;
+    const char** level_names;
+    unsigned int level_count;
+} Item;
+
+typedef struct { // structure pour les catégorie d'items
+    Item* items;
+    unsigned int count;
+} ItemRegistry;
+
+typedef struct { // structure pour identifier un item
+    uint8_t category;  // 0 = NULL
+    uint16_t id;       // index dans la catégorie
+} ItemID;
+
+//fr: catégories d'items
+//eng: item categories
+#define TOOL 1
+#define FURNITURE 2
+#define ITEM 3
+#define FOOD 4
+
+#define NEW_ITEM_NULL ((ItemID){0, 0})
+
+// tools 1
+#define NEW_TOOL_SHOVEL ((ItemID){TOOL, 0})
+#define NEW_TOOL_HOE ((ItemID){TOOL, 1})
+#define NEW_TOOL_SWORD ((ItemID){TOOL, 2})
+#define NEW_TOOL_PICKAXE ((ItemID){TOOL, 3})
+#define NEW_TOOL_AXE ((ItemID){TOOL, 4})
+#define NEW_ITEM_POWGLOVE ((ItemID){TOOL, 5})
+
+// tools 2
+#define NEW_TOOL_BUCKET ((ItemID){TOOL, 6})
+#define NEW_TOOL_BOW ((ItemID){TOOL, 7})
+#define NEW_TOOL_MAGIC_COMPASS ((ItemID){TOOL, 8})
+
+// furniture
+#define ITEM_ANVIL ((ItemID){FURNITURE, 0})
+#define ITEM_CHEST ((ItemID){FURNITURE, 1})
+#define ITEM_OVEN ((ItemID){FURNITURE, 2})
+#define ITEM_FURNACE ((ItemID){FURNITURE, 3})
+#define ITEM_WORKBENCH ((ItemID){FURNITURE, 4})
+#define ITEM_LANTERN ((ItemID){FURNITURE, 5})
+#define ITEM_LOOM ((ItemID){FURNITURE, 6})
+#define ITEM_ENCHANTER ((ItemID){FURNITURE, 7})
+
+// items 1
+#define NEW_ITEM_FLOWER ((ItemID){ITEM, 0})
+#define NEW_ITEM_WOOD ((ItemID){ITEM, 1})
+#define NEW_ITEM_STONE ((ItemID){ITEM, 2})
+#define NEW_ITEM_SAND ((ItemID){ITEM, 3})
+#define NEW_ITEM_DIRT ((ItemID){ITEM, 4})
+#define NEW_ITEM_CLOUD ((ItemID){ITEM, 5})
+#define NEW_ITEM_ACORN ((ItemID){ITEM, 6})
+#define NEW_ITEM_CACTUS ((ItemID){ITEM, 7})
+#define NEW_ITEM_SEEDS ((ItemID){ITEM, 8})
+#define NEW_ITEM_WHEAT ((ItemID){ITEM, 9})
+#define NEW_ITEM_SLIME ((ItemID){ITEM, 10})
+#define NEW_ITEM_COAL ((ItemID){ITEM, 11})
+#define NEW_ITEM_IRONORE ((ItemID){ITEM, 12})
+#define NEW_ITEM_GOLDORE ((ItemID){ITEM, 13})
+#define NEW_ITEM_IRONINGOT ((ItemID){ITEM, 14})
+#define NEW_ITEM_GOLDINGOT ((ItemID){ITEM, 15})
+#define NEW_ITEM_GLASS ((ItemID){ITEM, 16})
+#define NEW_ITEM_GEM ((ItemID){ITEM, 17})
+#define NEW_ITEM_GOLDEN_APPLE ((ItemID){ITEM, 18})
+
+#define NEW_ITEM_FLESH ((ItemID){FOOD, 0})
+#define NEW_ITEM_BREAD ((ItemID){FOOD, 1})
+#define NEW_ITEM_APPLE ((ItemID){FOOD, 2})
+#define NEW_ITEM_GOLDEN_APPLE ((ItemID){ITEM, 3})
 
 // NOTE: Items 0-6, 28-50, 101-1000 are for unstackable (tools, furniture) items
 #define ITEM_NULL 0
