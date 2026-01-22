@@ -34,6 +34,7 @@
 #define ITEM_GOLDINGOT 25
 #define ITEM_GLASS 26
 #define ITEM_GEM 27
+#define ITEM_GOLDEN_APPLE 1007
 
 // furniture
 #define ITEM_ANVIL 28
@@ -85,7 +86,7 @@
 #define ITEM_SCROLL_SHIELDING 1005
 #define ITEM_SCROLL_NIGHTVISION 1006
 
-#define MAX_ITEM_ID 1006
+#define MAX_ITEM_ID 1007
 
 extern void itemsDataInit();
 
