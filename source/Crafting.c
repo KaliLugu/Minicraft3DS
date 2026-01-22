@@ -154,11 +154,12 @@ void initRecipes() {
     furnaceRecipes.recipes[1] = defineRecipe(ITEM_GOLDINGOT, 1, 2, ITEM_GOLDORE, 4, ITEM_COAL, 1);
     furnaceRecipes.recipes[2] = defineRecipe(ITEM_GLASS, 1, 2, ITEM_SAND, 4, ITEM_COAL, 1);
 
-    ovenRecipes.size = 3;
+    ovenRecipes.size = 4;
     ovenRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (ovenRecipes.size));
     ovenRecipes.recipes[0] = defineRecipe(ITEM_BREAD, 1, 1, ITEM_WHEAT, 4);
     ovenRecipes.recipes[1] = defineRecipe(ITEM_PORK_COOKED, 1, 2, ITEM_PORK_RAW, 1, ITEM_COAL, 1);
     ovenRecipes.recipes[2] = defineRecipe(ITEM_BEEF_COOKED, 1, 2, ITEM_BEEF_RAW, 1, ITEM_COAL, 1);
+    ovenRecipes.recipes[3] = defineRecipe(ITEM_GOLDEN_APPLE, 1, 2, ITEM_APPLE, 1, ITEM_GOLDINGOT, 8);
 
     loomRecipes.size = 1;
     loomRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (loomRecipes.size));

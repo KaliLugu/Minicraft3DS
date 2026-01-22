@@ -38,6 +38,7 @@ void itemsDataInit() {
     _itemRegister(ITEM_WHEAT, "Wheat", 6, 19, false);
     _itemRegister(ITEM_FLESH, "Flesh", 8, 19, false);
     _itemRegister(ITEM_BREAD, "Bread", 9, 19, false);
+    _itemRegister(ITEM_GOLDEN_APPLE, "Golden Apple", 22, 20, false);
     _itemRegister(ITEM_APPLE, "Apple", 10, 19, false);
     _itemRegister(ITEM_SLIME, "Slime", 31, 18, false);
     _itemRegister(ITEM_COAL, "Coal", 30, 18, false);

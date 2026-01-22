@@ -72,7 +72,7 @@ void playerInitInventory(PlayerData *pd) {
             addItemToInventory(newItem(i, 50), &(pd->inventory));
         for (i = 51; i < 76; ++i)
             addItemToInventory(newItem(i, 50), &(pd->inventory));
-        for (i = 1001; i < 1007; ++i)
+        for (i = 1001; i < 1008; ++i)
             addItemToInventory(newItem(i, 50), &(pd->inventory));
     }
 }
@@ -251,6 +251,10 @@ bool playerUseItem(PlayerData *pd) {
     // Health items
     case ITEM_APPLE:
         if (_playerUseItemEat(pd, 2, 1))
+            return true;
+        break;
+    case ITEM_GOLDEN_APPLE:
+        if (_playerUseItemEat(pd, 2, 7))
             return true;
         break;
     case ITEM_FLESH:

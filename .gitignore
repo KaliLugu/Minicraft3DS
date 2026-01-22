@@ -63,3 +63,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Linux executable file
+bannertool
+ctrtool
+makerom
+
+# Windows executable file
+*.exe
