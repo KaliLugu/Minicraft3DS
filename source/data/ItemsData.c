@@ -1,6 +1,30 @@
-#include "ItemsData.h"
-
+#include "items/ItemsData.h"
+#include "items/ItemsTypes.h"
 #include <stdio.h>
+
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
+// tableau temporaire de mapping des items pour la migration vers le nouveau système d'item
+static ItemID g_legacyToNew[MAX_ITEM_ID + 1];
 
 static char *_itemNames[MAX_ITEM_ID + 1];
 static int _itemIconX[MAX_ITEM_ID + 1];
@@ -15,6 +39,7 @@ static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingl
 }
 
 void itemsDataInit() {
+
     _itemRegister(ITEM_NULL, "", 0, 0, true);
 
     // tools 1
