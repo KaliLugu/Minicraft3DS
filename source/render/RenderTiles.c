@@ -369,6 +369,14 @@ void renderTile(int i, int d, uByte level, int x, int y) {
 
         renderConnectedTile8(x, y, 16, 12);
         break;
+    case TILE_WOOD_DOOR_CLOSED:
+        // Draw door graphic directly, avoid recursion
+        renderTile16(x, y, 60, 6, 0);
+        break;
+    case TILE_WOOD_DOOR_OPENED:
+        // Draw door graphic directly, avoid recursion
+        renderTile16(x, y, 61, 6, 0);
+        break;
     }
 
     resetSurrTiles();

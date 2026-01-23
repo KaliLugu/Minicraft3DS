@@ -39,9 +39,11 @@
 #define TILE_MUSHROOM_BROWN 34
 #define TILE_MUSHROOM_RED 35
 #define TILE_ICE 36
+#define TILE_WOOD_DOOR_CLOSED 37
+#define TILE_WOOD_DOOR_OPENED 38
 
 #define MAX_TILE_ID 255
-#define MAX_TILE_ID_USED 36
+#define MAX_TILE_ID_USED 38
 
 extern void tilesDataInit();
 

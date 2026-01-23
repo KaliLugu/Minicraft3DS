@@ -72,6 +72,7 @@
 #define ITEM_BOOKSHELVES 73
 #define ITEM_MAGIC_DUST 74
 #define ITEM_COIN 75
+#define ITEM_DOOR_WOOD 76
 
 // tools 2
 #define TOOL_BUCKET 101
