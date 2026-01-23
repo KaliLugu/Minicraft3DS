@@ -1,0 +1,22 @@
+name: Build 3DS
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Compile with devkitPro
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/src \
+            devkitpro/devkitarm:20251231 \
+            bash -lc "cd /src && make T=3ds clean && make T=3ds"
