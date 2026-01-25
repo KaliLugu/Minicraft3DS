@@ -2,6 +2,11 @@
 #include "items/ItemsTypes.h"
 #include <stdio.h>
 
+static char *_itemNames[maxItemId + 1];
+static int _itemIconX[maxItemId + 1];
+static int _itemIconY[maxItemId + 1];
+static bool _itemSingle[maxItemId + 1];
+
 int itemGetLegacyId(ItemID id)
 {
     switch (id.category)
@@ -23,14 +28,6 @@ int itemGetLegacyId(ItemID id)
     }
 }
 
-// tableau temporaire de mapping des items pour la migration vers le nouveau système d'item
-static ItemID g_legacyToNew[MAX_ITEM_ID + 1];
-
-static char *_itemNames[MAX_ITEM_ID + 1];
-static int _itemIconX[MAX_ITEM_ID + 1];
-static int _itemIconY[MAX_ITEM_ID + 1];
-static bool _itemSingle[MAX_ITEM_ID + 1];
-
 static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;
     _itemIconX[id] = iconX; // sur la largeur
@@ -40,89 +37,85 @@ static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingl
 
 void itemsDataInit() {
 
-    _itemRegister(ITEM_NULL, "", 0, 0, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 0}), "", 0, 0, true);
 
-    // tools 1
-    _itemRegister(TOOL_SHOVEL, "Shovel", 0, 18, true);
-    _itemRegister(TOOL_HOE, "Hoe", 5, 18, true);
-    _itemRegister(TOOL_SWORD, "Sword", 10, 18, true);
-    _itemRegister(TOOL_PICKAXE, "Pickaxe", 15, 18, true);
-    _itemRegister(TOOL_AXE, "Axe", 20, 18, true);
-    _itemRegister(ITEM_POWGLOVE, "Power Glove", 7, 19, true);
+    // tools
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), "Shovel", 0, 18, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), "Hoe", 5, 18, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), "Sword", 10, 18, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), "Pickaxe", 15, 18, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), "Axe", 20, 18, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 5}), "Power Glove", 7, 19, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6}), "Bucket", 25, 18, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 7}), "Bow", 8, 21, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 8}), "Magic Compass", 14, 21, true);
 
-    // items 1
-    _itemRegister(ITEM_FLOWER, "Flower", 0, 19, false);
-    _itemRegister(ITEM_WOOD, "Wood", 1, 19, false);
-    _itemRegister(ITEM_STONE, "Stone", 2, 19, false);
-    _itemRegister(ITEM_SAND, "Sand", 27, 19, false);
-    _itemRegister(ITEM_DIRT, "Dirt", 28, 19, false);
-    _itemRegister(ITEM_CLOUD, "Cloud", 29, 19, false);
-    _itemRegister(ITEM_ACORN, "Acorn", 3, 19, false);
-    _itemRegister(ITEM_CACTUS, "Cactus", 4, 19, false);
-    _itemRegister(ITEM_SEEDS, "Seeds", 5, 19, false);
-    _itemRegister(ITEM_WHEAT, "Wheat", 6, 19, false);
-    _itemRegister(ITEM_FLESH, "Flesh", 8, 19, false);
-    _itemRegister(ITEM_BREAD, "Bread", 9, 19, false);
-    _itemRegister(ITEM_GOLDEN_APPLE, "Golden Apple", 22, 20, false);
-    _itemRegister(ITEM_APPLE, "Apple", 10, 19, false);
-    _itemRegister(ITEM_SLIME, "Slime", 31, 18, false);
-    _itemRegister(ITEM_COAL, "Coal", 30, 18, false);
-    _itemRegister(ITEM_IRONORE, "Iron Ore", 11, 19, false);
-    _itemRegister(ITEM_GOLDORE, "Gold Ore", 30, 19, false);
-    _itemRegister(ITEM_IRONINGOT, "Iron Ingot", 12, 19, false);
-    _itemRegister(ITEM_GOLDINGOT, "Gold Ingot", 31, 19, false);
-    _itemRegister(ITEM_GLASS, "Glass", 13, 19, false);
-    _itemRegister(ITEM_GEM, "Gem", 14, 19, false);
+    // food
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 0}), "Flesh", 8, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1}), "Bread", 9, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}), "Apple", 10, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3}), "Golden Apple", 22, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4}), "Raw Pork", 10, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 5}), "Cooked Pork", 11, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 6}), "Raw Beef", 12, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 7}), "Steak", 13, 20, false);
 
     // furniture
-    _itemRegister(ITEM_ANVIL, "Anvil", 15, 19, true);
-    _itemRegister(ITEM_CHEST, "Chest", 16, 19, true);
-    _itemRegister(ITEM_OVEN, "Oven", 17, 19, true);
-    _itemRegister(ITEM_FURNACE, "Furnace", 18, 19, true);
-    _itemRegister(ITEM_WORKBENCH, "Workbench", 19, 19, true);
-    _itemRegister(ITEM_LANTERN, "Lantern", 20, 19, true);
-    _itemRegister(ITEM_LOOM, "Loom", 15, 20, true);
-    _itemRegister(ITEM_ENCHANTER, "Enchanter", 18, 20, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 0}), "Anvil", 15, 19, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1}), "Chest", 16, 19, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 2}), "Oven", 17, 19, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3}), "Furnace", 18, 19, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4}), "Workbench", 19, 19, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), "Lantern", 20, 19, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 6}), "Loom", 15, 20, true);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 7}), "Enchanter", 18, 20, true);
 
-    // items 2
-    _itemRegister(ITEM_WALL_WOOD, "Wood Wall", 28, 18, false);
-    _itemRegister(ITEM_WALL_STONE, "Stone Wall", 28, 20, false);
-    _itemRegister(ITEM_WALL_IRON, "Iron Wall", 29, 20, false);
-    _itemRegister(ITEM_WALL_GOLD, "Gold Wall", 30, 20, false);
-    _itemRegister(ITEM_WALL_GEM, "Gem Wall", 31, 20, false);
-    _itemRegister(ITEM_WOOL, "Wool", 8, 20, false);
-    _itemRegister(ITEM_STRING, "String", 9, 20, false);
-    _itemRegister(ITEM_PORK_RAW, "Raw Pork", 10, 20, false);
-    _itemRegister(ITEM_PORK_COOKED, "Cooked Pork", 11, 20, false);
-    _itemRegister(ITEM_BEEF_RAW, "Raw Beef", 12, 20, false);
-    _itemRegister(ITEM_BEEF_COOKED, "Steak", 13, 20, false);
-    _itemRegister(ITEM_LEATHER, "Leather", 14, 20, false);
-    _itemRegister(ITEM_ARROW_WOOD, "Wood Arrow", 9, 21, false);
-    _itemRegister(ITEM_ARROW_STONE, "Stone Arrow", 10, 21, false);
-    _itemRegister(ITEM_ARROW_IRON, "Iron Arrow", 11, 21, false);
-    _itemRegister(ITEM_ARROW_GOLD, "Gold Arrow", 12, 21, false);
-    _itemRegister(ITEM_ARROW_GEM, "Gem Arrow", 13, 21, false);
-    _itemRegister(ITEM_BONE, "Bone", 16, 20, false);
-    _itemRegister(ITEM_DUNGEON_KEY, "Dungeonkey", 17, 20, false);
-    _itemRegister(ITEM_WIZARD_SUMMON, "Wizard Summon", 19, 20, false);
-    _itemRegister(ITEM_DRAGON_EGG, "Dragon Egg", 20, 20, false);
-    _itemRegister(ITEM_DRAGON_SCALE, "Dragon Scale", 21, 20, false);
-    _itemRegister(ITEM_BOOKSHELVES, "Bookshelves", 29, 18, false);
-    _itemRegister(ITEM_MAGIC_DUST, "Magic Dust", 25, 19, false);
-    _itemRegister(ITEM_COIN, "Coin", 26, 19, false);
-
-    // tools 2
-    _itemRegister(TOOL_BUCKET, "Bucket", 25, 18, true);
-    _itemRegister(TOOL_BOW, "Bow", 8, 21, true);
-    _itemRegister(TOOL_MAGIC_COMPASS, "Magic Compass", 14, 21, true);
-
-    // items 3
-    _itemRegister(ITEM_SCROLL_UNDYING, "Undying", 18, 21, false);
-    _itemRegister(ITEM_SCROLL_REGENERATION, "Regeneration", 18, 21, false);
-    _itemRegister(ITEM_SCROLL_SPEED, "Speed", 18, 21, false);
-    _itemRegister(ITEM_SCROLL_STRENGTH, "Strength", 18, 21, false);
-    _itemRegister(ITEM_SCROLL_SHIELDING, "Shielding", 18, 21, false);
-    _itemRegister(ITEM_SCROLL_NIGHTVISION, "Night Vision", 18, 21, false);
+    // items
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1}), "Flower", 0, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), "Wood", 1, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), "Stone", 2, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 4}), "Sand", 27, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 5}), "Dirt", 28, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 6}), "Cloud", 29, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 7}), "Acorn", 3, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 8}), "Cactus", 4, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), "Seeds", 5, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), "Wheat", 6, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 11}), "Slime", 31, 18, false); 
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), "Coal", 30, 18, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 13}), "Iron Ore", 11, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 14}), "Gold Ore", 30, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), "Iron Ingot", 12, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), "Gold Ingot", 31, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 17}), "Glass", 13, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), "Gem", 14, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 19}), "Wood Wall", 28, 18, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 20}), "Stone Wall", 28, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 21}), "Iron Wall", 29, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 22}), "Gold Wall", 30, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 23}), "Gem Wall", 31, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 24}), "Wool", 8, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), "String", 9, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 26}), "Leather", 14, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27}), "Wood Arrow", 9, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28}), "Stone Arrow", 10, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29}), "Iron Arrow", 11, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30}), "Gold Arrow", 12, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31}), "Gem Arrow", 13, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 32}), "Bone", 16, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 33}), "Dungeonkey", 17, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 34}), "Wizard Summon", 19, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 35}), "Dragon Egg", 20, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 36}), "Dragon Scale", 21, 20, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 37}), "Bookshelves", 29, 18, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 38}), "Magic Dust", 25, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), "Coin", 26, 19, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 40}), "Undying", 18, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 41}), "Regeneration", 18, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 42}), "Speed", 18, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 43}), "Strength", 18, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 44}), "Shielding", 18, 21, false);
+    _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 45}), "Night Vision", 18, 21, false);
 }
 
 char *itemGetName(int id, int countLevel) {
