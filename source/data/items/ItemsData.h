@@ -1,7 +1,8 @@
 #pragma once
-
 #include "../../engine/dtypes.h"
 #include <stdint.h>
+
+#define maxItemId 1007
 
 // TODO HERE 
 //
@@ -26,10 +27,15 @@ typedef struct { // structure de base pour un item générique
     int legacy_id; // l'id legacy de l'item pour la compatibilité
 } GenericItem;
 
+typedef struct { // structure de base pour un " furniture "
+    const char* base_name; // le nom de base de l'item
+    int legacy_id; // l'id legacy de l'item pour la compatibilité
+} FournitureItem;
+
 typedef enum {
-    ITEM_CATEGORY_NONE = 0,
     ITEM_CATEGORY_TOOL,
     ITEM_CATEGORY_FOOD,
+    ITEM_CATEGORY_FURNITURE,
     ITEM_CATEGORY_GENERIC
 } ItemCategory;
 
@@ -46,7 +52,6 @@ extern char *itemGetNameWithCount(int id, int countLevel);
 extern int itemGetIconX(int id, int countLevel);
 extern int itemGetIconY(int id, int countLevel);
 extern bool itemIsSingle(int id, int countLevel);
-extern unsigned int toolItemCount;
 extern ToolItem toolItems[];
 extern FoodItem foodItems[];
 extern GenericItem genericItems[];
