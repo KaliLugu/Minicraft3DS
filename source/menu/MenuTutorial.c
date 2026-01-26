@@ -5,6 +5,27 @@
 #include "../Render.h"
 #include "../render/TextureManager.h"
 
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 uByte pageNum = 0;
 uByte maxPageNum = 6;
 
@@ -185,24 +206,24 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile16(12 + 8, 20 + 4, 16, 3, 0);           // Tree
             renderTile8(12 + 9, 20 + 14, 2, 20, 0);           // Slash (Up)
             renderTile8(12 + 9 + 8, 20 + 14, 3, 20, 0);       // Slash (Up)
-            renderItemIcon(TOOL_AXE, 1, 12 + 9 + 4, 20 + 14); // Axe
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 1, 12 + 9 + 4, 20 + 14); // Axe
             renderTile16(12 + 9, 20 + 18, 1, 7, 0);           // Player-up
 
             menuRenderTilePit(122, 62, 40, 0);       // sand pit
             renderTile16(130, 70, 16, 13, 0);        // hole
             renderTile16(116, 70, 3, 7, 0);          // Player-right
-            renderItemIcon(ITEM_SAND, 1, 136, 76);   // Sand Item
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 4}), 1, 136, 76);   // Sand Item
             renderTile8(128, 70, 5, 20, 0);          // Slash (Right)
             renderTile8(128, 70 + 8, 5, 21, 0);      // Slash (Right)
-            renderItemIcon(TOOL_SHOVEL, 2, 130, 74); // Shovel
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 2, 130, 74); // Shovel
             break;
         case 2: // Inventory
             renderFrame(4, 4, 20, 11, 0x1010FFFF);
-            renderItemStuffWithText(ITEM_APPLE, 5, false, 40, 39);
-            renderItemStuffWithText(ITEM_SLIME, 11, false, 40, 47);
-            renderItemStuffWithText(TOOL_SWORD, 4, true, 40, 55);
-            renderItemStuffWithText(ITEM_IRONORE, 3, false, 40, 63);
-            renderItemStuffWithText(ITEM_IRONINGOT, 11, false, 40, 71);
+            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}), 5, false, 40, 39);
+            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 11}), 11, false, 40, 47);
+            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 4, true, 40, 55);
+            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 13}), 3, false, 40, 63);
+            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 11, false, 40, 71);
             drawRect(64, 112, 8, 10, 0x191919FF);
             renderText(">", 32, 55);
             renderButtonIcon(biasedCirclePad(localInputs.k_up.input), 11, 32);
@@ -215,11 +236,11 @@ void menuTutorialRender(int screen, int width, int height) {
                 renderTile16(32 + f * 16, 24, 4 + f, 8, 0); // Furniture entities
             }
 
-            renderFurniture(ITEM_WORKBENCH, 50, 60);
+            renderFurniture(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4}), 50, 60);
             renderTile16(50, 46, 0, 7, 0);            // Player-down
             renderTile8(50, 58, 2, 21, 0);            // Slash (Down)
             renderTile8(58, 58, 3, 21, 0);            // Slash (Down)
-            renderItemIcon(ITEM_POWGLOVE, 0, 54, 58); // Power glove
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 5}), 0, 54, 58); // Power glove
 
             renderTile16(92, 56, 0, 8, 0); // Player(Carrying)
             renderTile16(92, 44, 8, 8, 0); // Workbench
@@ -235,10 +256,10 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTextColor("Crafting", 12 + 1, 22 + 1, 0x000000FF);
             renderTextColor("Crafting", 12, 22, 0xE2E26FFF);
 
-            renderItemStuffWithText(TOOL_AXE, 0, true, 14, 32);
-            renderItemIcon(TOOL_AXE, 0, 94, 32);
+            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 0, true, 14, 32);
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 0, 94, 32);
             renderText("0", 103, 33);
-            renderItemIcon(ITEM_WOOD, 0, 94, 64);
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 0, 94, 64);
             renderText("16/5", 103, 65);
             break;
         case 5: // Farming (Bottom screen)
@@ -252,16 +273,16 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile16(20, 54, 1, 7, 0);         // Player (Up)
             renderTile8(20, 50, 2, 20, 0);         // Slash (Up)
             renderTile8(28, 50, 3, 20, 0);         // Slash (Up)
-            renderItemIcon(ITEM_SEEDS, 1, 19, 45); // Seeds
-            renderItemIcon(ITEM_WHEAT, 1, 26, 39); // Wheat1
-            renderItemIcon(ITEM_WHEAT, 1, 29, 44); // Wheat2
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 1, 19, 45); // Seeds
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 5}), 1, 26, 39); // Wheat1
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 29, 44); // Wheat2
 
             renderTile16(72, 40, 22, 3, 0);        // Farm Tile
             renderTile16(72 + 16, 40, 23, 3, 0);   // Seeded Wheat Tile
             renderTile16(88, 54, 1, 7, 0);         // Player (Up)
             renderTile8(88, 50, 2, 20, 0);         // Slash (Up)
             renderTile8(96, 50, 3, 20, 0);         // Slash (Up)
-            renderItemIcon(ITEM_SEEDS, 1, 92, 48); // Seeds
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 1, 92, 48); // Seeds
 
             drawRect(216, 80, 32, 32, dirtColor[1]); // Dirt color for grass
             renderTile16(108, 40, 16, 0, 0);         // Grass
@@ -269,35 +290,35 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile16(124, 54, 1, 7, 0);          // Player (Up)
             renderTile8(124, 50, 2, 20, 0);          // Slash (Up)
             renderTile8(132, 50, 3, 20, 0);          // Slash (Up)
-            renderItemIcon(TOOL_HOE, 4, 128, 48);    // Gem Hoe
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 4, 128, 48);    // Gem Hoe
 
             drawRect(112, 156, 32, 32, dirtColor[1]); // Dirt color for grass
             renderTile16(56, 78, 16, 0, 0);           // Grass
             drawRect(80, 156, 32, 32, dirtColor[1]);  // Dirt color
             renderTile16(40, 78, 21, 5, 0);           // Dirt Dots
-            renderItemIcon(ITEM_SEEDS, 1, 44, 82);    // Seeds
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 1, 44, 82);    // Seeds
 
             renderTile16(24, 78, 3, 7, 0);          // Player (Right)
             renderTile8(36, 78, 5, 20, 0);          // Slash (Right)
             renderTile8(36, 78 + 8, 5, 21, 0);      // Slash (Right)
-            renderItemIcon(TOOL_SHOVEL, 4, 38, 82); // Gem Shovel
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 4, 38, 82); // Gem Shovel
 
-            renderItemIcon(ITEM_WHEAT, 1, 82, 78); // Wheat
-            renderItemIcon(ITEM_WHEAT, 1, 90, 78); // Wheat
-            renderItemIcon(ITEM_WHEAT, 1, 82, 86); // Wheat
-            renderItemIcon(ITEM_WHEAT, 1, 90, 86); // Wheat
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 82, 78); // Wheat
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 90, 78); // Wheat
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 82, 86); // Wheat
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 90, 86); // Wheat
             renderText(">", 101, 82);
             renderTile16(108, 76, 6, 8, 0); // Oven
             renderText(">", 123, 82);
-            renderItemIcon(ITEM_BREAD, 1, 132, 82); // Bread
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1}), 1, 132, 82); // Bread
             break;
         case 6:                                      // Mining
             renderTile16(23, 32, 29, 3, 0);          // iron ore
             renderTile16(23, 52, 30, 3, 0);          // gold ore
             renderTile16(23, 72, 31, 3, 0);          // gem ore
-            renderItemIcon(ITEM_IRONORE, 1, 41, 38); // Iron ore item
-            renderItemIcon(ITEM_GOLDORE, 1, 41, 58); // Gold ore item
-            renderItemIcon(ITEM_GEM, 1, 41, 78);     // Gem item
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 13}), 1, 41, 38); // Iron ore item
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 14}), 1, 41, 58); // Gold ore item
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 1, 41, 78);     // Gem item
             renderText(">", 52, 37);
             renderText(">", 52, 57);
             renderText(">", 52, 77);
@@ -307,17 +328,17 @@ void menuTutorialRender(int screen, int width, int height) {
             renderText(">", 80, 37);
             renderText(">", 80, 57);
             renderText(">", 80, 77);
-            renderItemIcon(ITEM_IRONINGOT, 1, 88, 36); // Iron ingot item
-            renderItemIcon(ITEM_GOLDINGOT, 1, 88, 56); // Gold ingot item
-            renderItemIcon(TOOL_PICKAXE, 4, 88, 76);   // Gem Pickaxe
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 1, 88, 36); // Iron ingot item
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 14}), 1, 88, 56); // Gold ingot item
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 4, 88, 76);   // Gem Pickaxe
             renderText(">", 100, 37);
             renderText(">", 100, 57);
             renderTile16(106, 32, 4, 8, 0); // Anvil
             renderTile16(106, 52, 4, 8, 0); // Anvil
             renderText(">", 122, 37);
             renderText(">", 122, 57);
-            renderItemIcon(TOOL_PICKAXE, 2, 130, 36); // Iron Pickaxe
-            renderItemIcon(TOOL_PICKAXE, 3, 130, 56); // Gold Pickaxe
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 2, 130, 36); // Iron Pickaxe
+            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 3, 130, 56); // Gold Pickaxe
             break;
         }
 
