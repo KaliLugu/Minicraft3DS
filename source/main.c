@@ -26,6 +26,28 @@
 
 // TODO: Something still causes desyncs very rarely
 
+// to move for use one import of this fonction for all files use the same fonction
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 void setupGame() {
     initGame = 0;
     synchronizerStartSP();
@@ -125,7 +147,7 @@ int main() {
         }
     }
 
-    noItem = newItem(ITEM_NULL, 0);
+    noItem = newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 0}), 0);
 
     initMenus();
     currentMenu = MENU_TITLE;

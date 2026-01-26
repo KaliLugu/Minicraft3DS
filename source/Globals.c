@@ -30,6 +30,7 @@ int currentSelection;
 
 WorldData worldData;
 
+// to delete later, see main.c
 int itemGetLegacyId(ItemID id)
 {
     switch (id.category)
