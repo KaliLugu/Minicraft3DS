@@ -11,6 +11,28 @@ int h = 0;
 uByte randomTile[] = {0, 0, 0, 0, 0, 0, 0, 1, 1, 2};
 int randomTileSize = 10;
 
+// to mose, see comment in main.c
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 float nextFloat() {
     return (float)syncRand() / SYNC_RAND_MAX;
 }
@@ -660,7 +682,7 @@ void createVillageHouse(int hid, int x, int y, int hw, int hh, int ex, int ey, i
     int loffy = -12;
     if (hid == 2)
         loffx = 12;
-    addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, ((x + hw / 2) << 4) + loffx, ((y + hh / 2) << 4) + loffy, level), &eManager);
+    addEntityToList(newEntityFurniture(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), NULL, ((x + hw / 2) << 4) + loffx, ((y + hh / 2) << 4) + loffy, level), &eManager);
 }
 
 void createVillage(int w, int h, uByte level, uByte *map, uByte *data) {
@@ -771,8 +793,8 @@ void createDwarfHouse(int w, int h, uByte level, uByte *map, uByte *data) {
 
     addEntityToList(newEntityNPC(NPC_DWARF, ((x + vw / 2) << 4) + 8, (y + vh / 2) << 4, level), &eManager);
 
-    addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, (x + 1 + 1) << 4, (y + 1 + 3) << 4, level), &eManager);
-    addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, (x + vw - 1 - 1) << 4, (y + 1 + 3) << 4, level), &eManager);
+    addEntityToList(newEntityFurniture(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), NULL, (x + 1 + 1) << 4, (y + 1 + 3) << 4, level), &eManager);
+    addEntityToList(newEntityFurniture(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), NULL, (x + vw - 1 - 1) << 4, (y + 1 + 3) << 4, level), &eManager);
 }
 
 void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte *data) {
