@@ -2,7 +2,6 @@
 
 // new id tables, last column is legacy id
 ToolItem toolItems[] = {
-    // index 0 for tool item is first category of the table
     {"Shovel", (const char*[]){"Wood Shovel", "Stone Shovel", "Gold Shovel", "Gem Shovel"}, 4, 1}, // 0
     {"Hoe", (const char*[]){"Wood Hoe", "Stone Hoe", "Gold Hoe", "Gem Hoe"}, 4, 2}, // 1
     {"Sword", (const char*[]){"Wood Sword", "Stone Sword", "Gold Sword", "Gem Sword"}, 4, 3}, // 2
