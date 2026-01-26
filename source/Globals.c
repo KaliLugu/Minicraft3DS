@@ -493,22 +493,16 @@ void EntityVsEntity(Entity *e1, Entity *e2) {
             hurtEntity(e2, 1, -1, 0xFFAF00FF, e1);
         break;
     case ENTITY_ARROW:
-        switch (e1->arrow.itemID) {
-        case ITEM_ARROW_WOOD:
+        if (e1->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27})) {
             damage = 1 + (syncRand() % 3);
-            break;
-        case ITEM_ARROW_STONE:
+        } else if (e1->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28})) {
             damage = 2 + (syncRand() % 4);
-            break;
-        case ITEM_ARROW_IRON:
+        } else if (e1->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29})) {
             damage = 8 + (syncRand() % 9);
-            break;
-        case ITEM_ARROW_GOLD:
+        } else if (e1->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30})) {
             damage = 16 + (syncRand() % 9);
-            break;
-        case ITEM_ARROW_GEM:
+        } else if (e1->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31})) {
             damage = 24 + (syncRand() % 9);
-            break;
         }
 
         if (e1->arrow.parent->type == ENTITY_PLAYER) {
