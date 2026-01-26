@@ -23,7 +23,6 @@ FoodItem foodItems[] = {
     {"Cooked Pork", 14, 59}, // 5
     {"Raw Beef", 9, 60}, // 6
     {"Steak", 15, 61} // 7
-
 };
 
 FournitureItem fournitureItems[] = {
