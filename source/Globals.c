@@ -1373,26 +1373,25 @@ void openCraftingMenu(PlayerData *pd, RecipeManager *rm, char *title) {
 
 bool useEntity(PlayerData *pd, Entity *e) {
     if (e->type == ENTITY_FURNITURE) {
-        switch (e->entityFurniture.itemID) {
-        case ITEM_WORKBENCH:
+        if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4})) { // bed
             openCraftingMenu(pd, &workbenchRecipes, "Crafting");
             return true;
-        case ITEM_FURNACE:
+        } else if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3})) {
             openCraftingMenu(pd, &furnaceRecipes, "Smelting");
             return true;
-        case ITEM_OVEN:
+        } else if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 2})) {
             openCraftingMenu(pd, &ovenRecipes, "Cooking");
             return true;
-        case ITEM_ANVIL:
+        } else if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 0})) {
             openCraftingMenu(pd, &anvilRecipes, "Smithing");
             return true;
-        case ITEM_LOOM:
+        } else if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 6})) {
             openCraftingMenu(pd, &loomRecipes, "Crafting");
             return true;
-        case ITEM_ENCHANTER:
+        } else if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 7})) {
             openCraftingMenu(pd, &enchanterRecipes, "Crafting");
             return true;
-        case ITEM_CHEST:
+        } else if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1})) {
             pd->curChestEntity = e;
             pd->ingameMenuInvSel = 0;
             pd->ingameMenuInvSelOther = 0;
