@@ -363,8 +363,7 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
 
 bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
     // TODO: To much duplicated code
-    switch (item->id) {
-    case ITEM_POWGLOVE:
+    if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 5})) {
         if (e->type == ENTITY_FURNITURE) {
             // Important: close all crafting windows using this furniture (only applies to chest) or else they will write invalid memory
             for (int i = 0; i < playerCount; i++) {
@@ -383,70 +382,60 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             pd->entity.p.isCarrying = true;
             return true;
         }
-        break;
-    case TOOL_AXE:
-        switch (e->type) {
-        case ENTITY_PASSIVE:
-        case ENTITY_ZOMBIE:
-        case ENTITY_SKELETON:
-        case ENTITY_KNIGHT:
-        case ENTITY_SLIME:
-        case ENTITY_AIRWIZARD:
-        case ENTITY_DRAGON:
+    } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4})) {
+        if (e->type == ENTITY_PASSIVE ||
+            e->type == ENTITY_ZOMBIE ||
+            e->type == ENTITY_SKELETON ||
+            e->type == ENTITY_KNIGHT ||
+            e->type == ENTITY_SLIME ||
+            e->type == ENTITY_AIRWIZARD ||
+            e->type == ENTITY_DRAGON) {
             if (playerUseEnergy(pd, 4 - item->countLevel))
                 hurtEntity(e, (item->countLevel + 1) * 2 + (syncRand() % 4), dir, 0xFF0000FF, &(pd->entity));
             else
                 hurtEntity(e, 1 + syncRand() % 3, dir, 0xFF0000FF, &(pd->entity));
             return true;
-
-        case ENTITY_MAGIC_PILLAR:
+        } else if (e->type == ENTITY_MAGIC_PILLAR) {
             playSoundPositioned(snd_monsterHurt, e->level, e->x, e->y);
 
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-        break;
-    case TOOL_SWORD:
-        switch (e->type) {
-        case ENTITY_PASSIVE:
-        case ENTITY_ZOMBIE:
-        case ENTITY_SKELETON:
-        case ENTITY_KNIGHT:
-        case ENTITY_SLIME:
-        case ENTITY_AIRWIZARD:
-        case ENTITY_DRAGON:
+    } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2})) {
+        if (e->type == ENTITY_PASSIVE ||
+            e->type == ENTITY_ZOMBIE ||
+            e->type == ENTITY_SKELETON ||
+            e->type == ENTITY_KNIGHT ||
+            e->type == ENTITY_SLIME ||
+            e->type == ENTITY_AIRWIZARD ||
+            e->type == ENTITY_DRAGON) {
             if (playerUseEnergy(pd, 4 - item->countLevel))
                 hurtEntity(e, (item->countLevel + 1) * 3 + (syncRand() % (2 + item->countLevel * item->countLevel * 2)), dir, 0xFF0000FF, &(pd->entity));
             else
                 hurtEntity(e, 1 + syncRand() % 3, dir, 0xFF0000FF, &(pd->entity));
             return true;
-
-        case ENTITY_MAGIC_PILLAR:
+        } else if (e->type == ENTITY_MAGIC_PILLAR) {
             playSoundPositioned(snd_monsterHurt, e->level, e->x, e->y);
 
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-        break;
-    case ITEM_NULL:
-        switch (e->type) {
-        case ENTITY_PASSIVE:
-        case ENTITY_ZOMBIE:
-        case ENTITY_SKELETON:
-        case ENTITY_KNIGHT:
-        case ENTITY_SLIME:
-        case ENTITY_AIRWIZARD:
-        case ENTITY_DRAGON:
+    } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 0})) {
+        if (e->type == ENTITY_PASSIVE ||
+        e->type == ENTITY_ZOMBIE ||
+        e->type == ENTITY_SKELETON ||
+        e->type == ENTITY_KNIGHT ||
+        e->type == ENTITY_SLIME ||
+        e->type == ENTITY_AIRWIZARD ||
+        e->type == ENTITY_DRAGON) {
             hurtEntity(e, 1 + syncRand() % 3, dir, 0xFF0000FF, &(pd->entity));
             return true;
-
-        case ENTITY_MAGIC_PILLAR:
+        } else if (e->type == ENTITY_MAGIC_PILLAR) {
             playSoundPositioned(snd_monsterHurt, e->level, e->x, e->y);
 
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-        break;
     }
     return false;
 }
