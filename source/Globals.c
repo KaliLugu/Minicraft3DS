@@ -30,6 +30,27 @@ int currentSelection;
 
 WorldData worldData;
 
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 void addItemsToWorld(Item item, uByte level, int x, int y, int count) {
     int i;
     for (i = 0; i < count; ++i)
@@ -194,15 +215,15 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->hostile.health -= damage;
         if (e->hostile.health < 1) {
             if (e->type == ENTITY_ZOMBIE) {
-                addItemsToWorld(newItem(ITEM_FLESH, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 0}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->type == ENTITY_SKELETON) {
-                addItemsToWorld(newItem(ITEM_BONE, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 32}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
                 if (syncRand() % 2 == 0)
-                    addItemsToWorld(newItem(ITEM_ARROW_STONE, 1), e->level, e->x + 8, e->y + 8, 1);
+                    addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28}), 1), e->level, e->x + 8, e->y + 8, 1);
             } else if (e->type == ENTITY_KNIGHT) {
-                addItemsToWorld(newItem(ITEM_IRONINGOT, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->type == ENTITY_SLIME) {
-                addItemsToWorld(newItem(ITEM_SLIME, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 11}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             }
             if (damager != NULL && damager->type == ENTITY_PLAYER)
                 damager->p.data->score += 50 * (e->hostile.lvl + 1);
@@ -216,7 +237,7 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->wizard.health -= damage;
         airWizardHealthDisplay = e->wizard.health;
         if (e->wizard.health < 1) {
-            addItemsToWorld(newItem(ITEM_MAGIC_DUST, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 2);
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 38}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 2);
             removeEntityFromList(e, e->level, &eManager);
             playSound(snd_bossdeath);
 
@@ -235,13 +256,13 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->passive.health -= damage;
         if (e->passive.health < 1) {
             if (e->passive.mtype == 0) {
-                addItemsToWorld(newItem(ITEM_WOOL, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 3) + 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 24}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 3) + 1);
             } else if (e->passive.mtype == 1) {
-                addItemsToWorld(newItem(ITEM_PORK_RAW, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->passive.mtype == 2) {
-                addItemsToWorld(newItem(ITEM_BEEF_RAW, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 6}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
                 if ((syncRand() % 2) == 0) {
-                    addItemsToWorld(newItem(ITEM_LEATHER, 1), e->level, e->x + 8, e->y + 8, 1);
+                    addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 26}), 1), e->level, e->x + 8, e->y + 8, 1);
                 }
             }
             if (damager != NULL && damager->type == ENTITY_PLAYER)
@@ -255,8 +276,8 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
     case ENTITY_DRAGON:
         e->dragon.health -= damage;
         if (e->dragon.health < 1) {
-            addItemsToWorld(newItem(ITEM_DRAGON_EGG, 1), e->level, e->x + 8, e->y + 8, 1);
-            addItemsToWorld(newItem(ITEM_DRAGON_SCALE, 1), e->level, e->x + 8, e->y + 8, (syncRand() % 11) + 10);
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 35}), 1), e->level, e->x + 8, e->y + 8, 1);
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 36}), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 11) + 10);
             removeEntityFromList(e, e->level, &eManager);
             playSound(snd_bossdeath);
             for (i = 0; i < playerCount; i++) {
@@ -352,7 +373,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             }
 
             Item nItem = newItem(e->entityFurniture.itemID, 0);
-            if (e->entityFurniture.itemID == ITEM_CHEST)
+            if (e->entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1}))
                 nItem.chestPtr = e->entityFurniture.inv;
             pushItemToInventoryFront(nItem, &(pd->inventory));
 
@@ -664,14 +685,14 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
 
     switch (tile) {
     case TILE_TREE:
-        if (item->id == TOOL_AXE && playerUseEnergy(pd, 4 - item->countLevel)) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}) && playerUseEnergy(pd, 4 - item->countLevel)) {
             playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
         break;
     case TILE_ROCK:
     case TILE_HARDROCK:
-        if (item->id == TOOL_PICKAXE && playerUseEnergy(pd, 4 - item->countLevel)) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}) && playerUseEnergy(pd, 4 - item->countLevel)) {
             playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
@@ -680,152 +701,152 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
     case TILE_GOLDORE:
     case TILE_GEMORE:
     case TILE_CLOUDCACTUS:
-        if (item->id == TOOL_PICKAXE && playerUseEnergy(pd, 4 - item->countLevel)) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}) && playerUseEnergy(pd, 4 - item->countLevel)) {
             playerHurtTile(pd, tile, level, x, y, 1, pd->entity.p.dir);
             return 1;
         }
         break;
     case TILE_GRASS:
-        if (item->id == TOOL_HOE && playerUseEnergy(pd, 4 - item->countLevel)) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}) && playerUseEnergy(pd, 4 - item->countLevel)) {
             setTile(TILE_FARM, level, x, y);
             return 1;
-        } else if (item->id == ITEM_ACORN) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 7})) {
             setTile(TILE_SAPLING_TREE, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_FLOWER) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1})) {
             setTile(TILE_FLOWER, level, x, y);
             --item->countLevel;
             setData(syncRand() % 4, level, x, y); // determines mirroring.
             return 1;
-        } else if (item->id == ITEM_WALL_WOOD) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 19})) {
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_STONE) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 20})) {
             setTile(TILE_STONE_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_IRON) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 21})) {
             setTile(TILE_IRON_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_GOLD) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 22})) {
             setTile(TILE_GOLD_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_GEM) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 23})) {
             setTile(TILE_GEM_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_BOOKSHELVES) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 37})) {
             setTile(TILE_BOOKSHELVES, level, x, y);
             --item->countLevel;
             setData(syncRand() % 3, level, x, y); // determines sprite
             return 1;
-        } else if (item->id == TOOL_SHOVEL && playerUseEnergy(pd, 4 - item->countLevel)) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}) && playerUseEnergy(pd, 4 - item->countLevel)) {
             if (syncRand() % 5 == 0)
-                addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
             return 1;
         }
         break;
     case TILE_SAND:
-        if (item->id == ITEM_CACTUS) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 8})) {
             setTile(TILE_SAPLING_CACTUS, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == TOOL_SHOVEL && playerUseEnergy(pd, 4 - item->countLevel)) {
-            addItemsToWorld(newItem(ITEM_SAND, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}) && playerUseEnergy(pd, 4 - item->countLevel)) {
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 4}), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
             return 1;
         }
         break;
     case TILE_DIRT:
-        if (item->id == TOOL_HOE && pd->entity.level == 1 && playerUseEnergy(pd, 4 - item->countLevel)) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}) && pd->entity.level == 1 && playerUseEnergy(pd, 4 - item->countLevel)) {
             setTile(TILE_FARM, level, x, y);
             return 1;
-        } else if (item->id == ITEM_WALL_WOOD) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 19})) {
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_STONE) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 20})) {
             setTile(TILE_STONE_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_IRON) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 21})) {
             setTile(TILE_IRON_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_GOLD) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 22})) {
             setTile(TILE_GOLD_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_WALL_GEM) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 23})) {
             setTile(TILE_GEM_WALL, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_BOOKSHELVES) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 37})) {
             setTile(TILE_BOOKSHELVES, level, x, y);
             --item->countLevel;
             setData(syncRand() % 3, level, x, y); // determines sprite
             return 1;
-        } else if (item->id == ITEM_WOOD) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2})) {
             setTile(TILE_WOOD_FLOOR, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == ITEM_SAND) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 4})) {
             setTile(TILE_SAND, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == TOOL_SHOVEL && playerUseEnergy(pd, 4 - item->countLevel)) {
-            addItemsToWorld(newItem(ITEM_DIRT, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}) && playerUseEnergy(pd, 4 - item->countLevel)) {
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 5}), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_HOLE, level, x, y);
             return 1;
         }
         break;
     case TILE_HOLE:
-        if (item->id == ITEM_DIRT) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 5})) {
             setTile(TILE_DIRT, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == TOOL_BUCKET && item->countLevel == 1 && playerUseEnergy(pd, 4)) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6}) && item->countLevel == 1 && playerUseEnergy(pd, 4)) {
             setTile(TILE_WATER, level, x, y);
             item->countLevel = 0;
-        } else if (item->id == TOOL_BUCKET && item->countLevel == 2 && playerUseEnergy(pd, 4)) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6}) && item->countLevel == 2 && playerUseEnergy(pd, 4)) {
             setTile(TILE_LAVA, level, x, y);
             item->countLevel = 0;
         }
         break;
     case TILE_WATER:
-        if (item->id == ITEM_DIRT) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 5})) {
             setTile(TILE_DIRT, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == TOOL_BUCKET && item->countLevel == 0 && playerUseEnergy(pd, 4)) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6}) && item->countLevel == 0 && playerUseEnergy(pd, 4)) {
             setTile(TILE_HOLE, level, x, y);
             item->countLevel = 1;
         }
         break;
     case TILE_LAVA:
-        if (item->id == ITEM_DIRT) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 5})) {
             setTile(TILE_DIRT, level, x, y);
             --item->countLevel;
             return 1;
-        } else if (item->id == TOOL_BUCKET && item->countLevel == 0 && playerUseEnergy(pd, 4)) {
+        } else if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6}) && item->countLevel == 0 && playerUseEnergy(pd, 4)) {
             setTile(TILE_HOLE, level, x, y);
             item->countLevel = 2;
         }
         break;
     case TILE_NULL:
-        if (item->id == ITEM_CLOUD) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 6})) {
             setTile(TILE_CLOUD, level, x, y);
             --item->countLevel;
             return 1;
         }
         break;
     case TILE_FARM:
-        if (item->id == ITEM_SEEDS) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9})) {
             setTile(TILE_WHEAT, level, x, y);
             setData(0, level, x, y);
             --item->countLevel;
@@ -833,26 +854,26 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         }
         break;
     case TILE_WHEAT:
-        if (item->id == TOOL_HOE) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1})) {
             if (getData(level, x, y) > -1) {
                 int age = getData(level, x, y);
                 int count = (syncRand() % 2);
                 if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
                     count = (syncRand() % 3) + 2;
                 else if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem(ITEM_WHEAT, 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 setTile(TILE_DIRT, level, x, y);
             }
         }
         break;
     case TILE_WOOD_WALL:
     case TILE_BOOKSHELVES:
-        if (item->id == TOOL_AXE && playerUseEnergy(pd, 4 - item->countLevel)) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}) && playerUseEnergy(pd, 4 - item->countLevel)) {
             playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
@@ -861,14 +882,14 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
     case TILE_IRON_WALL:
     case TILE_GOLD_WALL:
     case TILE_GEM_WALL:
-        if (item->id == TOOL_PICKAXE && playerUseEnergy(pd, 4 - item->countLevel)) {
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}) && playerUseEnergy(pd, 4 - item->countLevel)) {
             playerHurtTile(pd, tile, level, x, y, (syncRand() % 10) + (item->countLevel) * 5 + 10, pd->entity.p.dir);
             return 1;
         }
         break;
     case TILE_WOOD_FLOOR:
-        if (item->id == TOOL_AXE && playerUseEnergy(pd, 4 - item->countLevel)) {
-            addItemsToWorld(newItem(ITEM_WOOD, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+        if (item->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}) && playerUseEnergy(pd, 4 - item->countLevel)) {
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
         }
         break;
@@ -1132,24 +1153,24 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
     switch (tile) {
     case TILE_TREE:
         if (syncRand() % 120 == 0)
-            addEntityToList(newEntityItem(newItem(ITEM_APPLE, 1), (xt << 4) + 8, (yt << 4) + 8, level), &eManager);
-        damageAndBreakTile(level, xt, yt, damage, 20, TILE_GRASS, 2, newItem(ITEM_WOOD, 1), syncRand() % 2 + 1, newItem(ITEM_ACORN, 1), syncRand() % 2);
+            addEntityToList(newEntityItem(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}), 1), (xt << 4) + 8, (yt << 4) + 8, level), &eManager);
+        damageAndBreakTile(level, xt, yt, damage, 20, TILE_GRASS, 2, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 1), syncRand() % 2 + 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 7}), 1), syncRand() % 2);
         break;
     case TILE_CACTUS:
-        damageAndBreakTile(level, xt, yt, damage, 10, TILE_SAND, 1, newItem(ITEM_CACTUS, 1), syncRand() % 2 + 1);
+        damageAndBreakTile(level, xt, yt, damage, 10, TILE_SAND, 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 8}), 1), syncRand() % 2 + 1);
         break;
     case TILE_ROCK:
-        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 2, newItem(ITEM_STONE, 1), syncRand() % 4 + 1, newItem(ITEM_COAL, 1), syncRand() % 2);
+        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 2, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 1), syncRand() % 4 + 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), 1), syncRand() % 2);
         break;
     case TILE_HARDROCK:
-        if ((pd->activeItem->id != TOOL_PICKAXE || pd->activeItem->countLevel < 4) && !TESTGODMODE)
+        if ((pd->activeItem->id != itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}) || pd->activeItem->countLevel < 4) && !TESTGODMODE)
             damage = 0;
-        damageAndBreakTile(level, xt, yt, damage, 200, TILE_DIRT, 2, newItem(ITEM_STONE, 1), syncRand() % 4 + 1, newItem(ITEM_COAL, 1), syncRand() % 2);
+        damageAndBreakTile(level, xt, yt, damage, 200, TILE_DIRT, 2, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 1), syncRand() % 4 + 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), 1), syncRand() % 2);
         break;
     case TILE_IRONORE:
     case TILE_GOLDORE:
     case TILE_GEMORE:
-        if (pd->activeItem->id != TOOL_PICKAXE)
+        if (pd->activeItem->id != itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}))
             damage = 0;
         addSmashParticles(level, xt << 4, yt << 4, damage);
         setData(getData(level, xt, yt) + damage, level, xt, yt);
@@ -1163,15 +1184,15 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
                 count += 2;
             }
             if (tile == TILE_IRONORE)
-                addItemsToWorld(newItem(ITEM_IRONORE, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 13}), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             if (tile == TILE_GOLDORE)
-                addItemsToWorld(newItem(ITEM_GOLDORE, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 14}), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             if (tile == TILE_GEMORE)
-                addItemsToWorld(newItem(ITEM_GEM, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
         }
         break;
     case TILE_CLOUDCACTUS:
-        if (pd->activeItem->id != TOOL_PICKAXE)
+        if (pd->activeItem->id != itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}))
             damage = 0;
         addSmashParticles(level, xt << 4, yt << 4, damage);
         setData(getData(level, xt, yt) + damage, level, xt, yt);
@@ -1181,7 +1202,7 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
                 setTile(TILE_CLOUD, level, xt, yt);
                 count += 3;
             }
-            addItemsToWorld(newItem(ITEM_CLOUD, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 6}), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
         }
         break;
     case TILE_FARM:
@@ -1199,34 +1220,34 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
             int count = (syncRand() % 2);
             if (age >= 80)
                 count = (syncRand() % 2) + 1;
-            addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             count = 0;
             if (age == 100)
                 count = (syncRand() % 3) + 2;
             else if (age >= 80)
                 count = (syncRand() % 2) + 1;
-            addItemsToWorld(newItem(ITEM_WHEAT, 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+            addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             setTile(TILE_DIRT, level, xt, yt);
         }
         break;
     case TILE_FLOWER:
         setTile(TILE_GRASS, level, xt, yt);
-        addItemsToWorld(newItem(ITEM_FLOWER, 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
+        addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1}), 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
         break;
     case TILE_WOOD_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 20, TILE_DIRT, 1, newItem(ITEM_WALL_WOOD, 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 20, TILE_DIRT, 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 19}), 1), 1);
         break;
     case TILE_STONE_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 30, TILE_DIRT, 1, newItem(ITEM_WALL_STONE, 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 30, TILE_DIRT, 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 20}), 1), 1);
         break;
     case TILE_IRON_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 40, TILE_DIRT, 1, newItem(ITEM_WALL_IRON, 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 40, TILE_DIRT, 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 21}), 1), 1);
         break;
     case TILE_GOLD_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 1, newItem(ITEM_WALL_GOLD, 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 22}), 1), 1);
         break;
     case TILE_GEM_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 60, TILE_DIRT, 1, newItem(ITEM_WALL_GEM, 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 60, TILE_DIRT, 1, newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 23}), 1), 1);
         break;
     case TILE_BOOKSHELVES:
         addSmashParticles(level, xt << 4, yt << 4, damage);
@@ -1234,7 +1255,7 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
             setTile(TILE_DIRT, level, xt, yt);
         else
             setTile(TILE_DUNGEON_FLOOR, level, xt, yt);
-        addItemsToWorld(newItem(ITEM_BOOKSHELVES, 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
+        addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 37}), 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
         break;
     }
 }
@@ -1323,13 +1344,13 @@ void entityTileInteract(Entity *e, int tile, uByte level, int x, int y) {
                 int count = (syncRand() % 2);
                 if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, }), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
                     count = (syncRand() % 3) + 2;
                 else if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem(ITEM_WHEAT, 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 setTile(TILE_DIRT, level, x, y);
             }
         }
