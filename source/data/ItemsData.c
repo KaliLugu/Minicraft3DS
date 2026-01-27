@@ -19,6 +19,9 @@ int itemGetLegacyId(ItemID id)
             if (id.id >= foodItemCount) return 0;
             return foodItems[id.id].legacy_id;
 
+        case ITEM_CATEGORY_FURNITURE:
+            if (id.id >= fournitureItemCount) return 0;
+            return fournitureItems[id.id].legacy_id;
         case ITEM_CATEGORY_GENERIC:
             if (id.id >= genericItemCount) return 0;
             return genericItems[id.id].legacy_id;

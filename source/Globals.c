@@ -1,4 +1,5 @@
 #include "Globals.h"
+#include "data/items/ItemsData.h"
 
 #include "render/TextureManager.h"
 
@@ -29,28 +30,6 @@ bool quitGame;
 int currentSelection;
 
 WorldData worldData;
-
-// to delete later, see main.c
-int itemGetLegacyId(ItemID id)
-{
-    switch (id.category)
-    {
-        case ITEM_CATEGORY_TOOL:
-            if (id.id >= toolItemCount) return 0;
-            return toolItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_FOOD:
-            if (id.id >= foodItemCount) return 0;
-            return foodItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_GENERIC:
-            if (id.id >= genericItemCount) return 0;
-            return genericItems[id.id].legacy_id;
-
-        default:
-            return 0;
-    }
-}
 
 void addItemsToWorld(Item item, uByte level, int x, int y, int count) {
     int i;
