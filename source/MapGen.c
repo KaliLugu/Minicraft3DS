@@ -1,5 +1,6 @@
 #include "MapGen.h"
 #include "network/Synchronizer.h"
+#include "data/items/ItemsData.h"
 
 int featureX;
 int featureY;
@@ -660,7 +661,7 @@ void createVillageHouse(int hid, int x, int y, int hw, int hh, int ex, int ey, i
     int loffy = -12;
     if (hid == 2)
         loffx = 12;
-    addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, ((x + hw / 2) << 4) + loffx, ((y + hh / 2) << 4) + loffy, level), &eManager);
+    addEntityToList(newEntityFurniture(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), NULL, ((x + hw / 2) << 4) + loffx, ((y + hh / 2) << 4) + loffy, level), &eManager);
 }
 
 void createVillage(int w, int h, uByte level, uByte *map, uByte *data) {
@@ -771,8 +772,8 @@ void createDwarfHouse(int w, int h, uByte level, uByte *map, uByte *data) {
 
     addEntityToList(newEntityNPC(NPC_DWARF, ((x + vw / 2) << 4) + 8, (y + vh / 2) << 4, level), &eManager);
 
-    addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, (x + 1 + 1) << 4, (y + 1 + 3) << 4, level), &eManager);
-    addEntityToList(newEntityFurniture(ITEM_LANTERN, NULL, (x + vw - 1 - 1) << 4, (y + 1 + 3) << 4, level), &eManager);
+    addEntityToList(newEntityFurniture(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), NULL, (x + 1 + 1) << 4, (y + 1 + 3) << 4, level), &eManager);
+    addEntityToList(newEntityFurniture(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), NULL, (x + vw - 1 - 1) << 4, (y + 1 + 3) << 4, level), &eManager);
 }
 
 void createDungeonRoom(int w, int h, bool dragon, uByte level, uByte *map, uByte *data) {

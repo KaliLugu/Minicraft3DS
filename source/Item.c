@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "data/items/ItemsData.h"
 
 #include "Data.h"
 
@@ -58,7 +59,7 @@ void removeItemFromInventory(int slot, Inventory *inv) {
 Item newItem(int id, int cLevel) {
     Item item;
     item.id = id;
-    if (id != ITEM_NULL) {
+    if (id != itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 0})) {
         if (cLevel > 999)
             cLevel = 999;
         item.countLevel = cLevel;

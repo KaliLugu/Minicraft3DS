@@ -7,6 +7,7 @@
 #include "Render.h"
 #include "SaveLoad.h"
 #include "network/Synchronizer.h"
+#include "data/items/ItemsData.h"
 
 char pOptions[][24] = {"Return to game", "Save Progress", "Exit to title"};
 
@@ -205,7 +206,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
 
         if (pd->inputs.k_accept.clicked) {
             if (pd->entity.level != 5) {
-                Item *item = getItemFromInventory(ITEM_DUNGEON_KEY, &(pd->inventory));
+                Item *item = getItemFromInventory(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 33}), &(pd->inventory));
                 if (item != NULL) {
                     --item->countLevel;
                     if (item->countLevel == 0) {

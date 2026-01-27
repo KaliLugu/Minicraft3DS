@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "data/items/ItemsData.h"
 
 #include "Globals.h"
 #include <limits.h>
@@ -49,23 +50,23 @@ void playerInitInventory(PlayerData *pd) {
     pd->inventory.lastSlot = 0;
     pd->activeItem = &noItem;
 
-    addItemToInventory(newItem(ITEM_WORKBENCH, 0), &(pd->inventory));
-    addItemToInventory(newItem(ITEM_POWGLOVE, 0), &(pd->inventory));
+    addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4}), 0), &(pd->inventory));
+    addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 5}), 0), &(pd->inventory));
 
     if (TESTGODMODE) {
-        addItemToInventory(newItem(TOOL_SHOVEL, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_HOE, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_SWORD, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_PICKAXE, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_AXE, 4), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 4), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 4), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 4), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 4), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 4), &(pd->inventory));
 
-        addItemToInventory(newItem(ITEM_ANVIL, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_CHEST, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_OVEN, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_FURNACE, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_LANTERN, 0), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 0}), 0), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1}), 0), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 2}), 0), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3}), 0), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), 0), &(pd->inventory));
 
-        addItemToInventory(newItem(TOOL_MAGIC_COMPASS, 1), &(pd->inventory));
+        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 8}), 1), &(pd->inventory));
 
         int i;
         for (i = 7; i < 28; ++i)
@@ -195,33 +196,24 @@ bool playerUseItem(PlayerData *pd) {
     Item *aitem;
     Item *item;
 
-    switch (pd->activeItem->id) {
     // shooting arrows
-    case TOOL_BOW:
-        item = getItemFromInventory(ITEM_ARROW_WOOD, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_WOOD;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_STONE, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_STONE;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_IRON, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_IRON;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_GOLD, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_GOLD;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_GEM, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_GEM;
-            aitem = item;
+    if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 7})) {
+        // Vérifier les flèches dans l'inventaire
+        int arrowIDs[] = {
+            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27}),  // Wood Arrow
+            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28}),  // Stone Arrow
+            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29}),  // Iron Arrow
+            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30}),  // Gold Arrow
+            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31})   // Gem Arrow
+        };
+
+        for (int i = 0; i < 5; i++) {
+            item = getItemFromInventory(arrowIDs[i], &(pd->inventory));
+            if (item != NULL) {
+                aitemID = arrowIDs[i];
+                aitem = item;
+                break;  // Utiliser la première flèche trouvée
+            }
         }
 
         if (aitemID != 0) {
@@ -246,77 +238,84 @@ bool playerUseItem(PlayerData *pd) {
             }
             return true;
         }
-        break;
+    }
 
     // Health items
-    case ITEM_APPLE:
+    int healthItems[] = {
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 0}),
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1}),
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}),
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3}),
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4}),
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 5}),
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 6}),
+        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 7})
+    };
+
+    for (int i = 0; i < 8; i++) {
+        item = getItemFromInventory(healthItems[i], &(pd->inventory));
+        if (item != NULL) {
+            aitemID = healthItems[i];
+            aitem = item;
+            break; 
+        }
+    }
+
+    // Utiliser l'item de santé actif
+    if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2})) { // Apple
         if (_playerUseItemEat(pd, 2, 1))
             return true;
-        break;
-    case ITEM_GOLDEN_APPLE:
+    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3})) { // Golden Apple
         if (_playerUseItemEat(pd, 2, 7))
             return true;
-        break;
-    case ITEM_FLESH:
+    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 0})) { // Flesh
         if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
-        break;
-    case ITEM_BREAD:
+    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1})) { // Bread
         if (_playerUseItemEat(pd, 3, 2))
             return true;
-        break;
-    case ITEM_PORK_RAW:
+    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4})) { // Raw Pork
         if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
-        break;
-    case ITEM_PORK_COOKED:
+    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 5})) { // Cooked Pork
         if (_playerUseItemEat(pd, 3, 3))
             return true;
-        break;
-    case ITEM_BEEF_RAW:
+    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 6})) { // Raw Beef
         if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
-        break;
-    case ITEM_BEEF_COOKED:
+    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 7})) { // Steak
         if (_playerUseItemEat(pd, 3, 4))
             return true;
-        break;
+    }
 
     // special item
-    case ITEM_WIZARD_SUMMON:
+    if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 34})) { // wizard summon
         if (pd->entity.level == 0) {
             --(pd->activeItem->countLevel);
-
             airWizardHealthDisplay = 2000;
             addEntityToList(newEntityAirWizard(630, 820, 0), &eManager);
         }
-        break;
+    }
 
     // scrolls
-    case ITEM_SCROLL_UNDYING:
+    if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1001})) { // scrolls
         if (_playerUseItemScroll(pd, EFFECT_UNDYING, 1, EFFECTS_DURATION_INFINITE))
             return true;
-        break;
-    case ITEM_SCROLL_REGENERATION:
+    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1002})) {
         if (_playerUseItemScroll(pd, EFFECT_REGENERATION, 1, 3002))
             return true;
-        break;
-    case ITEM_SCROLL_SPEED:
+    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1003})) {
         if (_playerUseItemScroll(pd, EFFECT_SPEED, 1, 3600 * 2))
             return true;
-        break;
-    case ITEM_SCROLL_STRENGTH:
+    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1004})) {
         if (_playerUseItemScroll(pd, EFFECT_STRENGTH, 1, 3600 * 4))
             return true;
-        break;
-    case ITEM_SCROLL_SHIELDING:
+    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1005})) {
         if (_playerUseItemScroll(pd, EFFECT_SHIELDING, 1, 3600 * 4))
             return true;
-        break;
-    case ITEM_SCROLL_NIGHTVISION:
+    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1006})) {
         if (_playerUseItemScroll(pd, EFFECT_NIGHTVISION, 1, 3600 * 8))
             return true;
-        break;
     }
 
     if (isItemEmpty(pd->activeItem)) {
@@ -407,7 +406,7 @@ void playerAttack(PlayerData *pd) {
         return;
 
     // breaking tiles
-    if (pd->activeItem == &noItem || pd->activeItem->id == TOOL_SWORD || pd->activeItem->id == TOOL_AXE) {
+    if (pd->activeItem == &noItem || pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}) || pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4})) {
         if (xt >= 0 && yt >= 0 && xt < 128 && 128) {
             playerHurtTile(pd, getTile(pd->entity.level, xt, yt), pd->entity.level, xt, yt, (syncRand() % 3) + 1, pd->entity.p.dir);
         }

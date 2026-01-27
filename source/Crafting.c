@@ -1,4 +1,6 @@
 #include "Crafting.h"
+#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 
 #include "Data.h"
 #include <string.h>
@@ -105,75 +107,75 @@ void initRecipes() {
     curPlace = 0;
     workbenchRecipes.size = 22;
     workbenchRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (workbenchRecipes.size));
-    workbenchRecipes.recipes[0] = defineRecipe(ITEM_WORKBENCH, 1, 1, ITEM_WOOD, 20);
-    workbenchRecipes.recipes[1] = defineRecipe(ITEM_FURNACE, 1, 1, ITEM_STONE, 20);
-    workbenchRecipes.recipes[2] = defineRecipe(ITEM_OVEN, 1, 1, ITEM_STONE, 20);
-    workbenchRecipes.recipes[3] = defineRecipe(ITEM_CHEST, 1, 1, ITEM_WOOD, 20);
-    workbenchRecipes.recipes[4] = defineRecipe(ITEM_ANVIL, 1, 1, ITEM_IRONINGOT, 5);
-    workbenchRecipes.recipes[5] = defineRecipe(ITEM_LANTERN, 1, 3, ITEM_WOOD, 5, ITEM_SLIME, 10, ITEM_GLASS, 4);
-    workbenchRecipes.recipes[6] = defineRecipe(ITEM_LOOM, 1, 2, ITEM_WOOD, 10, ITEM_WOOL, 5);
-    workbenchRecipes.recipes[7] = defineRecipe(TOOL_SWORD, 0, 1, ITEM_WOOD, 5);
-    workbenchRecipes.recipes[8] = defineRecipe(TOOL_AXE, 0, 1, ITEM_WOOD, 5);
-    workbenchRecipes.recipes[9] = defineRecipe(TOOL_HOE, 0, 1, ITEM_WOOD, 5);
-    workbenchRecipes.recipes[10] = defineRecipe(TOOL_PICKAXE, 0, 1, ITEM_WOOD, 5);
-    workbenchRecipes.recipes[11] = defineRecipe(TOOL_SHOVEL, 0, 1, ITEM_WOOD, 5);
-    workbenchRecipes.recipes[12] = defineRecipe(TOOL_BOW, 0, 2, ITEM_WOOD, 10, ITEM_STRING, 1);
-    workbenchRecipes.recipes[13] = defineRecipe(ITEM_ARROW_WOOD, 1, 2, ITEM_WOOD, 2, ITEM_STRING, 1);
-    workbenchRecipes.recipes[14] = defineRecipe(TOOL_SWORD, 1, 2, ITEM_WOOD, 5, ITEM_STONE, 5);
-    workbenchRecipes.recipes[15] = defineRecipe(TOOL_AXE, 1, 2, ITEM_WOOD, 5, ITEM_STONE, 5);
-    workbenchRecipes.recipes[16] = defineRecipe(TOOL_HOE, 1, 2, ITEM_WOOD, 5, ITEM_STONE, 5);
-    workbenchRecipes.recipes[17] = defineRecipe(TOOL_PICKAXE, 1, 2, ITEM_WOOD, 5, ITEM_STONE, 5);
-    workbenchRecipes.recipes[18] = defineRecipe(TOOL_SHOVEL, 1, 2, ITEM_WOOD, 5, ITEM_STONE, 5);
-    workbenchRecipes.recipes[19] = defineRecipe(ITEM_ARROW_STONE, 1, 3, ITEM_WOOD, 1, ITEM_STONE, 1, ITEM_STRING, 1);
-    workbenchRecipes.recipes[20] = defineRecipe(ITEM_WALL_WOOD, 1, 1, ITEM_WOOD, 4);
-    workbenchRecipes.recipes[21] = defineRecipe(ITEM_WALL_STONE, 1, 1, ITEM_STONE, 4);
+    workbenchRecipes.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 20); // workbench use 20 wood
+    workbenchRecipes.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 20);
+    workbenchRecipes.recipes[2] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 2}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 20);
+    workbenchRecipes.recipes[3] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 20);
+    workbenchRecipes.recipes[4] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 0}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 5);
+    workbenchRecipes.recipes[5] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), 1, 3, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 11}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 17}), 4);
+    workbenchRecipes.recipes[6] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 7}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 24}), 5);
+    workbenchRecipes.recipes[7] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 0, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5);
+    workbenchRecipes.recipes[8] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 0, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5);
+    workbenchRecipes.recipes[9] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 0, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5);
+    workbenchRecipes.recipes[10] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 0, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5);
+    workbenchRecipes.recipes[11] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 0, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5);
+    workbenchRecipes.recipes[12] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 7}), 0, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), 1);
+    workbenchRecipes.recipes[13] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), 1);
+    workbenchRecipes.recipes[14] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 5);
+    workbenchRecipes.recipes[15] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 5);
+    workbenchRecipes.recipes[16] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 5);
+    workbenchRecipes.recipes[17] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 5);
+    workbenchRecipes.recipes[18] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 5);
+    workbenchRecipes.recipes[19] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28}), 1, 3, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), 1);
+    workbenchRecipes.recipes[20] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 19}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 4);
+    workbenchRecipes.recipes[21] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 20}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 3}), 4);
 
     anvilRecipes.size = 17;
     anvilRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (anvilRecipes.size));
-    anvilRecipes.recipes[0] = defineRecipe(TOOL_SWORD, 2, 2, ITEM_WOOD, 5, ITEM_IRONINGOT, 5);
-    anvilRecipes.recipes[1] = defineRecipe(TOOL_AXE, 2, 2, ITEM_WOOD, 5, ITEM_IRONINGOT, 5);
-    anvilRecipes.recipes[2] = defineRecipe(TOOL_HOE, 2, 2, ITEM_WOOD, 5, ITEM_IRONINGOT, 5);
-    anvilRecipes.recipes[3] = defineRecipe(TOOL_PICKAXE, 2, 2, ITEM_WOOD, 5, ITEM_IRONINGOT, 5);
-    anvilRecipes.recipes[4] = defineRecipe(TOOL_SHOVEL, 2, 2, ITEM_WOOD, 5, ITEM_IRONINGOT, 5);
-    anvilRecipes.recipes[5] = defineRecipe(ITEM_ARROW_IRON, 1, 3, ITEM_WOOD, 1, ITEM_IRONINGOT, 1, ITEM_STRING, 1);
-    anvilRecipes.recipes[6] = defineRecipe(TOOL_SWORD, 3, 2, ITEM_WOOD, 5, ITEM_GOLDINGOT, 5);
-    anvilRecipes.recipes[7] = defineRecipe(TOOL_AXE, 3, 2, ITEM_WOOD, 5, ITEM_GOLDINGOT, 5);
-    anvilRecipes.recipes[8] = defineRecipe(TOOL_HOE, 3, 2, ITEM_WOOD, 5, ITEM_GOLDINGOT, 5);
-    anvilRecipes.recipes[9] = defineRecipe(TOOL_PICKAXE, 3, 2, ITEM_WOOD, 5, ITEM_GOLDINGOT, 5);
-    anvilRecipes.recipes[10] = defineRecipe(TOOL_SHOVEL, 3, 2, ITEM_WOOD, 5, ITEM_GOLDINGOT, 5);
-    anvilRecipes.recipes[11] = defineRecipe(ITEM_ARROW_GOLD, 1, 3, ITEM_WOOD, 1, ITEM_GOLDINGOT, 1, ITEM_STRING, 1);
-    anvilRecipes.recipes[12] = defineRecipe(TOOL_BUCKET, 0, 1, ITEM_IRONINGOT, 10);
-    anvilRecipes.recipes[13] = defineRecipe(ITEM_ENCHANTER, 1, 3, ITEM_WOOD, 10, ITEM_GOLDINGOT, 10, ITEM_GEM, 20);
-    anvilRecipes.recipes[14] = defineRecipe(ITEM_WALL_IRON, 1, 1, ITEM_IRONINGOT, 2);
-    anvilRecipes.recipes[15] = defineRecipe(ITEM_WALL_GOLD, 1, 1, ITEM_GOLDINGOT, 2);
-    anvilRecipes.recipes[16] = defineRecipe(ITEM_COIN, 3, 1, ITEM_IRONINGOT, 1);
+    anvilRecipes.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 2, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 5);
+    anvilRecipes.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 2, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 5);
+    anvilRecipes.recipes[2] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 2, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 5);
+    anvilRecipes.recipes[3] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 2, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 5);
+    anvilRecipes.recipes[4] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 2, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 5);
+    anvilRecipes.recipes[5] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29}), 1, 3, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), 1);
+    anvilRecipes.recipes[6] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 3, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 5);
+    anvilRecipes.recipes[7] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 3, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 5);
+    anvilRecipes.recipes[8] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 3, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 5);
+    anvilRecipes.recipes[9] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 3, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 5);
+    anvilRecipes.recipes[10] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 3, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 5);
+    anvilRecipes.recipes[11] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30}), 1, 3, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), 1);
+    anvilRecipes.recipes[12] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6}), 0, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 10);
+    anvilRecipes.recipes[13] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 7}), 1, 3, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27}), 20);
+    anvilRecipes.recipes[14] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 21}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 2);
+    anvilRecipes.recipes[15] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 22}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 2);
+    anvilRecipes.recipes[16] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 3, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 1);
 
     furnaceRecipes.size = 3;
     furnaceRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (furnaceRecipes.size));
-    furnaceRecipes.recipes[0] = defineRecipe(ITEM_IRONINGOT, 1, 2, ITEM_IRONORE, 4, ITEM_COAL, 1);
-    furnaceRecipes.recipes[1] = defineRecipe(ITEM_GOLDINGOT, 1, 2, ITEM_GOLDORE, 4, ITEM_COAL, 1);
-    furnaceRecipes.recipes[2] = defineRecipe(ITEM_GLASS, 1, 2, ITEM_SAND, 4, ITEM_COAL, 1);
+    furnaceRecipes.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 13}), 4, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), 1);
+    furnaceRecipes.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 14}), 4, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), 1);
+    furnaceRecipes.recipes[2] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 17}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 4}), 4, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), 1);
 
     ovenRecipes.size = 4;
     ovenRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (ovenRecipes.size));
-    ovenRecipes.recipes[0] = defineRecipe(ITEM_BREAD, 1, 1, ITEM_WHEAT, 4);
-    ovenRecipes.recipes[1] = defineRecipe(ITEM_PORK_COOKED, 1, 2, ITEM_PORK_RAW, 1, ITEM_COAL, 1);
-    ovenRecipes.recipes[2] = defineRecipe(ITEM_BEEF_COOKED, 1, 2, ITEM_BEEF_RAW, 1, ITEM_COAL, 1);
-    ovenRecipes.recipes[3] = defineRecipe(ITEM_GOLDEN_APPLE, 1, 2, ITEM_APPLE, 1, ITEM_GOLDINGOT, 8);
+    ovenRecipes.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 4);
+    ovenRecipes.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 5}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), 1);
+    ovenRecipes.recipes[2] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 7}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 6}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 12}), 1);
+    ovenRecipes.recipes[3] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 8);
 
     loomRecipes.size = 1;
     loomRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (loomRecipes.size));
-    loomRecipes.recipes[0] = defineRecipe(ITEM_STRING, 1, 1, ITEM_WOOL, 1);
+    loomRecipes.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 24}), 1);
 
     enchanterRecipes.size = 7;
     enchanterRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (enchanterRecipes.size));
-    enchanterRecipes.recipes[0] = defineRecipe(TOOL_SWORD, 4, 2, ITEM_WOOD, 5, ITEM_GEM, 50);
-    enchanterRecipes.recipes[1] = defineRecipe(TOOL_AXE, 4, 2, ITEM_WOOD, 5, ITEM_GEM, 50);
-    enchanterRecipes.recipes[2] = defineRecipe(TOOL_HOE, 4, 2, ITEM_WOOD, 5, ITEM_GEM, 50);
-    enchanterRecipes.recipes[3] = defineRecipe(TOOL_PICKAXE, 4, 2, ITEM_WOOD, 5, ITEM_GEM, 50);
-    enchanterRecipes.recipes[4] = defineRecipe(TOOL_SHOVEL, 4, 2, ITEM_WOOD, 5, ITEM_GEM, 50);
-    enchanterRecipes.recipes[5] = defineRecipe(ITEM_ARROW_GEM, 1, 3, ITEM_WOOD, 1, ITEM_GEM, 3, ITEM_STRING, 1);
-    enchanterRecipes.recipes[6] = defineRecipe(ITEM_WALL_GEM, 1, 1, ITEM_GEM, 10);
+    enchanterRecipes.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 4, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 50);
+    enchanterRecipes.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 4, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 50);
+    enchanterRecipes.recipes[2] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 4, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 50);
+    enchanterRecipes.recipes[3] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 4, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 50);
+    enchanterRecipes.recipes[4] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 4, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 5, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 50);
+    enchanterRecipes.recipes[5] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31}), 1, 3, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 2}), 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 3, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 25}), 1);
+    enchanterRecipes.recipes[6] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 23}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 10);
 }
 
 /* Free up allocated memory */

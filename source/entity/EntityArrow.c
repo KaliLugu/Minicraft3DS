@@ -1,3 +1,5 @@
+#include "../data/items/ItemsData.h"
+
 #include "../Entity.h"
 
 #include "../Data.h"
@@ -52,22 +54,17 @@ void renderEntityArrow(Entity *e, sInt x, sInt y) {
         abits += 2;
     }
 
+    // todo in future : compt the different type of arrow for more modularity and use for cycle 
     renderEntityShadowSmall(x + 2, y + 4);
-    switch (e->arrow.itemID) {
-    case ITEM_ARROW_WOOD:
+    if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27})) {
         renderTile8(x - 2, y - 2, 9, ayp, abits);
-        break;
-    case ITEM_ARROW_STONE:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28})) {
         renderTile8(x - 2, y - 2, 10, ayp, abits);
-        break;
-    case ITEM_ARROW_IRON:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29})) {
         renderTile8(x - 2, y - 2, 11, ayp, abits);
-        break;
-    case ITEM_ARROW_GOLD:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30})) {
         renderTile8(x - 2, y - 2, 12, ayp, abits);
-        break;
-    case ITEM_ARROW_GEM:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31})) {
         renderTile8(x - 2, y - 2, 13, ayp, abits);
-        break;
     }
 }

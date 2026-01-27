@@ -1,3 +1,5 @@
+#include "../data/items/ItemsData.h"
+
 #include "../Entity.h"
 
 #include "../Data.h"
@@ -58,9 +60,9 @@ void tickEntitySkeleton(Entity *e, PlayerData *nearestPlayer) {
     if (e->hostile.randAttackTime <= 0) {
         e->hostile.randAttackTime = 80 - (e->hostile.lvl * 5);
 
-        int aitemID = ITEM_ARROW_WOOD;
+        int aitemID = itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27});
         if (e->hostile.lvl >= 2)
-            aitemID = ITEM_ARROW_STONE;
+            aitemID = itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28});
 
         // turn to player when attacking
         if (nearestPlayer != NULL) {

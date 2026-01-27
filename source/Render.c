@@ -1,6 +1,7 @@
 #include "Render.h"
 #include "render/RenderTiles.h"
 #include "render/TextureManager.h"
+#include "data/items/ItemsData.h"
 
 extern int syncTickCount;
 
@@ -384,31 +385,22 @@ void renderDayNight(PlayerData *pd) {
 }
 
 void renderFurniture(int itemID, int x, int y) {
-    switch (itemID) {
-    case ITEM_ANVIL:
+    if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 0})) {
         renderTile16(x, y, 4, 8, 0);
-        break;
-    case ITEM_CHEST:
+    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1})) {
         renderTile16(x, y, 5, 8, 0);
-        break;
-    case ITEM_OVEN:
+    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 2})) {
         renderTile16(x, y, 6, 8, 0);
-        break;
-    case ITEM_FURNACE:
+    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3})) {
         renderTile16(x, y, 7, 8, 0);
-        break;
-    case ITEM_WORKBENCH:
+    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4})) {
         renderTile16(x, y, 8, 8, 0);
-        break;
-    case ITEM_LANTERN:
+    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5})) {
         renderTile16(x, y, 9, 8, 0);
-        break;
-    case ITEM_LOOM:
+    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 6})) {
         renderTile16(x, y, 14, 8, 0);
-        break;
-    case ITEM_ENCHANTER:
+    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 7})) {
         renderTile16(x, y, 15, 8, 0);
-        break;
     }
 }
 
@@ -540,9 +532,8 @@ void renderItemWithTextCentered(Item *item, int width, int y) {
 void renderItemIcon(int itemID, int countLevel, int x, int y) {
     int xd;
     int yd;
-    switch (itemID) {
+    if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 8})) {
     // TODO: This should not be here, somehow handle it in data?
-    case TOOL_MAGIC_COMPASS:
         xd = worldData.compassData[getLocalPlayer()->entity.level][0] - (getLocalPlayer()->entity.x >> 4);
         yd = worldData.compassData[getLocalPlayer()->entity.level][1] - (getLocalPlayer()->entity.y >> 4);
         if (abs(yd) > abs(xd)) {
@@ -556,9 +547,7 @@ void renderItemIcon(int itemID, int countLevel, int x, int y) {
             else
                 renderTile8(x, y, itemGetIconX(itemID, countLevel) + 3, itemGetIconY(itemID, countLevel), 0);
         }
-        break;
-    default:
+    } else {
         renderTile8(x, y, itemGetIconX(itemID, countLevel), itemGetIconY(itemID, countLevel), 0);
-        break;
     }
 }

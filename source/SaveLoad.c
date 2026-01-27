@@ -1,3 +1,5 @@
+#include "data/items/ItemsData.h"
+
 #include "SaveLoad.h"
 
 #include "ZipHelper.h"
@@ -113,7 +115,7 @@ void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
     for (int j = 0; j < inv->lastSlot; ++j) {
         fwrite(&(inv->items[j].id), sizeof(sShort), 1, file);         // write ID of item
         fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
-        if (inv->items[j].id == ITEM_CHEST) {
+        if (inv->items[j].id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1})) { // chest
             int invIndex = inv->items[j].chestPtr - eManager->invs;
             fwrite(&invIndex, sizeof(int), 1, file);
         }
@@ -261,7 +263,7 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
 
         inv->items[j].invPtr = (int *)inv;    // setup Inventory pointer
         inv->items[j].slotNum = j;            // setup slot number
-        if (inv->items[j].id == ITEM_CHEST) { // for chest item specifically.
+        if (inv->items[j].id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1})) { // for chest item specifically.
             int invIndex;
             fread(&invIndex, sizeof(int), 1, file);
             inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.
