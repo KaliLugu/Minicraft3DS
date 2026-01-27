@@ -7,29 +7,51 @@ RecipeManager priestTrades;
 RecipeManager farmerTrades;
 RecipeManager dwarfTrades;
 
+// to mose, see comment in main.c
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 void initTrades() {
     priestTrades.size = 5;
     priestTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (priestTrades.size));
-    priestTrades.recipes[0] = defineRecipe(ITEM_DUNGEON_KEY, 1, 1, ITEM_MAGIC_DUST, 2);
-    priestTrades.recipes[1] = defineRecipe(ITEM_WIZARD_SUMMON, 1, 4, ITEM_CLOUD, 100, ITEM_IRONINGOT, 10, ITEM_BONE, 10, ITEM_LEATHER, 10);
-    priestTrades.recipes[2] = defineRecipe(TOOL_MAGIC_COMPASS, 1, 2, ITEM_IRONINGOT, 10, ITEM_GLASS, 5);
-    priestTrades.recipes[3] = defineRecipe(ITEM_COIN, 1, 1, ITEM_SLIME, 5);
-    priestTrades.recipes[4] = defineRecipe(ITEM_COIN, 1, 1, ITEM_FLESH, 5);
+    priestTrades.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 33}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 38}), 2);
+    priestTrades.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 34}), 1, 4, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 6}), 100, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 32}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 26}), 10);
+    priestTrades.recipes[2] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 8}), 1, 2, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 10, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 17}), 5);
+    priestTrades.recipes[3] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 11}), 5);
+    priestTrades.recipes[4] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 0}), 5);
 
     farmerTrades.size = 7;
     farmerTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (farmerTrades.size));
-    farmerTrades.recipes[0] = defineRecipe(ITEM_WHEAT, 5, 1, ITEM_COIN, 3);
-    farmerTrades.recipes[1] = defineRecipe(ITEM_BREAD, 1, 1, ITEM_COIN, 3);
-    farmerTrades.recipes[2] = defineRecipe(ITEM_APPLE, 2, 1, ITEM_COIN, 4);
-    farmerTrades.recipes[3] = defineRecipe(ITEM_ACORN, 3, 1, ITEM_COIN, 1);
-    farmerTrades.recipes[4] = defineRecipe(ITEM_SEEDS, 4, 1, ITEM_COIN, 2);
-    farmerTrades.recipes[5] = defineRecipe(ITEM_COIN, 2, 1, ITEM_SEEDS, 5);
-    farmerTrades.recipes[6] = defineRecipe(ITEM_COIN, 1, 1, ITEM_ACORN, 5);
+    farmerTrades.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 5, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 3);
+    farmerTrades.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 3);
+    farmerTrades.recipes[2] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}), 2, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 4);
+    farmerTrades.recipes[3] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 7}), 3, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 1);
+    farmerTrades.recipes[4] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 4, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 2);
+    farmerTrades.recipes[5] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 2, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 5);
+    farmerTrades.recipes[6] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 39}), 1, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 7}), 5);
 
     dwarfTrades.size = 2;
     dwarfTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (dwarfTrades.size));
-    dwarfTrades.recipes[0] = defineRecipe(ITEM_IRONINGOT, 4, 1, ITEM_GOLDINGOT, 1);
-    dwarfTrades.recipes[1] = defineRecipe(ITEM_GOLDINGOT, 2, 1, ITEM_GEM, 1);
+    dwarfTrades.recipes[0] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 4, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 1);
+    dwarfTrades.recipes[1] = defineRecipe(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 2, 1, itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 18}), 1);
     // TODO: Trade Dragon Scales for something really nice
 }
 
@@ -355,10 +377,10 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOptions = 1;
                     data->currentTalkOption0 = "";
 
-                    if (countItemInv(ITEM_GOLDINGOT, 0, &(pd->inventory)) >= 10) {
+                    if (countItemInv(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 0, &(pd->inventory)) >= 10) {
                         // remove gold from player inventory
                         // TODO: Maybe I should make a generic substract items method sometime
-                        Item *item = getItemFromInventory(ITEM_GOLDINGOT, &(pd->inventory));
+                        Item *item = getItemFromInventory(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), &(pd->inventory));
                         item->countLevel -= 10;
                         if (item->countLevel < 1)
                             removeItemFromInventory(item->slotNum, &(pd->inventory));
