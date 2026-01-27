@@ -29,6 +29,7 @@ int itemGetLegacyId(ItemID id)
     }
 }
 
+// todo use for cycle for trades
 void initTrades() {
     priestTrades.size = 5;
     priestTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (priestTrades.size));
