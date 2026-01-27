@@ -1,30 +1,10 @@
+#include "../data/items/ItemsData.h"
+
 #include "../Entity.h"
 
 #include "../Data.h"
 #include "../Globals.h"
 #include "../Render.h"
-
-// to mose, see comment in main.c
-int itemGetLegacyId(ItemID id)
-{
-    switch (id.category)
-    {
-        case ITEM_CATEGORY_TOOL:
-            if (id.id >= toolItemCount) return 0;
-            return toolItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_FOOD:
-            if (id.id >= foodItemCount) return 0;
-            return foodItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_GENERIC:
-            if (id.id >= genericItemCount) return 0;
-            return genericItems[id.id].legacy_id;
-
-        default:
-            return 0;
-    }
-}
 
 Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
