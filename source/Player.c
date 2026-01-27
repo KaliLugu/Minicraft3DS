@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "data/items/ItemsData.h"
 
 #include "Globals.h"
 #include <limits.h>
@@ -6,28 +7,6 @@
 PlayerData players[MAX_PLAYERS];
 int playerCount;
 int playerLocalIndex;
-
-// to mose, see comment in main.c
-int itemGetLegacyId(ItemID id)
-{
-    switch (id.category)
-    {
-        case ITEM_CATEGORY_TOOL:
-            if (id.id >= toolItemCount) return 0;
-            return toolItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_FOOD:
-            if (id.id >= foodItemCount) return 0;
-            return foodItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_GENERIC:
-            if (id.id >= genericItemCount) return 0;
-            return genericItems[id.id].legacy_id;
-
-        default:
-            return 0;
-    }
-}
 
 void initPlayers() {
     for (int i = 0; i < MAX_PLAYERS; i++) {

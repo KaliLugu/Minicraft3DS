@@ -1,4 +1,4 @@
-#include "ItemsData.h"
+#include "items/ItemsData.h"
 
 // new id tables, last column is legacy id
 ToolItem toolItems[] = {
@@ -85,3 +85,8 @@ GenericItem genericItems[] = {
     {"Scroll Shielding", 1005}, // 44
     {"Scroll Night Vision", 1006} // 45
 };
+
+const unsigned int toolItemCount = sizeof(toolItems) / sizeof(toolItems[0]);
+const unsigned int foodItemCount = sizeof(foodItems) / sizeof(foodItems[0]);
+const unsigned int fournitureItemCount = sizeof(fournitureItems) / sizeof(fournitureItems[0]);
+const unsigned int genericItemCount = sizeof(genericItems) / sizeof(genericItems[0]);

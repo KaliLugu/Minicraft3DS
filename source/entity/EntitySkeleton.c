@@ -1,29 +1,10 @@
+#include "../data/items/ItemsData.h"
+
 #include "../Entity.h"
 
 #include "../Data.h"
 #include "../Globals.h"
 #include "../Render.h"
-
-int itemGetLegacyId(ItemID id)
-{
-    switch (id.category)
-    {
-        case ITEM_CATEGORY_TOOL:
-            if (id.id >= toolItemCount) return 0;
-            return toolItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_FOOD:
-            if (id.id >= foodItemCount) return 0;
-            return foodItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_GENERIC:
-            if (id.id >= genericItemCount) return 0;
-            return genericItems[id.id].legacy_id;
-
-        default:
-            return 0;
-    }
-}
 
 Entity newEntitySkeleton(int lvl, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)

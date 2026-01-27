@@ -18,6 +18,7 @@
 #include "network/RP2P.h"
 #include "network/Synchronizer.h"
 #include "render/TextureManager.h"
+#include "data/items/ItemsData.h"
 #include "texturepack.h"
 
 // TODO: Dungeon is way to difficult
@@ -25,28 +26,6 @@
 //       -> Or instead of less damage, implement a simple armor system
 
 // TODO: Something still causes desyncs very rarely
-
-// to move for use one import of this fonction for all files use the same fonction
-int itemGetLegacyId(ItemID id)
-{
-    switch (id.category)
-    {
-        case ITEM_CATEGORY_TOOL:
-            if (id.id >= toolItemCount) return 0;
-            return toolItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_FOOD:
-            if (id.id >= foodItemCount) return 0;
-            return foodItems[id.id].legacy_id;
-
-        case ITEM_CATEGORY_GENERIC:
-            if (id.id >= genericItemCount) return 0;
-            return genericItems[id.id].legacy_id;
-
-        default:
-            return 0;
-    }
-}
 
 void setupGame() {
     initGame = 0;
