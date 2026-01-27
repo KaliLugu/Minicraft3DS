@@ -10,6 +10,28 @@ MTexture lanternLightBake;
 MTexture glowwormLightBake;
 MTexture glowwormBigLightBake;
 
+// to mose, see comment in main.c
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 // software rendering is slow -> bake light to texture
 static void bakeLight(MImage image, int x, int y, int r) {
     int x0 = x - r;
@@ -84,7 +106,7 @@ void renderLightsToStencil(PlayerData *pd, bool force, bool invert, bool rplayer
     if (force || (pd->entity.level > 1 && pd->entity.level != 5)) {
         setDrawMode(DM_MODIFY_SCISSOR);
 
-        if (pd->activeItem->id == ITEM_LANTERN)
+        if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5})) // Lantern
             renderLight(pd->entity.x, pd->entity.y, lanternLightBake);
         else if (rplayer)
             renderLight(pd->entity.x, pd->entity.y, playerLightBake);
@@ -93,7 +115,7 @@ void renderLightsToStencil(PlayerData *pd, bool force, bool invert, bool rplayer
         for (i = 0; i < eManager.lastSlot[pd->entity.level]; ++i) {
             Entity e = eManager.entities[pd->entity.level][i];
             if (e.type == ENTITY_FURNITURE) {
-                if (e.entityFurniture.itemID == ITEM_LANTERN && e.x > pd->entity.x - 160 && e.y > pd->entity.y - 125 && e.x < pd->entity.x + 160 && e.y < pd->entity.y + 125)
+                if (e.entityFurniture.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}) && e.x > pd->entity.x - 160 && e.y > pd->entity.y - 125 && e.x < pd->entity.x + 160 && e.y < pd->entity.y + 125)
                     renderLight(e.x, e.y, lanternLightBake);
             } else if (e.type == ENTITY_GLOWWORM && e.x > pd->entity.x - 160 && e.y > pd->entity.y - 125 && e.x < pd->entity.x + 160 && e.y < pd->entity.y + 125) { // TODO could be made smaller becuase of smaller light radius
                 if (rand() % 10 == 0)
