@@ -8,6 +8,28 @@
 #include "SaveLoad.h"
 #include "network/Synchronizer.h"
 
+// to mose, see comment in main.c
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 char pOptions[][24] = {"Return to game", "Save Progress", "Exit to title"};
 
 void ingameMenuTick(PlayerData *pd, int menu) {
@@ -205,7 +227,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
 
         if (pd->inputs.k_accept.clicked) {
             if (pd->entity.level != 5) {
-                Item *item = getItemFromInventory(ITEM_DUNGEON_KEY, &(pd->inventory));
+                Item *item = getItemFromInventory(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 33}), &(pd->inventory));
                 if (item != NULL) {
                     --item->countLevel;
                     if (item->countLevel == 0) {
