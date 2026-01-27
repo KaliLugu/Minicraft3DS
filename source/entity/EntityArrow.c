@@ -4,6 +4,28 @@
 #include "../Globals.h"
 #include "../Render.h"
 
+// to mose, see comment in main.c
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 Entity newEntityArrow(Entity *parent, int itemID, sByte xa, sByte ya, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_ARROW;
@@ -52,22 +74,17 @@ void renderEntityArrow(Entity *e, sInt x, sInt y) {
         abits += 2;
     }
 
+    // todo in future : compt the different type of arrow for more modularity and use for cycle 
     renderEntityShadowSmall(x + 2, y + 4);
-    switch (e->arrow.itemID) {
-    case ITEM_ARROW_WOOD:
+    if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27})) {
         renderTile8(x - 2, y - 2, 9, ayp, abits);
-        break;
-    case ITEM_ARROW_STONE:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28})) {
         renderTile8(x - 2, y - 2, 10, ayp, abits);
-        break;
-    case ITEM_ARROW_IRON:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29})) {
         renderTile8(x - 2, y - 2, 11, ayp, abits);
-        break;
-    case ITEM_ARROW_GOLD:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30})) {
         renderTile8(x - 2, y - 2, 12, ayp, abits);
-        break;
-    case ITEM_ARROW_GEM:
+    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31})) {
         renderTile8(x - 2, y - 2, 13, ayp, abits);
-        break;
     }
 }
