@@ -118,10 +118,10 @@ void itemsDataInit() {
     _itemRegister(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 45}), "Night Vision", 18, 21, false);
 }
 
+// use temporary if else, for future change that for use for cycle and recup the value to return from the struct
 char *itemGetName(int id, int countLevel) {
-    switch (id) {
+    if (id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0})) {
     // handle special cases here
-    case TOOL_SHOVEL:
         switch (countLevel) {
         case 1:
             return "Rock Shovel";
@@ -134,7 +134,7 @@ char *itemGetName(int id, int countLevel) {
         default:
             return "Wood Shovel";
         }
-    case TOOL_HOE:
+    } else if (id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1})) {
         switch (countLevel) {
         case 1:
             return "Rock Hoe";
@@ -147,7 +147,7 @@ char *itemGetName(int id, int countLevel) {
         default:
             return "Wood Hoe";
         }
-    case TOOL_SWORD:
+    } else if (id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2})) {
         switch (countLevel) {
         case 1:
             return "Rock Sword";
@@ -160,7 +160,7 @@ char *itemGetName(int id, int countLevel) {
         default:
             return "Wood Sword";
         }
-    case TOOL_PICKAXE:
+    } else if (id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3})) {
         switch (countLevel) {
         case 1:
             return "Rock Pickaxe";
@@ -173,7 +173,7 @@ char *itemGetName(int id, int countLevel) {
         default:
             return "Wood Pickaxe";
         }
-    case TOOL_AXE:
+    } else if (id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4})) {
         switch (countLevel) {
         case 1:
             return "Rock Axe";
@@ -186,7 +186,7 @@ char *itemGetName(int id, int countLevel) {
         default:
             return "Wood Axe";
         }
-    case TOOL_BUCKET:
+    } else if (id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6})) {
         switch (countLevel) {
         case 1:
             return "Water Bucket";
@@ -195,10 +195,7 @@ char *itemGetName(int id, int countLevel) {
         default:
             return "Empty Bucket";
         }
-    // else just return the registered value
-    default:
-        return _itemNames[id];
-    }
+    } else return _itemNames[id];
 }
 
 char _itemCurrentName[20];
@@ -212,19 +209,15 @@ char *itemGetNameWithCount(int id, int countLevel) {
 }
 
 int itemGetIconX(int id, int countLevel) {
-    switch (id) {
-    // handle special cases here
-    case TOOL_SHOVEL:
-    case TOOL_HOE:
-    case TOOL_SWORD:
-    case TOOL_PICKAXE:
-    case TOOL_AXE:
-    case TOOL_BUCKET:
+    if (id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}) ||
+        id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}) ||
+        id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}) ||
+        id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}) ||
+        id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}) ||
+        id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 6})) {
+        // handle special cases here
         return _itemIconX[id] + countLevel;
-    // else just return the registered value
-    default:
-        return _itemIconX[id];
-    }
+    } else return _itemIconX[id];
 }
 
 int itemGetIconY(int id, int countLevel) {
