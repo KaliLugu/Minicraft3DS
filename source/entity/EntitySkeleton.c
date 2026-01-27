@@ -4,6 +4,27 @@
 #include "../Globals.h"
 #include "../Render.h"
 
+int itemGetLegacyId(ItemID id)
+{
+    switch (id.category)
+    {
+        case ITEM_CATEGORY_TOOL:
+            if (id.id >= toolItemCount) return 0;
+            return toolItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_FOOD:
+            if (id.id >= foodItemCount) return 0;
+            return foodItems[id.id].legacy_id;
+
+        case ITEM_CATEGORY_GENERIC:
+            if (id.id >= genericItemCount) return 0;
+            return genericItems[id.id].legacy_id;
+
+        default:
+            return 0;
+    }
+}
+
 Entity newEntitySkeleton(int lvl, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_SKELETON;
@@ -58,9 +79,9 @@ void tickEntitySkeleton(Entity *e, PlayerData *nearestPlayer) {
     if (e->hostile.randAttackTime <= 0) {
         e->hostile.randAttackTime = 80 - (e->hostile.lvl * 5);
 
-        int aitemID = ITEM_ARROW_WOOD;
+        int aitemID = itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27});
         if (e->hostile.lvl >= 2)
-            aitemID = ITEM_ARROW_STONE;
+            aitemID = itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28});
 
         // turn to player when attacking
         if (nearestPlayer != NULL) {
