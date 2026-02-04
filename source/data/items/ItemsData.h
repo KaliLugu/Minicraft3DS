@@ -1,49 +1,45 @@
 #pragma once
 #include "../../engine/dtypes.h"
 #include <stdint.h>
+#include <stdbool.h>
 
-#define maxItemId 1007
+#define MAX_ITEM_ID 65535 // max id can be use on 16bits
 
-// TODO HERE 
-//
-// mettre une boucle for pour générer automatiquement les id des items et ne plus devoir les setup a la main
-// commencé a écrire une doc sur le futur système d'item dans le doc "docs/ItemSystem.md"
+typedef uint16_t ItemId; // ID opaque
 
-typedef struct { // structure de base pour une catégorie d'item
-    const char* base_name; // le nom de base de l'item (ex: "Sword", "Apple", etc)
-    const char** level_names; // tableau des noms par niveau (ex: "Wood Sword", "Iron Sword", etc)
-    unsigned int level_count; // nombre de niveaux disponibles pour cet item
-    int legacy_id; // l'id legacy de l'item pour la compatibilité
-} ToolItem;
-
-typedef struct { // structure pour les items commestibles
-    const char* base_name; // le nom de base de l'item (ex: "Bread", "Apple", etc)
-    int heal_value; // la valeur de soin de l'item
-    int legacy_id; // l'id legacy de l'item pour la compatibilité
-} FoodItem;
-
-typedef struct { // structure de base pour un item générique
-    const char* base_name; // le nom de base de l'item
-    int legacy_id; // l'id legacy de l'item pour la compatibilité
-} GenericItem;
-
-typedef struct { // structure de base pour un " furniture "
-    const char* base_name; // le nom de base de l'item
-    int legacy_id; // l'id legacy de l'item pour la compatibilité
-} FournitureItem;
 
 typedef enum {
-    ITEM_CATEGORY_TOOL,
-    ITEM_CATEGORY_FOOD,
-    ITEM_CATEGORY_FURNITURE,
-    ITEM_CATEGORY_GENERIC
+    ITEM_CAT_GENERIC,
+    ITEM_CAT_TOOL,
+    ITEM_CAT_FOOD,
+    ITEM_CAT_FURNITURE,
+    ITEM_CAT_SPELL,
 } ItemCategory;
 
+typedef struct {
+    ItemId id;            // identifiant runtime unique
+    const char* name;     // nom logique / stable
+    const char* displayName; // nom affiché (optionnel, ou variante)
+    uint8_t category;     // TOOL, FOOD, FURNITURE, GENERIC
+    int legacyId;         // TEMPORAIRE, pour importer l'ancien système
+    bool isStackable;     // si l’item est stackabmes
 
-typedef struct { // structure pour identifier un item
-    ItemCategory category;  // 0 = NULL
-    uint16_t id;       // index dans la catégorie
-} ItemID;
+    union { // selon la catégorie
+        struct {
+            uint8_t countLevel; // les matériaux d'item
+        } tool;
+        struct {
+            uint8_t health; // vie que redonne la bouf
+        } food;
+        struct {
+            uint8_t duration; // durée en seconde
+            uint8_t effect; // id de l'effet 
+        } spell;
+        struct {
+            bool destroyAfterUse;
+        } generic;
+    } data;
+} Item;
 
 extern void itemsDataInit();
 
@@ -52,12 +48,4 @@ extern char *itemGetNameWithCount(int id, int countLevel);
 extern int itemGetIconX(int id, int countLevel);
 extern int itemGetIconY(int id, int countLevel);
 extern bool itemIsSingle(int id, int countLevel);
-extern ToolItem toolItems[];
-extern FoodItem foodItems[];
-extern FournitureItem fournitureItems[];
-extern GenericItem genericItems[];
-extern const unsigned int toolItemCount;
-extern const unsigned int foodItemCount;
-extern const unsigned int fournitureItemCount;
-extern const unsigned int genericItemCount;
-extern int itemGetLegacyId(ItemID id);
+extern int itemGetLegacyId(Item id);
