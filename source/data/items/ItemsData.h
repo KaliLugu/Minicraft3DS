@@ -26,7 +26,7 @@ typedef struct {
 
     union { // selon la catégorie
         struct {
-            uint8_t countLevel; // les matériaux d'item
+            sShort countLevel; // les matériaux d'item
         } tool;
         struct {
             uint8_t health; // vie que redonne la bouf
@@ -49,3 +49,4 @@ extern int itemGetIconX(int id, int countLevel);
 extern int itemGetIconY(int id, int countLevel);
 extern bool itemIsSingle(int id, int countLevel);
 extern int itemGetLegacyId(Item id);
+extern ItemId getIdFromName(const char *name);
