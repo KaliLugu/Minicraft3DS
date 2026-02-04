@@ -1,10 +1,9 @@
 #pragma once
 #include "ItemsData.h"
 
-extern ToolItem toolItems[];
-extern FoodItem foodItems[];
-extern FournitureItem fournitureItems[];
-extern GenericItem genericItems[];
+extern Item ItemsTables[];
+
+extern const unsigned int itemCount;
 
 extern const unsigned int toolItemCount;
 extern const unsigned int foodItemCount;
