@@ -357,10 +357,10 @@ void tickNPCMenu(PlayerData *pd) {
                     data->currentTalkOptions = 1;
                     data->currentTalkOption0 = "";
 
-                    if (countItemInv(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), 0, &(pd->inventory)) >= 10) {
+                    if (countItemInv(getIdFromName("ITEM_GOLDINGOT"), 0, &(pd->inventory)) >= 10) {
                         // remove gold from player inventory
                         // TODO: Maybe I should make a generic substract items method sometime
-                        Item *item = getItemFromInventory(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 16}), &(pd->inventory));
+                        Item *item = getItemFromInventory(getIdFromName("ITEM_GOLDINGOT"), &(pd->inventory));
                         item->countLevel -= 10;
                         if (item->countLevel < 1)
                             removeItemFromInventory(item->slotNum, &(pd->inventory));

@@ -60,9 +60,9 @@ void tickEntitySkeleton(Entity *e, PlayerData *nearestPlayer) {
     if (e->hostile.randAttackTime <= 0) {
         e->hostile.randAttackTime = 80 - (e->hostile.lvl * 5);
 
-        int aitemID = itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27});
+        int aitemID = getIdFromName("ITEM_ARROW_WOOD");
         if (e->hostile.lvl >= 2)
-            aitemID = itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28});
+            aitemID = getIdFromName("ITEM_ARROW_STONE");
 
         // turn to player when attacking
         if (nearestPlayer != NULL) {

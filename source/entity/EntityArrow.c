@@ -56,15 +56,15 @@ void renderEntityArrow(Entity *e, sInt x, sInt y) {
 
     // todo in future : compt the different type of arrow for more modularity and use for cycle 
     renderEntityShadowSmall(x + 2, y + 4);
-    if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27})) {
+    if (e->arrow.itemID == getIdFromName("ITEM_ARROW_WOOD")) {
         renderTile8(x - 2, y - 2, 9, ayp, abits);
-    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28})) {
+    } else if (e->arrow.itemID == getIdFromName("ITEM_ARROW_STONE")) {
         renderTile8(x - 2, y - 2, 10, ayp, abits);
-    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29})) {
+    } else if (e->arrow.itemID == getIdFromName("ITEM_ARROW_IRON")) {
         renderTile8(x - 2, y - 2, 11, ayp, abits);
-    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30})) {
+    } else if (e->arrow.itemID == getIdFromName("ITEM_ARROW_GOLD")) {
         renderTile8(x - 2, y - 2, 12, ayp, abits);
-    } else if (e->arrow.itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31})) {
+    } else if (e->arrow.itemID == getIdFromName("ITEM_ARROW_GEM")) {
         renderTile8(x - 2, y - 2, 13, ayp, abits);
     }
 }
