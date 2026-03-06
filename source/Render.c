@@ -532,7 +532,7 @@ void renderItemWithTextCentered(Item *item, int width, int y) {
 void renderItemIcon(int itemID, int countLevel, int x, int y) {
     int xd;
     int yd;
-    if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 8})) {
+    if (itemID == getIdFromName("ITEM_MAGIC_COMPASS")) {
     // TODO: This should not be here, somehow handle it in data?
         xd = worldData.compassData[getLocalPlayer()->entity.level][0] - (getLocalPlayer()->entity.x >> 4);
         yd = worldData.compassData[getLocalPlayer()->entity.level][1] - (getLocalPlayer()->entity.y >> 4);

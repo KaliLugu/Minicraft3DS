@@ -126,7 +126,7 @@ int main() {
         }
     }
 
-    noItem = newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 0}), 0);
+    noItem = newItem(getIdFromName("NULL"), 0);
 
     initMenus();
     currentMenu = MENU_TITLE;

@@ -206,7 +206,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
 
         if (pd->inputs.k_accept.clicked) {
             if (pd->entity.level != 5) {
-                Item *item = getItemFromInventory(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 33}), &(pd->inventory));
+                Item *item = getItemFromInventory(getIdFromName("ITEM_DUNGEON_KEY"), &(pd->inventory));
                 if (item != NULL) {
                     --item->countLevel;
                     if (item->countLevel == 0) {

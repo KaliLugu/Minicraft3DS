@@ -183,6 +183,7 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile8(60, 68, 2, 21, 0); // Slash (Down)
             renderTile8(68, 68, 3, 21, 0); // Slash (Down)
 
+            // TODO REFACTO: pour la fonction renderItemIcon il est peut être plus simple pour juste rendre le code rapidement compilable de passé la function dans l'argument pour pas avoir a touché (ou alors j'ai juste la flemme)
             menuRenderTilePit(12, 20, 32, 0);                 // grass pit
             renderTile16(12 + 8, 20 + 4, 16, 3, 0);           // Tree
             renderTile8(12 + 9, 20 + 14, 2, 20, 0);           // Slash (Up)
@@ -201,10 +202,10 @@ void menuTutorialRender(int screen, int width, int height) {
         case 2: // Inventory
             renderFrame(4, 4, 20, 11, 0x1010FFFF);
             renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}), 5, false, 40, 39);
-            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 11}), 11, false, 40, 47);
+            renderItemStuffWithText(getIdFromName("ITEM_SLIME"), 11, false, 40, 47);
             renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 4, true, 40, 55);
             renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 13}), 3, false, 40, 63);
-            renderItemStuffWithText(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 11, false, 40, 71);
+            renderItemStuffWithText(getIdFromName("ITEM_IRONINGOT"), 11, false, 40, 71);
             drawRect(64, 112, 8, 10, 0x191919FF);
             renderText(">", 32, 55);
             renderButtonIcon(biasedCirclePad(localInputs.k_up.input), 11, 32);
@@ -256,7 +257,7 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile8(28, 50, 3, 20, 0);         // Slash (Up)
             renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 9}), 1, 19, 45); // Seeds
             renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 5}), 1, 26, 39); // Wheat1
-            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 29, 44); // Wheat2
+            renderItemIcon(getIdFromName("ITEM_WHEAT"), 1, 29, 44); // Wheat2
 
             renderTile16(72, 40, 22, 3, 0);        // Farm Tile
             renderTile16(72 + 16, 40, 23, 3, 0);   // Seeded Wheat Tile
@@ -284,14 +285,14 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile8(36, 78 + 8, 5, 21, 0);      // Slash (Right)
             renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 4, 38, 82); // Gem Shovel
 
-            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 82, 78); // Wheat
-            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 90, 78); // Wheat
-            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 82, 86); // Wheat
-            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 10}), 1, 90, 86); // Wheat
+            renderItemIcon(getIdFromName("ITEM_WHEAT"), 1, 82, 78); // Wheat
+            renderItemIcon(getIdFromName("ITEM_WHEAT"), 1, 90, 78); // Wheat
+            renderItemIcon(getIdFromName("ITEM_WHEAT"), 1, 82, 86); // Wheat
+            renderItemIcon(getIdFromName("ITEM_WHEAT"), 1, 90, 86); // Wheat
             renderText(">", 101, 82);
             renderTile16(108, 76, 6, 8, 0); // Oven
             renderText(">", 123, 82);
-            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1}), 1, 132, 82); // Bread
+            renderItemIcon(getIdFromName("ITEM_BREAD"), 1, 132, 82); // Bread
             break;
         case 6:                                      // Mining
             renderTile16(23, 32, 29, 3, 0);          // iron ore
@@ -309,7 +310,7 @@ void menuTutorialRender(int screen, int width, int height) {
             renderText(">", 80, 37);
             renderText(">", 80, 57);
             renderText(">", 80, 77);
-            renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 15}), 1, 88, 36); // Iron ingot item
+            renderItemIcon(getIdFromName("ITEM_IRONINGOT"), 1, 88, 36); // Iron ingot item
             renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 14}), 1, 88, 56); // Gold ingot item
             renderItemIcon(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 4, 88, 76);   // Gem Pickaxe
             renderText(">", 100, 37);

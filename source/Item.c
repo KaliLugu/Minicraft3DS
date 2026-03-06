@@ -58,10 +58,10 @@ void removeItemFromInventory(int slot, Inventory *inv) {
 
 // REFACTO TODO : 
 //cette fonction utilise le countlevel qui semble être soit le nombre d'item dans l'inventaire soit le niveau de l'item, trouvé ce qu'est ici countlevel et refacto en conséquence
-Item newItem(int id, int cLevel) {
+Item newItem(char *name, int cLevel) {
     Item item;
-    item.id = id;
-    if (id != getIdFromName("NULL")) {
+    item.id = name;
+    if (name != getIdFromName("NULL")) {
         if (cLevel > 999)
             cLevel = 999;
         item.countLevel = cLevel;
