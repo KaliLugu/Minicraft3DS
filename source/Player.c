@@ -50,22 +50,22 @@ void playerInitInventory(PlayerData *pd) {
     pd->inventory.lastSlot = 0;
     pd->activeItem = &noItem;
 
-    addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4}), 0), &(pd->inventory));
-    addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 5}), 0), &(pd->inventory));
+    addItemToInventory(newItem(getIdFromName("ITEM_WORKBENCH"), 0), &(pd->inventory));
+    addItemToInventory(newItem(getIdFromName("ITEM_POWGLOVE"), 0), &(pd->inventory));
 
     // TODO : modify this for testing new items system
     if (TESTGODMODE) {
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 0}), 4), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 1}), 4), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}), 4), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 3}), 4), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 4}), 4), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("TOOL_SHOVEL"), 4), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("TOOL_HOE"), 4), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("TOOL_SWORD"), 4), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("TOOL_PICKAXE"), 4), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("TOOL_AXE"), 4), &(pd->inventory));
 
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 0}), 0), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1}), 0), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 2}), 0), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3}), 0), &(pd->inventory));
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), 0), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("ITEM_ANVIL"), 0), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("ITEM_CHEST"), 0), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("ITEM_OVEN"), 0), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("ITEM_FURNACE"), 0), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("ITEM_LANTERN"), 0), &(pd->inventory));
 
         addItemToInventory(newItem(getIdFromName("ITEM_MAGIC_COMPASS"), 1), &(pd->inventory));
 
@@ -198,14 +198,14 @@ bool playerUseItem(PlayerData *pd) {
     Item *item;
 
     // shooting arrows
-    if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 7})) {
+    if (pd->activeItem->id == getIdFromName("ITEM_ACORN")) {
         // Vérifier les flèches dans l'inventaire
         int arrowIDs[] = {
-            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 27}),  // Wood Arrow
-            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 28}),  // Stone Arrow
-            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 29}),  // Iron Arrow
-            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 30}),  // Gold Arrow
-            itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 31})   // Gem Arrow
+            getIdFromName("ITEM_ARROW_WOOD"),  // Wood Arrow
+            getIdFromName("ITEM_ARROW_STONE"),  // Stone Arrow
+            getIdFromName("ITEM_ARROW_IRON"),  // Iron Arrow
+            getIdFromName("ITEM_ARROW_GOLD"),  // Gold Arrow
+            getIdFromName("ITEM_ARROW_GEM")   // Gem Arrow
         };
 
         for (int i = 0; i < 5; i++) {
@@ -245,12 +245,12 @@ bool playerUseItem(PlayerData *pd) {
     int healthItems[] = {
         getIdFromName("ITEM_FLESH"),
         getIdFromName("ITEM_BREAD"),
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}),
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3}),
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4}),
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 5}),
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 6}),
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 7})
+        getIdFromName("ITEM_APPLE"),
+        getIdFromName("ITEM_GOLDEN_APPLE"),
+        getIdFromName("ITEM_PORK_RAW"),
+        getIdFromName("ITEM_PORK_COOKED"),
+        getIdFromName("ITEM_BEEF_RAW"),
+        getIdFromName("ITEM_BEEF_COOKED")
     };
 
     for (int i = 0; i < 8; i++) {
@@ -263,10 +263,10 @@ bool playerUseItem(PlayerData *pd) {
     }
 
     // Utiliser l'item de santé actif
-    if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2})) { // Apple
+    if (pd->activeItem->id == getIdFromName("ITEM_APPLE")) { // Apple
         if (_playerUseItemEat(pd, 2, 1))
             return true;
-    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3})) { // Golden Apple
+    } else if (pd->activeItem->id == getIdFromName("ITEM_GOLDEN_APPLE")) { // Golden Apple
         if (_playerUseItemEat(pd, 2, 7))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_FLESH")) { // Flesh
@@ -275,16 +275,16 @@ bool playerUseItem(PlayerData *pd) {
     } else if (pd->activeItem->id == getIdFromName("ITEM_BREAD")) { // Bread
         if (_playerUseItemEat(pd, 3, 2))
             return true;
-    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4})) { // Raw Pork
+    } else if (pd->activeItem->id == getIdFromName("ITEM_PORK_RAW")) { // Raw Pork
         if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
-    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 5})) { // Cooked Pork
+    } else if (pd->activeItem->id == getIdFromName("ITEM_PORK_COOKED")) { // Cooked Pork
         if (_playerUseItemEat(pd, 3, 3))
             return true;
-    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 6})) { // Raw Beef
+    } else if (pd->activeItem->id == getIdFromName("ITEM_BEEF_RAW")) { // Raw Beef
         if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
-    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 7})) { // Steak
+    } else if (pd->activeItem->id == getIdFromName("ITEM_BEEF_COOKED")) { // Steak
         if (_playerUseItemEat(pd, 3, 4))
             return true;
     }
@@ -299,22 +299,22 @@ bool playerUseItem(PlayerData *pd) {
     }
 
     // scrolls
-    if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1001})) { // scrolls
+    if (pd->activeItem == getIdFromName("ITEM_SCROLL_UNDYING")) { // scrolls
         if (_playerUseItemScroll(pd, EFFECT_UNDYING, 1, EFFECTS_DURATION_INFINITE))
             return true;
-    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1002})) {
+    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_REGENERATION")) {
         if (_playerUseItemScroll(pd, EFFECT_REGENERATION, 1, 3002))
             return true;
-    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1003})) {
+    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_SPEED")) {
         if (_playerUseItemScroll(pd, EFFECT_SPEED, 1, 3600 * 2))
             return true;
-    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1004})) {
+    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_STRENGTH")) {
         if (_playerUseItemScroll(pd, EFFECT_STRENGTH, 1, 3600 * 4))
             return true;
-    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1005})) {
+    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_SHIELDING")) {
         if (_playerUseItemScroll(pd, EFFECT_SHIELDING, 1, 3600 * 4))
             return true;
-    } else if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 1006})) {
+    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_NIGHTVISION")) {
         if (_playerUseItemScroll(pd, EFFECT_NIGHTVISION, 1, 3600 * 8))
             return true;
     }
@@ -407,7 +407,7 @@ void playerAttack(PlayerData *pd) {
         return;
 
     // breaking tiles
-    if (pd->activeItem == &noItem || pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 2}) || pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4})) {
+    if (pd->activeItem == &noItem || pd->activeItem->id == getIdFromName("TOOL_SWORD") || pd->activeItem->id == getIdFromName("ITEM_WORKBENCH")) {
         if (xt >= 0 && yt >= 0 && xt < 128 && 128) {
             playerHurtTile(pd, getTile(pd->entity.level, xt, yt), pd->entity.level, xt, yt, (syncRand() % 3) + 1, pd->entity.p.dir);
         }

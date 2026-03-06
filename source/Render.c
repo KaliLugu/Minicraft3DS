@@ -385,21 +385,21 @@ void renderDayNight(PlayerData *pd) {
 }
 
 void renderFurniture(int itemID, int x, int y) {
-    if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 0})) {
+    if (itemID == getIdFromName("ITEM_ANVIL")) {
         renderTile16(x, y, 4, 8, 0);
-    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 1})) {
+    } else if (itemID == getIdFromName("ITEM_CHEST")) {
         renderTile16(x, y, 5, 8, 0);
-    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 2})) {
+    } else if (itemID == getIdFromName("ITEM_OVEN")) {
         renderTile16(x, y, 6, 8, 0);
-    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3})) {
+    } else if (itemID == getIdFromName("ITEM_FURNACE")) {
         renderTile16(x, y, 7, 8, 0);
-    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 4})) {
+    } else if (itemID == getIdFromName("ITEM_WORKBENCH")) {
         renderTile16(x, y, 8, 8, 0);
-    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5})) {
+    } else if (itemID == getIdFromName("ITEM_LANTERN")) {
         renderTile16(x, y, 9, 8, 0);
-    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 6})) {
+    } else if (itemID == getIdFromName("ITEM_LOOM")) {
         renderTile16(x, y, 14, 8, 0);
-    } else if (itemID == itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 7})) {
+    } else if (itemID == getIdFromName("ITEM_ENCHANTER")) {
         renderTile16(x, y, 15, 8, 0);
     }
 }
