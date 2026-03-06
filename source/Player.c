@@ -67,7 +67,7 @@ void playerInitInventory(PlayerData *pd) {
         addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 3}), 0), &(pd->inventory));
         addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_FURNITURE, 5}), 0), &(pd->inventory));
 
-        addItemToInventory(newItem(itemGetLegacyId((ItemID){ITEM_CATEGORY_TOOL, 8}), 1), &(pd->inventory));
+        addItemToInventory(newItem(getIdFromName("ITEM_MAGIC_COMPASS"), 1), &(pd->inventory));
 
         int i;
         for (i = 7; i < 28; ++i)
@@ -243,8 +243,8 @@ bool playerUseItem(PlayerData *pd) {
 
     // Health items
     int healthItems[] = {
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 0}),
-        itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1}),
+        getIdFromName("ITEM_FLESH"),
+        getIdFromName("ITEM_BREAD"),
         itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 2}),
         itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3}),
         itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4}),
@@ -269,10 +269,10 @@ bool playerUseItem(PlayerData *pd) {
     } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 3})) { // Golden Apple
         if (_playerUseItemEat(pd, 2, 7))
             return true;
-    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 0})) { // Flesh
+    } else if (pd->activeItem->id == getIdFromName("ITEM_FLESH")) { // Flesh
         if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
             return true;
-    } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 1})) { // Bread
+    } else if (pd->activeItem->id == getIdFromName("ITEM_BREAD")) { // Bread
         if (_playerUseItemEat(pd, 3, 2))
             return true;
     } else if (pd->activeItem->id == itemGetLegacyId((ItemID){ITEM_CATEGORY_FOOD, 4})) { // Raw Pork
@@ -290,7 +290,7 @@ bool playerUseItem(PlayerData *pd) {
     }
 
     // special item
-    if (pd->activeItem == itemGetLegacyId((ItemID){ITEM_CATEGORY_GENERIC, 34})) { // wizard summon
+    if (pd->activeItem == getIdFromName("ITEM_WIZARD_SUMMON")) { // wizard summon
         if (pd->entity.level == 0) {
             --(pd->activeItem->countLevel);
             airWizardHealthDisplay = 2000;
