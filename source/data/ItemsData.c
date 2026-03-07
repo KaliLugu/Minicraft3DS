@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 
-const int maxItemId = 71;
+#define MAX_ITEM_ID_LOCAL 71
 
-static char *_itemNames[maxItemId + 1];
-static int _itemIconX[maxItemId + 1];
-static int _itemIconY[maxItemId + 1];
-static bool _itemSingle[maxItemId + 1];
+static char *_itemNames[MAX_ITEM_ID_LOCAL + 1];
+static int _itemIconX[MAX_ITEM_ID_LOCAL + 1];
+static int _itemIconY[MAX_ITEM_ID_LOCAL + 1];
+static bool _itemSingle[MAX_ITEM_ID_LOCAL + 1];
 
-int getIdFromName(char *name) {
+ItemId getIdFromName(const char *name) {
     for (unsigned int i = 0; i < itemCount; ++i) {
         if (strcmp(ItemsTables[i].name, name) == 0) {
             return ItemsTables[i].id;

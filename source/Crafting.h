@@ -28,7 +28,7 @@ extern RecipeManager anvilRecipes;
 extern RecipeManager loomRecipes;
 extern RecipeManager enchanterRecipes;
 
-extern Recipe defineRecipe(int item, int amountOrLevel, int numArgs, ...);
+extern Recipe defineRecipe(char *name, int amountOrLevel, int numArgs, ...);
 
 extern void cloneRecipeManager(RecipeManager *from, RecipeManager *to);
 extern void checkCanCraftRecipes(RecipeManager *rm, Inventory *inv);

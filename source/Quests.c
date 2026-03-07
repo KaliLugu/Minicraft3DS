@@ -31,7 +31,7 @@ void initTrades() {
     dwarfTrades.size = 2;
     dwarfTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (dwarfTrades.size));
     dwarfTrades.recipes[0] = defineRecipe("ITEM_IRONINGOT", 4, 1, "ITEM_GOLDINGOT", 1);
-    dwarfTrades.recipes[1] = defineRecipe("ITEM_IRONINGOT", 2, 1, "ITEM_GEM", 1);
+    dwarfTrades.recipes[1] = defineRecipe("ITEM_GOLDINGOT", 2, 1, "ITEM_GEM", 1);
     // TODO: Trade Dragon Scales for something really nice
 }
 

@@ -195,15 +195,15 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->hostile.health -= damage;
         if (e->hostile.health < 1) {
             if (e->type == ENTITY_ZOMBIE) {
-                addItemsToWorld(newItem("ITEM_FLESH", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_FLESH"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->type == ENTITY_SKELETON) {
-                addItemsToWorld(newItem("ITEM_BONE", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_BONE"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
                 if (syncRand() % 2 == 0)
-                    addItemsToWorld(newItem("ITEM_ARROW_STONE", 1), e->level, e->x + 8, e->y + 8, 1);
+                    addItemsToWorld(newItem(getIdFromName("ITEM_ARROW_STONE"), 1), e->level, e->x + 8, e->y + 8, 1);
             } else if (e->type == ENTITY_KNIGHT) {
-                addItemsToWorld(newItem("ITEM_IRONINGOT", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_IRONINGOT"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->type == ENTITY_SLIME) {
-                addItemsToWorld(newItem("ITEM_SLIME", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_SLIME"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             }
             if (damager != NULL && damager->type == ENTITY_PLAYER)
                 damager->p.data->score += 50 * (e->hostile.lvl + 1);
@@ -217,7 +217,7 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->wizard.health -= damage;
         airWizardHealthDisplay = e->wizard.health;
         if (e->wizard.health < 1) {
-            addItemsToWorld(newItem("ITEM_MAGIC_DUST", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 2);
+            addItemsToWorld(newItem(getIdFromName("ITEM_MAGIC_DUST"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 2);
             removeEntityFromList(e, e->level, &eManager);
             playSound(snd_bossdeath);
 
@@ -236,13 +236,13 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
         e->passive.health -= damage;
         if (e->passive.health < 1) {
             if (e->passive.mtype == 0) {
-                addItemsToWorld(newItem("ITEM_WOOL", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 3) + 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_WOOL"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 3) + 1);
             } else if (e->passive.mtype == 1) {
-                addItemsToWorld(newItem("ITEM_PORK_RAW", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_PORK_RAW"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
             } else if (e->passive.mtype == 2) {
-                addItemsToWorld(newItem("ITEM_BEEF_RAW", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_BEEF_RAW"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 2) + 1);
                 if ((syncRand() % 2) == 0) {
-                    addItemsToWorld(newItem("ITEM_LEATHER", 1), e->level, e->x + 8, e->y + 8, 1);
+                    addItemsToWorld(newItem(getIdFromName("ITEM_LEATHER"), 1), e->level, e->x + 8, e->y + 8, 1);
                 }
             }
             if (damager != NULL && damager->type == ENTITY_PLAYER)
@@ -256,8 +256,8 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
     case ENTITY_DRAGON:
         e->dragon.health -= damage;
         if (e->dragon.health < 1) {
-            addItemsToWorld(newItem("ITEM_DRAGON_EGG", 1), e->level, e->x + 8, e->y + 8, 1);
-            addItemsToWorld(newItem("ITEM_DRAGON_SCALE", 1), e->level, e->x + 8, e->y + 8, (syncRand() % 11) + 10);
+            addItemsToWorld(newItem(getIdFromName("ITEM_DRAGON_EGG"), 1), e->level, e->x + 8, e->y + 8, 1);
+            addItemsToWorld(newItem(getIdFromName("ITEM_DRAGON_SCALE"), 1), e->level, e->x + 8, e->y + 8, (syncRand() % 11) + 10);
             removeEntityFromList(e, e->level, &eManager);
             playSound(snd_bossdeath);
             for (i = 0; i < playerCount; i++) {
@@ -342,8 +342,7 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
 
 bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
     // TODO: To much duplicated code
-    switch (item->id) {
-    case ITEM_POWGLOVE: // TODO a adapté
+    if (item->id == getIdFromName("ITEM_POWGLOVE")) { // TODO a adapté
         if (e->type == ENTITY_FURNITURE) {
             // Important: close all crafting windows using this furniture (only applies to chest) or else they will write invalid memory
             for (int i = 0; i < playerCount; i++) {
@@ -362,8 +361,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             pd->entity.p.isCarrying = true;
             return true;
         }
-        break;
-    case TOOL_AXE: // TODO a adapté
+    } else if (item->id == getIdFromName("TOOL_AXE")) { // TODO a adapté
         switch (e->type) {
         case ENTITY_PASSIVE:
         case ENTITY_ZOMBIE:
@@ -384,8 +382,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-        break;
-    case TOOL_SWORD: // TODO a adapté
+    } else if (item->id == getIdFromName("TOOL_SWORD")) { // TODO a adapté
         switch (e->type) {
         case ENTITY_PASSIVE:
         case ENTITY_ZOMBIE:
@@ -406,8 +403,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-        break;
-    case ITEM_NULL: // TODO a adapté
+    } else if (item->id == getIdFromName("NULL")) { // TODO a adapté
         switch (e->type) {
         case ENTITY_PASSIVE:
         case ENTITY_ZOMBIE:
@@ -425,7 +421,6 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-        break;
     }
     return false;
 }
@@ -483,22 +478,16 @@ void EntityVsEntity(Entity *e1, Entity *e2) {
             hurtEntity(e2, 1, -1, 0xFFAF00FF, e1);
         break;
     case ENTITY_ARROW:
-        switch (e1->arrow.itemID) { // TODO a adapté tout les switch case 
-        case ITEM_ARROW_WOOD:
+        if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_WOOD")) { // TODO a adapté tout les switch case 
             damage = 1 + (syncRand() % 3);
-            break;
-        case ITEM_ARROW_STONE:
+        } else if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_STONE")) {
             damage = 2 + (syncRand() % 4);
-            break;
-        case ITEM_ARROW_IRON:
+        } else if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_IRON")) {
             damage = 8 + (syncRand() % 9);
-            break;
-        case ITEM_ARROW_GOLD:
+        } else if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_GOLD")) {
             damage = 16 + (syncRand() % 9);
-            break;
-        case ITEM_ARROW_GEM:
+        } else if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_GEM")) {
             damage = 24 + (syncRand() % 9);
-            break;
         }
 
         if (e1->arrow.parent->type == ENTITY_PLAYER) {
@@ -663,6 +652,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         return 0;
     }
 
+    // coup d'énergie a l'utilisation d'outil en fonction de sur quoi on tape et quelle niveau a l'outil
     switch (tile) {
     case TILE_TREE:
         if (item->id == getIdFromName("TOOL_AXE") && playerUseEnergy(pd, 4 - item->countLevel)) {
@@ -700,6 +690,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             setData(syncRand() % 4, level, x, y); // determines mirroring.
             return 1;
         } else if (item->id == getIdFromName("ITEM_WALL_WOOD")) {
+            printf("Globals 2 : getIdFromName(""ITEM_WALL_WOOD"") \n");
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
@@ -726,7 +717,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             return 1;
         } else if (item->id == getIdFromName("TOOL_SHOVEL") && playerUseEnergy(pd, 4 - item->countLevel)) {
             if (syncRand() % 5 == 0)
-                addItemsToWorld(newItem(ITEM_SEEDS, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
             return 1;
         }
@@ -737,7 +728,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             --item->countLevel;
             return 1;
         } else if (item->id == getIdFromName("TOOL_SHOVEL") && playerUseEnergy(pd, 4 - item->countLevel)) {
-            addItemsToWorld(newItem(ITEM_SAND, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+            addItemsToWorld(newItem(getIdFromName("ITEM_SAND"), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
             return 1;
         }
@@ -747,6 +738,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             setTile(TILE_FARM, level, x, y);
             return 1;
         } else if (item->id == getIdFromName("ITEM_WALL_WOOD")) {
+            printf("Globals 3 : getIdFromName(""ITEM_WALL_WOOD"") \n");
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
@@ -780,7 +772,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             --item->countLevel;
             return 1;
         } else if (item->id == getIdFromName("TOOL_SHOVEL") && playerUseEnergy(pd, 4 - item->countLevel)) {
-            addItemsToWorld(newItem(ITEM_DIRT, 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+            addItemsToWorld(newItem(getIdFromName("ITEM_DIRT"), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_HOLE, level, x, y);
             return 1;
         }
@@ -840,13 +832,13 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
                 int count = (syncRand() % 2);
                 if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem("ITEM_SEEDS", 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
                     count = (syncRand() % 3) + 2;
                 else if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem("ITEM_WHEAT", 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_WHEAT"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 setTile(TILE_DIRT, level, x, y);
             }
         }
@@ -869,7 +861,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         break;
     case TILE_WOOD_FLOOR:
         if (item->id == getIdFromName("TOOL_AXE") && playerUseEnergy(pd, 4 - item->countLevel)) {
-            addItemsToWorld(newItem("ITEM_WOOD", 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+            addItemsToWorld(newItem(getIdFromName("ITEM_WOOD"), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
         }
         break;
@@ -1133,19 +1125,19 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
     switch (tile) {
     case TILE_TREE:
         if (syncRand() % 120 == 0)
-            addEntityToList(newEntityItem(newItem("ITEM_APPLE", 1), (xt << 4) + 8, (yt << 4) + 8, level), &eManager);
-        damageAndBreakTile(level, xt, yt, damage, 20, TILE_GRASS, 2, newItem("ITEM_WOOD", 1), syncRand() % 2 + 1, newItem("ITEM_ACORN", 1), syncRand() % 2);
+            addEntityToList(newEntityItem(newItem(getIdFromName("ITEM_APPLE"), 1), (xt << 4) + 8, (yt << 4) + 8, level), &eManager);
+        damageAndBreakTile(level, xt, yt, damage, 20, TILE_GRASS, 2, newItem(getIdFromName("ITEM_WOOD"), 1), syncRand() % 2 + 1, newItem(getIdFromName("ITEM_ACORN"), 1), syncRand() % 2);
         break;
     case TILE_CACTUS:
-        damageAndBreakTile(level, xt, yt, damage, 10, TILE_SAND, 1, newItem("ITEM_CACTUS", 1), syncRand() % 2 + 1);
+        damageAndBreakTile(level, xt, yt, damage, 10, TILE_SAND, 1, newItem(getIdFromName("ITEM_CACTUS"), 1), syncRand() % 2 + 1);
         break;
     case TILE_ROCK:
-        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 2, newItem("ITEM_STONE", 1), syncRand() % 4 + 1, newItem("ITEM_COAL", 1), syncRand() % 2);
+        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 2, newItem(getIdFromName("ITEM_STONE"), 1), syncRand() % 4 + 1, newItem(getIdFromName("ITEM_COAL"), 1), syncRand() % 2);
         break;
     case TILE_HARDROCK:
         if ((pd->activeItem->id != getIdFromName("TOOL_PICKAXE") || pd->activeItem->countLevel < 4) && !TESTGODMODE)
             damage = 0;
-        damageAndBreakTile(level, xt, yt, damage, 200, TILE_DIRT, 2, newItem("ITEM_STONE", 1), syncRand() % 4 + 1, newItem("ITEM_COAL", 1), syncRand() % 2);
+        damageAndBreakTile(level, xt, yt, damage, 200, TILE_DIRT, 2, newItem(getIdFromName("ITEM_STONE"), 1), syncRand() % 4 + 1, newItem(getIdFromName("ITEM_COAL"), 1), syncRand() % 2);
         break;
     case TILE_IRONORE:
     case TILE_GOLDORE:
@@ -1164,11 +1156,11 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
                 count += 2;
             }
             if (tile == TILE_IRONORE)
-                addItemsToWorld(newItem("ITEM_IRONORE", 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_IRONORE"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             if (tile == TILE_GOLDORE)
-                addItemsToWorld(newItem("ITEM_GOLDORE", 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_GOLDORE"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             if (tile == TILE_GEMORE)
-                addItemsToWorld(newItem("ITEM_GEM", 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_GEM"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
         }
         break;
     case TILE_CLOUDCACTUS:
@@ -1182,7 +1174,7 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
                 setTile(TILE_CLOUD, level, xt, yt);
                 count += 3;
             }
-            addItemsToWorld(newItem("ITEM_CLOUD", 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+            addItemsToWorld(newItem(getIdFromName("ITEM_CLOUD"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
         }
         break;
     case TILE_FARM:
@@ -1200,34 +1192,35 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
             int count = (syncRand() % 2);
             if (age >= 80)
                 count = (syncRand() % 2) + 1;
-            addItemsToWorld(newItem("ITEM_SEEDS", 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+            addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             count = 0;
             if (age == 100)
                 count = (syncRand() % 3) + 2;
             else if (age >= 80)
                 count = (syncRand() % 2) + 1;
-            addItemsToWorld(newItem("ITEM_WHEAT", 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+            addItemsToWorld(newItem(getIdFromName("ITEM_WHEAT"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             setTile(TILE_DIRT, level, xt, yt);
         }
         break;
     case TILE_FLOWER:
         setTile(TILE_GRASS, level, xt, yt);
-        addItemsToWorld(newItem("ITEM_FLOWER", 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
+        addItemsToWorld(newItem(getIdFromName("ITEM_FLOWER"), 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
         break;
     case TILE_WOOD_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 20, TILE_DIRT, 1, newItem("ITEM_WALL_WOOD", 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 20, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_WOOD"), 1), 1);
+        printf("Globals 4 : getIdFromName(""ITEM_WALL_WOOD"") \n");
         break;
     case TILE_STONE_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 30, TILE_DIRT, 1, newItem("ITEM_WALL_STONE", 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 30, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_STONE"), 1), 1);
         break;
     case TILE_IRON_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 40, TILE_DIRT, 1, newItem("ITEM_WALL_IRON", 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 40, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_IRON"), 1), 1);
         break;
     case TILE_GOLD_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 1, newItem("ITEM_WALL_GOLD", 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 50, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_GOLD"), 1), 1);
         break;
     case TILE_GEM_WALL:
-        damageAndBreakTile(level, xt, yt, damage, 60, TILE_DIRT, 1, newItem("ITEM_WALL_GEM", 1), 1);
+        damageAndBreakTile(level, xt, yt, damage, 60, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_GEM"), 1), 1);
         break;
     case TILE_BOOKSHELVES:
         addSmashParticles(level, xt << 4, yt << 4, damage);
@@ -1235,7 +1228,7 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
             setTile(TILE_DIRT, level, xt, yt);
         else
             setTile(TILE_DUNGEON_FLOOR, level, xt, yt);
-        addItemsToWorld(newItem("ITEM_BOOKSHELVES", 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
+        addItemsToWorld(newItem(getIdFromName("ITEM_BOOKSHELVES"), 1), level, (xt << 4) + 8, (yt << 4) + 8, 1);
         break;
     }
 }
@@ -1324,13 +1317,13 @@ void entityTileInteract(Entity *e, int tile, uByte level, int x, int y) {
                 int count = (syncRand() % 2);
                 if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem("ITEM_SEEDS", 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
                     count = (syncRand() % 3) + 2;
                 else if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem("ITEM_WHEAT", 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_WHEAT"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 setTile(TILE_DIRT, level, x, y);
             }
         }
@@ -1369,26 +1362,25 @@ void openCraftingMenu(PlayerData *pd, RecipeManager *rm, char *title) {
 
 bool useEntity(PlayerData *pd, Entity *e) {
     if (e->type == ENTITY_FURNITURE) {
-        switch (e->entityFurniture.itemID) { // adapté tout le switch case 
-        case ITEM_WORKBENCH:
+        if (e->entityFurniture.itemID == getIdFromName("ITEM_WORKBENCH")) { // adapté tout le switch case 
             openCraftingMenu(pd, &workbenchRecipes, "Crafting");
             return true;
-        case ITEM_FURNACE:
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_FURNACE")) {
             openCraftingMenu(pd, &furnaceRecipes, "Smelting");
             return true;
-        case ITEM_OVEN:
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_OVEN")) {
             openCraftingMenu(pd, &ovenRecipes, "Cooking");
             return true;
-        case ITEM_ANVIL:
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_ANVIL")) {
             openCraftingMenu(pd, &anvilRecipes, "Smithing");
             return true;
-        case ITEM_LOOM:
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_LOOM")) {
             openCraftingMenu(pd, &loomRecipes, "Crafting");
             return true;
-        case ITEM_ENCHANTER:
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_ENCHANTER")) {
             openCraftingMenu(pd, &enchanterRecipes, "Crafting");
             return true;
-        case ITEM_CHEST:
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_CHEST")) {
             pd->curChestEntity = e;
             pd->ingameMenuInvSel = 0;
             pd->ingameMenuInvSelOther = 0;

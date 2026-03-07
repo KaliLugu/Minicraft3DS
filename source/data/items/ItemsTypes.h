@@ -1,7 +1,7 @@
 #pragma once
 #include "ItemsData.h"
 
-extern Item ItemsTables[];
+extern ItemData ItemsTables[];
 
 extern const unsigned int itemCount;
 

@@ -256,7 +256,7 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile8(20, 50, 2, 20, 0);         // Slash (Up)
             renderTile8(28, 50, 3, 20, 0);         // Slash (Up)
             renderItemIcon(getIdFromName("ITEM_SEED"), 1, 19, 45); // Seeds
-            renderItemIcon(getIdFromName("ITEM_POWGLOVE"), 1, 26, 39); // Wheat1
+            renderItemIcon(getIdFromName("ITEM_WHEAT"), 1, 26, 39); // Wheat1
             renderItemIcon(getIdFromName("ITEM_WHEAT"), 1, 29, 44); // Wheat2
 
             renderTile16(72, 40, 22, 3, 0);        // Farm Tile

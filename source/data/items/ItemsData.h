@@ -39,7 +39,7 @@ typedef struct {
             bool destroyAfterUse;
         } generic;
     } data;
-} Item;
+} ItemData;
 
 extern void itemsDataInit();
 
