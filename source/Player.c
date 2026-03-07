@@ -198,7 +198,7 @@ bool playerUseItem(PlayerData *pd) {
     Item *item;
 
     // shooting arrows
-    if (pd->activeItem->id == getIdFromName("ITEM_ACORN")) {
+    if (pd->activeItem->id == getIdFromName("ITEM_BOW")) { // si l'user a l'arc en main
         // Vérifier les flèches dans l'inventaire
         int arrowIDs[] = {
             getIdFromName("ITEM_ARROW_WOOD"),  // Wood Arrow
@@ -290,7 +290,7 @@ bool playerUseItem(PlayerData *pd) {
     }
 
     // special item
-    if (pd->activeItem == getIdFromName("ITEM_WIZARD_SUMMON")) { // wizard summon
+    if (pd->activeItem->id == getIdFromName("ITEM_WIZARD_SUMMON")) { // wizard summon
         if (pd->entity.level == 0) {
             --(pd->activeItem->countLevel);
             airWizardHealthDisplay = 2000;
@@ -299,22 +299,22 @@ bool playerUseItem(PlayerData *pd) {
     }
 
     // scrolls
-    if (pd->activeItem == getIdFromName("ITEM_SCROLL_UNDYING")) { // scrolls
+    if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_UNDYING")) { // scrolls
         if (_playerUseItemScroll(pd, EFFECT_UNDYING, 1, EFFECTS_DURATION_INFINITE))
             return true;
-    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_REGENERATION")) {
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_REGENERATION")) {
         if (_playerUseItemScroll(pd, EFFECT_REGENERATION, 1, 3002))
             return true;
-    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_SPEED")) {
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_SPEED")) {
         if (_playerUseItemScroll(pd, EFFECT_SPEED, 1, 3600 * 2))
             return true;
-    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_STRENGTH")) {
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_STRENGTH")) {
         if (_playerUseItemScroll(pd, EFFECT_STRENGTH, 1, 3600 * 4))
             return true;
-    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_SHIELDING")) {
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_SHIELDING")) {
         if (_playerUseItemScroll(pd, EFFECT_SHIELDING, 1, 3600 * 4))
             return true;
-    } else if (pd->activeItem == getIdFromName("ITEM_SCROLL_NIGHTVISION")) {
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_NIGHTVISION")) {
         if (_playerUseItemScroll(pd, EFFECT_NIGHTVISION, 1, 3600 * 8))
             return true;
     }
@@ -407,7 +407,7 @@ void playerAttack(PlayerData *pd) {
         return;
 
     // breaking tiles
-    if (pd->activeItem == &noItem || pd->activeItem->id == getIdFromName("TOOL_SWORD") || pd->activeItem->id == getIdFromName("ITEM_WORKBENCH")) {
+    if (pd->activeItem == &noItem || pd->activeItem->id == getIdFromName("TOOL_SWORD") || pd->activeItem->id == getIdFromName("TOOL_AXE")) {
         if (xt >= 0 && yt >= 0 && xt < 128 && 128) {
             playerHurtTile(pd, getTile(pd->entity.level, xt, yt), pd->entity.level, xt, yt, (syncRand() % 3) + 1, pd->entity.p.dir);
         }
