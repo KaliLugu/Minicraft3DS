@@ -21,7 +21,6 @@ typedef struct {
     const char* name;     // nom logique / stable
     const char* displayName; // nom affiché (optionnel, ou variante)
     uint8_t category;     // TOOL, FOOD, FURNITURE, GENERIC
-    int legacyId;         // TEMPORAIRE, pour importer l'ancien système
     bool isStackable;     // si l’item est stackabmes
 
     union { // selon la catégorie
