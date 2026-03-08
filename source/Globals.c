@@ -3,6 +3,14 @@
 
 #include "render/TextureManager.h"
 
+#define debug(fmt, ...) \
+    do { \
+        printf("[%s:%d:%s] " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
+    } while(0)
+
+// TODO REFACTO dans l'inventaire il y a plains d'item sans nom qui sont quand même selectionnable, des items don le nom ne s'affiche pas et des items directement appelé "(NULL)" et il y en a 50 a chaque fois, les item avec un nom invisible n'ont pas de quantité visible mais le curser peut allé dessus
+// la golden apple n'a plus de texture dans les menus
+
 char versionText[34] = "Version 2.0.0";
 char fpsstr[34];
 uByte currentMenu = 0;
@@ -641,6 +649,9 @@ MColor getTileColor(int tile) {
 
 int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, int y, int px, int py, int dir) {
 
+    // guard
+    if (item->id == getIdFromName("NULL")) return 0;
+
     // Furniture items
     if (item->id > 27 && item->id < 51) {
         if (!tileIsSolid(getTile(level, x, y), NULL)) {
@@ -690,7 +701,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             setData(syncRand() % 4, level, x, y); // determines mirroring.
             return 1;
         } else if (item->id == getIdFromName("ITEM_WALL_WOOD")) {
-            printf("Globals 2 : getIdFromName(""ITEM_WALL_WOOD"") \n");
+            debug("getIdFromName(""ITEM_WALL_WOOD"")");
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
@@ -738,7 +749,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             setTile(TILE_FARM, level, x, y);
             return 1;
         } else if (item->id == getIdFromName("ITEM_WALL_WOOD")) {
-            printf("Globals 3 : getIdFromName(""ITEM_WALL_WOOD"") \n");
+            debug("getIdFromName(""ITEM_WALL_WOOD"")");
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
@@ -1208,7 +1219,7 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
         break;
     case TILE_WOOD_WALL:
         damageAndBreakTile(level, xt, yt, damage, 20, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_WOOD"), 1), 1);
-        printf("Globals 4 : getIdFromName(""ITEM_WALL_WOOD"") \n");
+        debug("getIdFromName(""ITEM_WALL_WOOD"")");
         break;
     case TILE_STONE_WALL:
         damageAndBreakTile(level, xt, yt, damage, 30, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_STONE"), 1), 1);

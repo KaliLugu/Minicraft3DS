@@ -36,7 +36,7 @@
 
 // WARNING: Having this set to different values in different clients will break multiplayer!
 // TODO: Change back before any release
-#define TESTGODMODE false
+#define TESTGODMODE true
 
 extern sInt localUID;
 

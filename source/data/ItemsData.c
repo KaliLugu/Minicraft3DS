@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_ITEM_ID_LOCAL 71
+#define MAX_ITEM_ID_LOCAL 70
 
 static char *_itemNames[MAX_ITEM_ID_LOCAL + 1];
 static int _itemIconX[MAX_ITEM_ID_LOCAL + 1];
@@ -16,7 +16,8 @@ ItemId getIdFromName(const char *name) {
             return ItemsTables[i].id;
         }
     }
-    return 0;
+    // si pas trouvé, retourner un ID invalide (ex: -1)
+    return -1;
 }
 
 
@@ -81,11 +82,11 @@ void itemsDataInit() {
     _itemRegister(getIdFromName("ITEM_GOLDINGOT"), "Gold Ingot", 31, 19, false);
     _itemRegister(getIdFromName("ITEM_GLASS"), "Glass", 13, 19, false);
     _itemRegister(getIdFromName("ITEM_GEM"), "Gem", 14, 19, false);
-    _itemRegister(getIdFromName("ITEM_WALLWOOD"), "Wood Wall", 28, 18, false);
-    _itemRegister(getIdFromName("ITEM_WALLSTONE"), "Stone Wall", 28, 20, false);
-    _itemRegister(getIdFromName("ITEM_WALLIRON"), "Iron Wall", 29, 20, false);
-    _itemRegister(getIdFromName("ITEM_WALLGOLD"), "Gold Wall", 30, 20, false);
-    _itemRegister(getIdFromName("ITEM_WALLGEM"), "Gem Wall", 31, 20, false);
+    _itemRegister(getIdFromName("ITEM_WALL_WOOD"), "Wood Wall", 28, 18, false);
+    _itemRegister(getIdFromName("ITEM_WALL_STONE"), "Stone Wall", 28, 20, false);
+    _itemRegister(getIdFromName("ITEM_WALL_IRON"), "Iron Wall", 29, 20, false);
+    _itemRegister(getIdFromName("ITEM_WALL_GOLD"), "Gold Wall", 30, 20, false);
+    _itemRegister(getIdFromName("ITEM_WALL_GEM"), "Gem Wall", 31, 20, false);
     _itemRegister(getIdFromName("ITEM_WOOL"), "Wool", 8, 20, false);
     _itemRegister(getIdFromName("ITEM_STRING"), "String", 9, 20, false);
     _itemRegister(getIdFromName("ITEM_LEATHER"), "Leather", 14, 20, false);

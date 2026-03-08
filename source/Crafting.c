@@ -119,7 +119,7 @@ void initRecipes() {
     workbenchRecipes.recipes[9] = defineRecipe("TOOL_HOE", 0, 1, "ITEM_WOOD", 5);
     workbenchRecipes.recipes[10] = defineRecipe("TOOL_PICKAXE", 0, 1, "ITEM_WOOD", 5);
     workbenchRecipes.recipes[11] = defineRecipe("TOOL_SHOVEL", 0, 1, "ITEM_WOOD", 5);
-    workbenchRecipes.recipes[12] = defineRecipe("TOOL_BOW", 0, 2, "ITEM_WOOD", 10, "ITEM_STRING", 1);
+    workbenchRecipes.recipes[12] = defineRecipe("ITEM_BOW", 0, 2, "ITEM_WOOD", 10, "ITEM_STRING", 1);
     workbenchRecipes.recipes[13] = defineRecipe("ITEM_ARROW_WOOD", 1, 2, "ITEM_WOOD", 2, "ITEM_STRING", 1);
     workbenchRecipes.recipes[14] = defineRecipe("TOOL_SWORD", 1, 2, "ITEM_WOOD", 5, "ITEM_STONE", 5);
     workbenchRecipes.recipes[15] = defineRecipe("TOOL_AXE", 1, 2, "ITEM_WOOD", 5, "ITEM_STONE", 5);
@@ -149,13 +149,14 @@ void initRecipes() {
     anvilRecipes.recipes[14] = defineRecipe("ITEM_WALL_IRON", 1, 1, "ITEM_IRONINGOT", 2);
     anvilRecipes.recipes[15] = defineRecipe("ITEM_WALL_GOLD", 1, 1, "ITEM_GOLDINGOT", 2);
     anvilRecipes.recipes[16] = defineRecipe("ITEM_COIN", 3, 1, "ITEM_IRONINGOT", 1);
-
+ 
     furnaceRecipes.size = 3;
     furnaceRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (furnaceRecipes.size));
     furnaceRecipes.recipes[0] = defineRecipe("ITEM_IRONINGOT", 1, 2, "ITEM_IRONORE", 4, "ITEM_COAL", 1);
     furnaceRecipes.recipes[1] = defineRecipe("ITEM_GOLDINGOT", 1, 2, "ITEM_GOLDORE", 4, "ITEM_COAL", 1);
     furnaceRecipes.recipes[2] = defineRecipe("ITEM_GLASS", 1, 2, "ITEM_SAND", 4, "ITEM_COAL", 1);
 
+    // TODO REFACTO : le craft de la golden apple n'a plus de texture
     ovenRecipes.size = 4;
     ovenRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (ovenRecipes.size));
     ovenRecipes.recipes[0] = defineRecipe("ITEM_BREAD", 1, 1, "ITEM_WHEAT", 4);
