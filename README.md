@@ -14,8 +14,14 @@ For building the game yourself look below.
 
 ----------
 
-**Building:**
+**Building via Docker (recommended):**
 
+- have Act and Docker installed
+- type "sudo act push"
+
+----------
+
+**Building without Docker:**
 **1. Install devkitPro and select atleast 3DS and Switch Development**
 
 - Visit <https://devkitpro.org/wiki/Getting_Started> for more infos
@@ -26,18 +32,10 @@ For building the game yourself look below.
 **2. Install further dependencies using (dpk-)pacman**
 
 - For 3ds build install: 3ds-libpng
-- For switch build install: switch-libpng switch-glad
-
-**3. Install raylib-nx for Switch build**
-
-- Follow the instructions on <https://github.com/luizpestana/raylib-nx/wiki/Working-on-Switch> for building raylib-nx
-- Add RAYLIB_NX environment variable pointing to raylib-nx install location (the root directory, not "src")
-- If you followed these instructions, a possible location to do this is: "devkitPro"/msys2/etc/profile.d/devkit-env.sh
 
 **4. You can now build Minicraft Homebrew Edition**
 
 - Run "make T=3ds" for building Minicraft3DS.3dsx
-- Run "make T=switch" for building MinicraftSwitch.nro
 
 ----------
 
