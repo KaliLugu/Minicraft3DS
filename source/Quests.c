@@ -12,26 +12,24 @@ RecipeManager dwarfTrades;
 void initTrades() {
     priestTrades.size = 5;
     priestTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (priestTrades.size));
-    priestTrades.recipes[0] = defineRecipe("ITEM_DUNGEON_KEY", 1, 1, "ITEM_MAGIC_DUST", 2);
-    priestTrades.recipes[1] = defineRecipe("ITEM_WIZARD_SUMMON", 1, 4, "ITEM_CLOUD", 100, "ITEM_IRONINGOT", 10, "ITEM_BONE", 10, "ITEM_LEATHER", 10);
-    priestTrades.recipes[2] = defineRecipe("ITEM_MAGIC_COMPASS", 1, 2, "ITEM_IRONINGOT", 10, "ITEM_GLASS", 5);
-    priestTrades.recipes[3] = defineRecipe("ITEM_COIN", 1, 1, "ITEM_SLIME", 5);
-    priestTrades.recipes[4] = defineRecipe("ITEM_COIN", 1, 1, "ITEM_FLESH", 5);
-
+    priestTrades.recipes[0] = defineRecipe(getIdFromName("ITEM_DUNGEON_KEY"), 1, 1, getIdFromName("ITEM_MAGIC_DUST"), 2);
+    priestTrades.recipes[1] = defineRecipe(getIdFromName("ITEM_WIZARD_SUMMON"), 1, 4, getIdFromName("ITEM_CLOUD"), 100, getIdFromName("ITEM_IRONINGOT"), 10, getIdFromName("ITEM_BONE"), 10, getIdFromName("ITEM_LEATHER"), 10);
+    priestTrades.recipes[2] = defineRecipe(getIdFromName("ITEM_MAGIC_COMPASS"), 1, 2, getIdFromName("ITEM_IRONINGOT"), 10, getIdFromName("ITEM_GLASS"), 5);
+    priestTrades.recipes[3] = defineRecipe(getIdFromName("ITEM_COIN"), 1, 1, getIdFromName("ITEM_SLIME"), 5);
+    priestTrades.recipes[4] = defineRecipe(getIdFromName("ITEM_COIN"), 1, 1, getIdFromName("ITEM_FLESH"), 5);
     farmerTrades.size = 7;
     farmerTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (farmerTrades.size));
-    farmerTrades.recipes[0] = defineRecipe("ITEM_WHEAT", 5, 1, "ITEM_COIN", 3);
-    farmerTrades.recipes[1] = defineRecipe("ITEM_BREAD", 1, 1, "ITEM_COIN", 3);
-    farmerTrades.recipes[2] = defineRecipe("ITEM_APPLE", 2, 1, "ITEM_COIN", 4);
-    farmerTrades.recipes[3] = defineRecipe("ITEM_ACORN", 3, 1, "ITEM_COIN", 1);
-    farmerTrades.recipes[4] = defineRecipe("ITEM_SEED", 4, 1, "ITEM_COIN", 2);
-    farmerTrades.recipes[5] = defineRecipe("ITEM_COIN", 2, 1, "ITEM_SEED", 5);
-    farmerTrades.recipes[6] = defineRecipe("ITEM_COIN", 1, 1, "ITEM_ACORN", 5);
-
+    farmerTrades.recipes[0] = defineRecipe(getIdFromName("ITEM_WHEAT"), 5, 1, getIdFromName("ITEM_COIN"), 3);
+    farmerTrades.recipes[1] = defineRecipe(getIdFromName("ITEM_BREAD"), 1, 1, getIdFromName("ITEM_COIN"), 3);
+    farmerTrades.recipes[2] = defineRecipe(getIdFromName("ITEM_APPLE"), 2, 1, getIdFromName("ITEM_COIN"), 4);
+    farmerTrades.recipes[3] = defineRecipe(getIdFromName("ITEM_ACORN"), 3, 1, getIdFromName("ITEM_COIN"), 1);
+    farmerTrades.recipes[4] = defineRecipe(getIdFromName("ITEM_SEED"), 4, 1, getIdFromName("ITEM_COIN"), 2);
+    farmerTrades.recipes[5] = defineRecipe(getIdFromName("ITEM_COIN"), 2, 1, getIdFromName("ITEM_SEED"), 5);
+    farmerTrades.recipes[6] = defineRecipe(getIdFromName("ITEM_COIN"), 1, 1, getIdFromName("ITEM_ACORN"), 5);
     dwarfTrades.size = 2;
     dwarfTrades.recipes = (Recipe *)malloc(sizeof(Recipe) * (dwarfTrades.size));
-    dwarfTrades.recipes[0] = defineRecipe("ITEM_IRONINGOT", 4, 1, "ITEM_GOLDINGOT", 1);
-    dwarfTrades.recipes[1] = defineRecipe("ITEM_GOLDINGOT", 2, 1, "ITEM_GEM", 1);
+    dwarfTrades.recipes[0] = defineRecipe(getIdFromName("ITEM_IRONINGOT"), 4, 1, getIdFromName("ITEM_GOLDINGOT"), 1);
+    dwarfTrades.recipes[1] = defineRecipe(getIdFromName("ITEM_GOLDINGOT"), 2, 1, getIdFromName("ITEM_GEM"), 1);
     // TODO: Trade Dragon Scales for something really nice
 }
 
