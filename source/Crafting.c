@@ -86,9 +86,9 @@ Cost newCost(int i, int c) {
 }
 
 uByte curPlace = 0;
-Recipe defineRecipe(char *name, int amountOrLevel, int numArgs, ...) {
+Recipe defineRecipe(int item, int amountOrLevel, int numArgs, ...) {
     Recipe r;
-    r.itemResult = getIdFromName(name);
+    r.itemResult = item;
     r.itemAmountLevel = amountOrLevel;
     r.numOfCosts = numArgs;
     int i;
@@ -107,77 +107,75 @@ void initRecipes() {
     curPlace = 0;
     workbenchRecipes.size = 22;
     workbenchRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (workbenchRecipes.size));
-    workbenchRecipes.recipes[0] = defineRecipe("ITEM_WORKBENCH", 1, 1, "ITEM_WOOD", 20);
-    workbenchRecipes.recipes[1] = defineRecipe("ITEM_FURNACE", 1, 1, "ITEM_STONE", 20);
-    workbenchRecipes.recipes[2] = defineRecipe("ITEM_OVEN", 1, 1, "ITEM_STONE", 20);
-    workbenchRecipes.recipes[3] = defineRecipe("ITEM_CHEST", 1, 1, "ITEM_WOOD", 20);
-    workbenchRecipes.recipes[4] = defineRecipe("ITEM_ANVIL", 1, 1, "ITEM_IRONINGOT", 5);
-    workbenchRecipes.recipes[5] = defineRecipe("ITEM_LANTERN", 1, 3, "ITEM_WOOD", 5, "ITEM_SLIME", 10, "ITEM_GLASS", 4);
-    workbenchRecipes.recipes[6] = defineRecipe("ITEM_LOOM", 1, 2, "ITEM_WOOD", 10, "ITEM_WOOL", 5);
-    workbenchRecipes.recipes[7] = defineRecipe("TOOL_SWORD", 0, 1, "ITEM_WOOD", 5);
-    workbenchRecipes.recipes[8] = defineRecipe("TOOL_AXE", 0, 1, "ITEM_WOOD", 5);
-    workbenchRecipes.recipes[9] = defineRecipe("TOOL_HOE", 0, 1, "ITEM_WOOD", 5);
-    workbenchRecipes.recipes[10] = defineRecipe("TOOL_PICKAXE", 0, 1, "ITEM_WOOD", 5);
-    workbenchRecipes.recipes[11] = defineRecipe("TOOL_SHOVEL", 0, 1, "ITEM_WOOD", 5);
-    workbenchRecipes.recipes[12] = defineRecipe("ITEM_BOW", 0, 2, "ITEM_WOOD", 10, "ITEM_STRING", 1);
-    workbenchRecipes.recipes[13] = defineRecipe("ITEM_ARROW_WOOD", 1, 2, "ITEM_WOOD", 2, "ITEM_STRING", 1);
-    workbenchRecipes.recipes[14] = defineRecipe("TOOL_SWORD", 1, 2, "ITEM_WOOD", 5, "ITEM_STONE", 5);
-    workbenchRecipes.recipes[15] = defineRecipe("TOOL_AXE", 1, 2, "ITEM_WOOD", 5, "ITEM_STONE", 5);
-    workbenchRecipes.recipes[16] = defineRecipe("TOOL_HOE", 1, 2, "ITEM_WOOD", 5, "ITEM_STONE", 5);
-    workbenchRecipes.recipes[17] = defineRecipe("TOOL_PICKAXE", 1, 2, "ITEM_WOOD", 5, "ITEM_STONE", 5);
-    workbenchRecipes.recipes[18] = defineRecipe("TOOL_SHOVEL", 1, 2, "ITEM_WOOD", 5, "ITEM_STONE", 5);
-    workbenchRecipes.recipes[19] = defineRecipe("ITEM_ARROW_STONE", 1, 3, "ITEM_WOOD", 1, "ITEM_STONE", 1, "ITEM_STRING", 1);
-    workbenchRecipes.recipes[20] = defineRecipe("ITEM_WALL_WOOD", 1, 1, "ITEM_WOOD", 4);
-    workbenchRecipes.recipes[21] = defineRecipe("ITEM_WALL_STONE", 1, 1, "ITEM_STONE", 4);
+    workbenchRecipes.recipes[0] = defineRecipe(getIdFromName("ITEM_WORKBENCH"), 1, 1, getIdFromName("ITEM_WOOD"), 20);
+    workbenchRecipes.recipes[1] = defineRecipe(getIdFromName("ITEM_FURNACE"), 1, 1, getIdFromName("ITEM_STONE"), 20);
+    workbenchRecipes.recipes[2] = defineRecipe(getIdFromName("ITEM_OVEN"), 1, 1, getIdFromName("ITEM_STONE"), 20);
+    workbenchRecipes.recipes[3] = defineRecipe(getIdFromName("ITEM_CHEST"), 1, 1, getIdFromName("ITEM_WOOD"), 20);
+    workbenchRecipes.recipes[4] = defineRecipe(getIdFromName("ITEM_ANVIL"), 1, 1, getIdFromName("ITEM_IRONINGOT"), 5);
+    workbenchRecipes.recipes[5] = defineRecipe(getIdFromName("ITEM_LANTERN"), 1, 3, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_SLIME"), 10, getIdFromName("ITEM_GLASS"), 4);
+    workbenchRecipes.recipes[6] = defineRecipe(getIdFromName("ITEM_LOOM"), 1, 2, getIdFromName("ITEM_WOOD"), 10, getIdFromName("ITEM_WOOL"), 5);
+    workbenchRecipes.recipes[7] = defineRecipe(getIdFromName("TOOL_SWORD"), 0, 1, getIdFromName("ITEM_WOOD"), 5);
+    workbenchRecipes.recipes[8] = defineRecipe(getIdFromName("TOOL_AXE"), 0, 1, getIdFromName("ITEM_WOOD"), 5);
+    workbenchRecipes.recipes[9] = defineRecipe(getIdFromName("TOOL_HOE"), 0, 1, getIdFromName("ITEM_WOOD"), 5);
+    workbenchRecipes.recipes[10] = defineRecipe(getIdFromName("TOOL_PICKAXE"), 0, 1, getIdFromName("ITEM_WOOD"), 5);
+    workbenchRecipes.recipes[11] = defineRecipe(getIdFromName("TOOL_SHOVEL"), 0, 1, getIdFromName("ITEM_WOOD"), 5);
+    workbenchRecipes.recipes[12] = defineRecipe(getIdFromName("ITEM_BOW"), 0, 2, getIdFromName("ITEM_WOOD"), 10, getIdFromName("ITEM_STRING"), 1);
+    workbenchRecipes.recipes[13] = defineRecipe(getIdFromName("ITEM_ARROW_WOOD"), 1, 2, getIdFromName("ITEM_WOOD"), 2, getIdFromName("ITEM_STRING"), 1);
+    workbenchRecipes.recipes[14] = defineRecipe(getIdFromName("TOOL_SWORD"), 1, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_STONE"), 5);
+    workbenchRecipes.recipes[15] = defineRecipe(getIdFromName("TOOL_AXE"), 1, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_STONE"), 5);
+    workbenchRecipes.recipes[16] = defineRecipe(getIdFromName("TOOL_HOE"), 1, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_STONE"), 5);
+    workbenchRecipes.recipes[17] = defineRecipe(getIdFromName("TOOL_PICKAXE"), 1, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_STONE"), 5);
+    workbenchRecipes.recipes[18] = defineRecipe(getIdFromName("TOOL_SHOVEL"), 1, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_STONE"), 5);
+    workbenchRecipes.recipes[19] = defineRecipe(getIdFromName("ITEM_ARROW_STONE"), 1, 3, getIdFromName("ITEM_WOOD"), 1, getIdFromName("ITEM_STONE"), 1, getIdFromName("ITEM_STRING"), 1);
+    workbenchRecipes.recipes[20] = defineRecipe(getIdFromName("ITEM_WALL_WOOD"), 1, 1, getIdFromName("ITEM_WOOD"), 4);
+    workbenchRecipes.recipes[21] = defineRecipe(getIdFromName("ITEM_WALL_STONE"), 1, 1, getIdFromName("ITEM_STONE"), 4);
 
     anvilRecipes.size = 17;
     anvilRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (anvilRecipes.size));
-    anvilRecipes.recipes[0] = defineRecipe("TOOL_SWORD", 2, 2, "ITEM_WOOD", 5, "ITEM_IRONINGOT", 5);
-    anvilRecipes.recipes[1] = defineRecipe("TOOL_AXE", 2, 2, "ITEM_WOOD", 5, "ITEM_IRONINGOT", 5);
-    anvilRecipes.recipes[2] = defineRecipe("TOOL_HOE", 2, 2, "ITEM_WOOD", 5, "ITEM_IRONINGOT", 5);
-    anvilRecipes.recipes[3] = defineRecipe("TOOL_PICKAXE", 2, 2, "ITEM_WOOD", 5, "ITEM_IRONINGOT", 5);
-    anvilRecipes.recipes[4] = defineRecipe("TOOL_SHOVEL", 2, 2, "ITEM_WOOD", 5, "ITEM_IRONINGOT", 5);
-    anvilRecipes.recipes[5] = defineRecipe("ITEM_ARROW_IRON", 1, 3, "ITEM_WOOD", 1, "ITEM_IRONINGOT", 1, "ITEM_STRING", 1);
-    anvilRecipes.recipes[6] = defineRecipe("TOOL_SWORD", 3, 2, "ITEM_WOOD", 5, "ITEM_GOLDINGOT", 5);
-    anvilRecipes.recipes[7] = defineRecipe("TOOL_AXE", 3, 2, "ITEM_WOOD", 5, "ITEM_GOLDINGOT", 5);
-    anvilRecipes.recipes[8] = defineRecipe("TOOL_HOE", 3, 2, "ITEM_WOOD", 5, "ITEM_GOLDINGOT", 5);
-    anvilRecipes.recipes[9] = defineRecipe("TOOL_PICKAXE", 3, 2, "ITEM_WOOD", 5, "ITEM_GOLDINGOT", 5);
-    anvilRecipes.recipes[10] = defineRecipe("TOOL_SHOVEL", 3, 2, "ITEM_WOOD", 5, "ITEM_GOLDINGOT", 5);
-    anvilRecipes.recipes[11] = defineRecipe("ITEM_ARROW_GOLD", 1, 3, "ITEM_WOOD", 1, "ITEM_GOLDINGOT", 1, "ITEM_STRING", 1);
-    anvilRecipes.recipes[12] = defineRecipe("TOOL_BUCKET", 0, 1, "ITEM_IRONINGOT", 10);
-    anvilRecipes.recipes[13] = defineRecipe("ITEM_ENCHANTER", 1, 3, "ITEM_WOOD", 10, "ITEM_GOLDINGOT", 10, "ITEM_GEM", 20);
-    anvilRecipes.recipes[14] = defineRecipe("ITEM_WALL_IRON", 1, 1, "ITEM_IRONINGOT", 2);
-    anvilRecipes.recipes[15] = defineRecipe("ITEM_WALL_GOLD", 1, 1, "ITEM_GOLDINGOT", 2);
-    anvilRecipes.recipes[16] = defineRecipe("ITEM_COIN", 3, 1, "ITEM_IRONINGOT", 1);
+    anvilRecipes.recipes[0] = defineRecipe(getIdFromName("TOOL_SWORD"), 2, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_IRONINGOT"), 5);
+    anvilRecipes.recipes[1] = defineRecipe(getIdFromName("TOOL_AXE"), 2, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_IRONINGOT"), 5);
+    anvilRecipes.recipes[2] = defineRecipe(getIdFromName("TOOL_HOE"), 2, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_IRONINGOT"), 5);
+    anvilRecipes.recipes[3] = defineRecipe(getIdFromName("TOOL_PICKAXE"), 2, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_IRONINGOT"), 5);
+    anvilRecipes.recipes[4] = defineRecipe(getIdFromName("TOOL_SHOVEL"), 2, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_IRONINGOT"), 5);
+    anvilRecipes.recipes[5] = defineRecipe(getIdFromName("ITEM_ARROW_IRON"), 1, 3, getIdFromName("ITEM_WOOD"), 1, getIdFromName("ITEM_IRONINGOT"), 1, getIdFromName("ITEM_STRING"), 1);
+    anvilRecipes.recipes[6] = defineRecipe(getIdFromName("TOOL_SWORD"), 3, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GOLDINGOT"), 5);
+    anvilRecipes.recipes[7] = defineRecipe(getIdFromName("TOOL_AXE"), 3, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GOLDINGOT"), 5);
+    anvilRecipes.recipes[8] = defineRecipe(getIdFromName("TOOL_HOE"), 3, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GOLDINGOT"), 5);
+    anvilRecipes.recipes[9] = defineRecipe(getIdFromName("TOOL_PICKAXE"), 3, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GOLDINGOT"), 5);
+    anvilRecipes.recipes[10] = defineRecipe(getIdFromName("TOOL_SHOVEL"), 3, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GOLDINGOT"), 5);
+    anvilRecipes.recipes[11] = defineRecipe(getIdFromName("ITEM_ARROW_GOLD"), 1, 3, getIdFromName("ITEM_WOOD"), 1, getIdFromName("ITEM_GOLDINGOT"), 1, getIdFromName("ITEM_STRING"), 1);
+    anvilRecipes.recipes[12] = defineRecipe(getIdFromName("TOOL_BUCKET"), 0, 1, getIdFromName("ITEM_IRONINGOT"), 10);
+    anvilRecipes.recipes[13] = defineRecipe(getIdFromName("ITEM_ENCHANTER"), 1, 3, getIdFromName("ITEM_WOOD"), 10, getIdFromName("ITEM_GOLDINGOT"), 10, getIdFromName("ITEM_GEM"), 20);
+    anvilRecipes.recipes[14] = defineRecipe(getIdFromName("ITEM_WALL_IRON"), 1, 1, getIdFromName("ITEM_IRONINGOT"), 2);
+    anvilRecipes.recipes[15] = defineRecipe(getIdFromName("ITEM_WALL_GOLD"), 1, 1, getIdFromName("ITEM_GOLDINGOT"), 2);
+    anvilRecipes.recipes[16] = defineRecipe(getIdFromName("ITEM_COIN"), 3, 1, getIdFromName("ITEM_IRONINGOT"), 1);
  
     furnaceRecipes.size = 3;
     furnaceRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (furnaceRecipes.size));
-    furnaceRecipes.recipes[0] = defineRecipe("ITEM_IRONINGOT", 1, 2, "ITEM_IRONORE", 4, "ITEM_COAL", 1);
-    furnaceRecipes.recipes[1] = defineRecipe("ITEM_GOLDINGOT", 1, 2, "ITEM_GOLDORE", 4, "ITEM_COAL", 1);
-    furnaceRecipes.recipes[2] = defineRecipe("ITEM_GLASS", 1, 2, "ITEM_SAND", 4, "ITEM_COAL", 1);
+    furnaceRecipes.recipes[0] = defineRecipe(getIdFromName("ITEM_IRONINGOT"), 1, 2, getIdFromName("ITEM_IRONORE"), 4, getIdFromName("ITEM_COAL"), 1);
+    furnaceRecipes.recipes[1] = defineRecipe(getIdFromName("ITEM_GOLDINGOT"), 1, 2, getIdFromName("ITEM_GOLDORE"), 4, getIdFromName("ITEM_COAL"), 1);
+    furnaceRecipes.recipes[2] = defineRecipe(getIdFromName("ITEM_GLASS"), 1, 2, getIdFromName("ITEM_SAND"), 4, getIdFromName("ITEM_COAL"), 1);
 
     // TODO REFACTO : le craft de la golden apple n'a plus de texture
     ovenRecipes.size = 4;
     ovenRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (ovenRecipes.size));
-    ovenRecipes.recipes[0] = defineRecipe("ITEM_BREAD", 1, 1, "ITEM_WHEAT", 4);
-    ovenRecipes.recipes[1] = defineRecipe("ITEM_PORK_COOKED", 1, 2, "ITEM_PORK_RAW", 1, "ITEM_COAL", 1);
-    ovenRecipes.recipes[2] = defineRecipe("ITEM_BEEF_COOKED", 1, 2, "ITEM_BEEF_RAW", 1, "ITEM_COAL", 1);
-    ovenRecipes.recipes[3] = defineRecipe("ITEM_GOLDEN_APPLE", 1, 2, "ITEM_APPLE", 1, "ITEM_GOLDINGOT", 8);
+    ovenRecipes.recipes[0] = defineRecipe(getIdFromName("ITEM_BREAD"), 1, 1, getIdFromName("ITEM_WHEAT"), 4);
+    ovenRecipes.recipes[1] = defineRecipe(getIdFromName("ITEM_PORK_COOKED"), 1, 2, getIdFromName("ITEM_PORK_RAW"), 1, getIdFromName("ITEM_COAL"), 1);
+    ovenRecipes.recipes[2] = defineRecipe(getIdFromName("ITEM_BEEF_COOKED"), 1, 2, getIdFromName("ITEM_BEEF_RAW"), 1, getIdFromName("ITEM_COAL"), 1);
+    ovenRecipes.recipes[3] = defineRecipe(getIdFromName("ITEM_GOLDEN_APPLE"), 1, 2, getIdFromName("ITEM_APPLE"), 1, getIdFromName("ITEM_GOLDINGOT"), 8);
 
     loomRecipes.size = 1;
     loomRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (loomRecipes.size));
-    loomRecipes.recipes[0] = defineRecipe("ITEM_STRING", 1, 1, "ITEM_WOOL", 1);
-
+    loomRecipes.recipes[0] = defineRecipe(getIdFromName("ITEM_STRING"), 1, 1, getIdFromName("ITEM_WOOL"), 1);
     enchanterRecipes.size = 7;
     enchanterRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (enchanterRecipes.size));
-    enchanterRecipes.recipes[0] = defineRecipe("TOOL_SWORD", 4, 2, "ITEM_WOOD", 5, "ITEM_GEM", 50);
-    enchanterRecipes.recipes[1] = defineRecipe("TOOL_AXE", 4, 2, "ITEM_WOOD", 5, "ITEM_GEM", 50);
-    enchanterRecipes.recipes[2] = defineRecipe("TOOL_HOE", 4, 2, "ITEM_WOOD", 5, "ITEM_GEM", 50);
-    enchanterRecipes.recipes[3] = defineRecipe("TOOL_PICKAXE", 4, 2, "ITEM_WOOD", 5, "ITEM_GEM", 50);
-    enchanterRecipes.recipes[4] = defineRecipe("TOOL_SHOVEL", 4, 2, "ITEM_WOOD", 5, "ITEM_GEM", 50);
-    enchanterRecipes.recipes[5] = defineRecipe("ITEM_ARROW_GEM", 1, 3, "ITEM_WOOD", 1, "ITEM_GEM", 3, "ITEM_STRING", 1);
-    enchanterRecipes.recipes[6] = defineRecipe("ITEM_WALL_GEM", 1, 1, "ITEM_GEM", 10);
-
+    enchanterRecipes.recipes[0] = defineRecipe(getIdFromName("TOOL_SWORD"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
+    enchanterRecipes.recipes[1] = defineRecipe(getIdFromName("TOOL_AXE"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
+    enchanterRecipes.recipes[2] = defineRecipe(getIdFromName("TOOL_HOE"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
+    enchanterRecipes.recipes[3] = defineRecipe(getIdFromName("TOOL_PICKAXE"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
+    enchanterRecipes.recipes[4] = defineRecipe(getIdFromName("TOOL_SHOVEL"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
+    enchanterRecipes.recipes[5] = defineRecipe(getIdFromName("ITEM_ARROW_GEM"), 1, 3, getIdFromName("ITEM_WOOD"), 1, getIdFromName("ITEM_GEM"), 3, getIdFromName("ITEM_STRING"), 1);
+    enchanterRecipes.recipes[6] = defineRecipe(getIdFromName("ITEM_WALL_GEM"), 1, 1, getIdFromName("ITEM_GEM"), 10);
 }
 
 /* Free up allocated memory */
