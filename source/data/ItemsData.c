@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_ITEM_ID_LOCAL 70
+#define MAX_ITEM_ID_LOCAL 71
 
 static char *_itemNames[MAX_ITEM_ID_LOCAL + 1];
 static int _itemIconX[MAX_ITEM_ID_LOCAL + 1];
@@ -202,6 +202,7 @@ char *itemGetNameWithCount(int id, int countLevel) {
 }
 
 int itemGetIconX(int id, int countLevel) {
+    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return 0; // bounds check
     if (id == getIdFromName("TOOL_SHOVEL") ||
         id == getIdFromName("TOOL_HOE") ||
         id == getIdFromName("TOOL_SWORD") ||
@@ -214,6 +215,7 @@ int itemGetIconX(int id, int countLevel) {
 }
 
 int itemGetIconY(int id, int countLevel) {
+    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return 0; // bounds check
     switch (id) {
     // handle special cases here
 
@@ -224,5 +226,6 @@ int itemGetIconY(int id, int countLevel) {
 }
 
 bool itemIsSingle(int id, int countLevel) {
+    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return true; // bounds check
     return _itemSingle[id];
 }

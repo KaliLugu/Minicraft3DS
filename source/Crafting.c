@@ -14,7 +14,7 @@ RecipeManager enchanterRecipes;
 
 void cloneRecipeManager(RecipeManager *from, RecipeManager *to) {
     // free old manager recipes
-    free(to->recipes);
+    if (to->recipes) free(to->recipes);
 
     // copy over recipes
     to->size = from->size;
