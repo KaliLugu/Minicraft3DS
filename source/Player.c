@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "data/items/ItemsData.h"
-
+#include "data/items/ItemsTypes.h"
 #include "Globals.h"
 #include <limits.h>
 
@@ -69,13 +69,12 @@ void playerInitInventory(PlayerData *pd) {
 
         addItemToInventory(newItem(getIdFromName("ITEM_MAGIC_COMPASS"), 1), &(pd->inventory));
 
-        int i;
-        for (i = 7; i < 28; ++i)
-            addItemToInventory(newItem(i, 50), &(pd->inventory));
-        for (i = 51; i < 76; ++i)
-            addItemToInventory(newItem(i, 50), &(pd->inventory));
-        for (i = 1001; i < 1008; ++i)
-            addItemToInventory(newItem(i, 50), &(pd->inventory));
+        // Add all valid items for testing
+        for (int i = 1; i < itemCount; ++i) { // skip NULL
+            ItemData *data = &ItemsTables[i];
+            int count = data->isStackable ? 50 : (data->category == ITEM_CAT_TOOL ? 4 : 1);
+            addItemToInventory(newItem(data->id, count), &(pd->inventory));
+        }
     }
 }
 
@@ -106,6 +105,10 @@ void playerInitMenus(PlayerData *pd) {
     pd->ingameMenuAreYouSure = false;
     pd->ingameMenuAreYouSureSave = false;
     pd->ingameMenuTimer = 0;
+
+    // Initialize current recipes
+    pd->currentRecipes.size = 0;
+    pd->currentRecipes.recipes = NULL;
 
     resetNPCMenuData(&(pd->npcMenuData));
 
