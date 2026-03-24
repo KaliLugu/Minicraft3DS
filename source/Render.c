@@ -1,6 +1,7 @@
 #include "Render.h"
 #include "render/RenderTiles.h"
 #include "render/TextureManager.h"
+#include "data/items/ItemsData.h"
 
 extern int syncTickCount;
 
@@ -384,31 +385,22 @@ void renderDayNight(PlayerData *pd) {
 }
 
 void renderFurniture(int itemID, int x, int y) {
-    switch (itemID) {
-    case ITEM_ANVIL:
+    if (itemID == getIdFromName("ITEM_ANVIL")) {
         renderTile16(x, y, 4, 8, 0);
-        break;
-    case ITEM_CHEST:
+    } else if (itemID == getIdFromName("ITEM_CHEST")) {
         renderTile16(x, y, 5, 8, 0);
-        break;
-    case ITEM_OVEN:
+    } else if (itemID == getIdFromName("ITEM_OVEN")) {
         renderTile16(x, y, 6, 8, 0);
-        break;
-    case ITEM_FURNACE:
+    } else if (itemID == getIdFromName("ITEM_FURNACE")) {
         renderTile16(x, y, 7, 8, 0);
-        break;
-    case ITEM_WORKBENCH:
+    } else if (itemID == getIdFromName("ITEM_WORKBENCH")) {
         renderTile16(x, y, 8, 8, 0);
-        break;
-    case ITEM_LANTERN:
+    } else if (itemID == getIdFromName("ITEM_LANTERN")) {
         renderTile16(x, y, 9, 8, 0);
-        break;
-    case ITEM_LOOM:
+    } else if (itemID == getIdFromName("ITEM_LOOM")) {
         renderTile16(x, y, 14, 8, 0);
-        break;
-    case ITEM_ENCHANTER:
+    } else if (itemID == getIdFromName("ITEM_ENCHANTER")) {
         renderTile16(x, y, 15, 8, 0);
-        break;
     }
 }
 
@@ -540,9 +532,8 @@ void renderItemWithTextCentered(Item *item, int width, int y) {
 void renderItemIcon(int itemID, int countLevel, int x, int y) {
     int xd;
     int yd;
-    switch (itemID) {
+    if (itemID == getIdFromName("ITEM_MAGIC_COMPASS")) {
     // TODO: This should not be here, somehow handle it in data?
-    case TOOL_MAGIC_COMPASS:
         xd = worldData.compassData[getLocalPlayer()->entity.level][0] - (getLocalPlayer()->entity.x >> 4);
         yd = worldData.compassData[getLocalPlayer()->entity.level][1] - (getLocalPlayer()->entity.y >> 4);
         if (abs(yd) > abs(xd)) {
@@ -556,9 +547,7 @@ void renderItemIcon(int itemID, int countLevel, int x, int y) {
             else
                 renderTile8(x, y, itemGetIconX(itemID, countLevel) + 3, itemGetIconY(itemID, countLevel), 0);
         }
-        break;
-    default:
+    } else {
         renderTile8(x, y, itemGetIconX(itemID, countLevel), itemGetIconY(itemID, countLevel), 0);
-        break;
     }
 }

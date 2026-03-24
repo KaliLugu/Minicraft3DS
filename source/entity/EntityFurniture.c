@@ -1,3 +1,5 @@
+#include "../data/items/ItemsData.h"
+
 #include "../Entity.h"
 
 #include "../Data.h"
@@ -11,6 +13,7 @@ void assignInventory(Entity *e) {
     eManager.nextInv++;
 }
 
+// TODO REFACTO use char *name instead of itemID, and get the itemID from the name.
 Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, uByte level) {
     Entity e = {0}; // NOTE: always set to 0 to prevent uninitialized garbage data from causing issues (desyncs)
     e.type = ENTITY_FURNITURE;
@@ -21,9 +24,9 @@ Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, uByte lev
     e.yr = 3;
     e.entityFurniture.itemID = itemID;
     e.canPass = false;
-    if (itemID == ITEM_LANTERN) {
+    if (itemID == getIdFromName("ITEM_LANTERN")) { // Lantern
         e.entityFurniture.r = 8;
-    } else if (itemID == ITEM_CHEST) { // TODO: This should not happen here, the new functions should not mess with any outside state
+    } else if (itemID == getIdFromName("ITEM_CHEST")) { // TODO: This should not happen here, the new functions should not mess with any outside state
         if (invPtr == NULL)
             assignInventory(&e);
         else
