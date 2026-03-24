@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SAVE_VERSION 2
+#define SAVE_VERSION 3
 
 #define SAVE_COMMENT "Minicraft3DSSave"
 #define SAVE_COPYBUFFER_SIZE 4096
