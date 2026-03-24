@@ -3,7 +3,7 @@
 
 typedef struct Inventory Inventory;
 
-// TODO stocker le nom de l'item pour pouvoir l'utilisé lors de la sauvegarde, ça évitera les coruptions de données si jamais l'id d'un item change d'id
+// TODO REFACTO : stocker le nom de l'item pour pouvoir l'utilisé lors de la sauvegarde, ça évitera les coruptions de données si jamais l'id d'un item change d'id
 
 typedef struct
 {
