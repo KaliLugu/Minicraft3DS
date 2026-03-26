@@ -3,6 +3,7 @@
 #include "../Globals.h"
 #include "../Menu.h"
 #include "../Render.h"
+#include "../version.h"
 
 #include "MenuLoadGame.h"
 
@@ -75,7 +76,7 @@ void menuChooseGameRender(int screen, int width, int height) {
             renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (8 + i) * 10 - 16, color);
         }
 
-        renderText(versionText, 1, 112);
+        renderText("Version " VERSION_STRING, 1, 112);
     }
 
     /* Bottom Screen */
