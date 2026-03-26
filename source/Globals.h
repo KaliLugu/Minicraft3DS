@@ -42,8 +42,6 @@ extern sInt localUID;
 
 extern int loadedtp;
 
-extern char versionText[34];
-
 extern bool shouldRenderDebug;
 
 extern MImage imageIcons;
