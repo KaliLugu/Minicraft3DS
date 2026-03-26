@@ -9,11 +9,6 @@ build_3ds
 Minicraft3DS.cia
 Minicraft3DS.3ds
 
-# Switch Dev
-*.nro
-*.nacp
-build_switch
-
 # Eclipse
 .settings
 .cproject
