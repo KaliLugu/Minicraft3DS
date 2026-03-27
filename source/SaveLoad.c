@@ -1,5 +1,6 @@
 #include "SaveLoad.h"
 
+#include "version.h"
 #include "ZipHelper.h"
 #include <ctype.h>
 #include <dirent.h>
@@ -164,8 +165,13 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     int i, j;
 
     // write savefile version
-    int version = SAVE_VERSION;
+    int version = SAVE_VERSION; // idk if i keep save version AND version string, version string can do both version check and file validation, but for now i'll keep both just in case
     fwrite(&version, sizeof(int), 1, file);
+
+    // write version string
+    char versionBuf[16] = {0};
+    strncpy(versionBuf, VERSION_STRING, sizeof(versionBuf) - 1);
+    fwrite(versionBuf, sizeof(versionBuf), 1, file);
 
     // Inventory Data
     fwrite(&eManager->nextInv, sizeof(sShort), 1, file); // write amount of inventories.
@@ -355,6 +361,9 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     // read savefile version
     int version;
     fread(&version, sizeof(int), 1, file);
+
+    // read version string
+    fread(VERSION_STRING, sizeof(char), strlen(VERSION_STRING), file);
 
     // Inventory Data
     fread(&eManager->nextInv, sizeof(sShort), 1, file);

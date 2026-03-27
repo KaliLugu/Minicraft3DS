@@ -22,6 +22,8 @@ static int loadGameTarget;
 static bool enteringName = false;
 static bool areYouSure = false;
 
+// TODO find where data is called in the individual save file and show the version of the save in the menu, and check when loading
+
 static void readFiles() {
     memset(&fileNames, 0, sizeof(fileNames)); // reset fileNames
     worldFileCount = 0;
@@ -160,6 +162,9 @@ void menuLoadGameRender(int screen, int width, int height) {
 
                 char scoreText[24];
                 sprintf(scoreText, "Score: %ld", fileScore[i]);
+                
+                // need to get version in savefile of every files, check if version is newer than current version show error when loading, and when version is lower than current show warning and make backup
+                char *versionstr;
 
                 renderFrame(1, i * 4, 24, (i * 4) + 4, color);
                 if (i != worldFileCount) {
