@@ -168,11 +168,6 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     int version = SAVE_VERSION; // idk if i keep save version AND version string, version string can do both version check and file validation, but for now i'll keep both just in case
     fwrite(&version, sizeof(int), 1, file);
 
-    // write version string
-    char versionBuf[16] = {0};
-    strncpy(versionBuf, VERSION_STRING, sizeof(versionBuf) - 1);
-    fwrite(versionBuf, sizeof(versionBuf), 1, file);
-
     // Inventory Data
     fwrite(&eManager->nextInv, sizeof(sShort), 1, file); // write amount of inventories.
     for (i = 0; i < eManager->nextInv; ++i) {
@@ -204,6 +199,11 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     // Don't write or load dungeon, so only first 5 levels not 6
     fwrite(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
     fwrite(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
+
+    // write version string
+    char versionBuf[16] = {0};
+    strncpy(versionBuf, VERSION_STRING, sizeof(versionBuf) - 1);
+    fwrite(versionBuf, sizeof(versionBuf), 1, file);
 
     fclose(file);
 }
@@ -363,7 +363,6 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     fread(&version, sizeof(int), 1, file);
 
     // read version string
-    // read version string
     char savedVersion[16] = {0};
     fread(savedVersion, sizeof(savedVersion), 1, file);
 
@@ -394,6 +393,10 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     // Don't write or load dungeon, so only first 5 levels not 6
     fread(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
     fread(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
+
+    // read version string
+    char savedVersion[16] = {0};
+    fread(savedVersion, sizeof(savedVersion), 1, file);
 
     fclose(file);
 }
