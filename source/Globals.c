@@ -2,7 +2,6 @@
 
 #include "render/TextureManager.h"
 
-char versionText[34] = "Version 2.0.0";
 char fpsstr[34];
 uByte currentMenu = 0;
 
