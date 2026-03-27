@@ -363,7 +363,9 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     fread(&version, sizeof(int), 1, file);
 
     // read version string
-    fread(VERSION_STRING, sizeof(char), strlen(VERSION_STRING), file);
+    // read version string
+    char savedVersion[16] = {0};
+    fread(savedVersion, sizeof(char), strlen(VERSION_STRING), file);
 
     // Inventory Data
     fread(&eManager->nextInv, sizeof(sShort), 1, file);
