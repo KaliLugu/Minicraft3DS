@@ -8,7 +8,7 @@
         printf("[%s:%d:%s] " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
     } while(0)
 
-// TODO REFACTO: la golden apple n'a plus de texture dans les menus, quand on la prend elles semble ce comporté comme une fourniture et pouvoir être posée sur le sol, les 50 sont consommées d'un coup, et elle ne soigne pas le joueur.
+// TODO REFACTO: la golden apple quand on la prend elles semble ce comporté comme une fourniture et pouvoir être posée sur le sol, les 50 sont consommées d'un coup, et elle ne soigne pas le joueur.
 // TODO REFACTO: on ne peu plus crafté, le jeu semble ne plus arrivé a récupérer les items déjà présent dans l'inventaire pour les recettes ce qui donne dans la workbench par exemple la parti "cost" comme étant toujours à 0 pour chaque items, tout les items dans cost apparaissent aussi sans textures dans les recettes, et on ne peu donc plus crafté. (peut être lié à la golden apple ?)
 
 char versionText[34] = "Version 2.0.0";
