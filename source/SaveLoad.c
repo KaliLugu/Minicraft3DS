@@ -6,6 +6,18 @@
 #include <dirent.h>
 #include <stdio.h>
 
+// TODO IMPORTANT DELETE DEBUG BEFORE MERGE, HERE ONLY LOG NEED 3ds.h !
+#include <3ds.h>
+
+#define debug(fmt, ...) \
+do { \
+    FILE *_f = fopen("sdmc:/3ds/Minicraft/debug.log", "a"); \
+    if (_f) { \
+        fprintf(_f, "[%s:%d:%s] " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
+        fclose(_f); \
+    } \
+} while(0)
+
 sShort calculateImportantEntites(EntityManager *eManager, uByte level) {
     sShort count = 0;
     for (int i = 0; i < eManager->lastSlot[level]; i++) {
@@ -204,6 +216,7 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     char versionBuf[16] = {0};
     strncpy(versionBuf, VERSION_STRING, sizeof(versionBuf) - 1);
     fwrite(versionBuf, sizeof(versionBuf), 1, file);
+    debug("Saved version string: %s", versionBuf);
 
     fclose(file);
 }
@@ -362,10 +375,6 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     int version;
     fread(&version, sizeof(int), 1, file);
 
-    // read version string
-    char savedVersion[16] = {0};
-    fread(savedVersion, sizeof(savedVersion), 1, file);
-
     // Inventory Data
     fread(&eManager->nextInv, sizeof(sShort), 1, file);
     for (i = 0; i < eManager->nextInv; ++i) {
@@ -397,6 +406,14 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     // read version string
     char savedVersion[16] = {0};
     fread(savedVersion, sizeof(savedVersion), 1, file);
+    debug("Loaded version string: %s", savedVersion);
+
+    if (strcmp(savedVersion, VERSION_STRING) != 0) {
+        // la version a été faite avant la mise a jour qui rajoute la version dans la save, on part donc du principe que c'est la version 2.0.0 et on ne met qu'un warning
+        debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
+        fclose(file);
+        return;
+    }
 
     fclose(file);
 }
