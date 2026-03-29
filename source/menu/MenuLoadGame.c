@@ -164,7 +164,6 @@ void menuLoadGameRender(int screen, int width, int height) {
                 sprintf(scoreText, "Score: %ld", fileScore[i]);
                 
                 // need to get version in savefile of every files, check if version is newer than current version show error when loading, and when version is lower than current show warning and make backup
-                char *versionstr;
 
                 renderFrame(1, i * 4, 24, (i * 4) + 4, color);
                 if (i != worldFileCount) {
