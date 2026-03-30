@@ -6,18 +6,6 @@
 #include <dirent.h>
 #include <stdio.h>
 
-// TODO IMPORTANT DELETE DEBUG BEFORE MERGE, HERE ONLY LOG NEED 3ds.h !
-#include <3ds.h>
-
-#define debug(fmt, ...) \
-do { \
-    FILE *_f = fopen("sdmc:/3ds/Minicraft/debug.log", "a"); \
-    if (_f) { \
-        fprintf(_f, "[%s:%d:%s] " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
-        fclose(_f); \
-    } \
-} while(0)
-
 sShort calculateImportantEntites(EntityManager *eManager, uByte level) {
     sShort count = 0;
     for (int i = 0; i < eManager->lastSlot[level]; i++) {
@@ -216,7 +204,6 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     char versionBuf[16] = {0};
     strncpy(versionBuf, VERSION_STRING, sizeof(versionBuf) - 1);
     fwrite(versionBuf, sizeof(versionBuf), 1, file);
-    debug("Saved version string: %s", versionBuf);
 
     fclose(file);
 }
@@ -406,17 +393,14 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
     // read version string
     char savedVersion[16] = {0};
     size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
-    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
-    debug("Loaded version string: %s", savedVersion);
-    debug("Loaded version string: %s", savedVersion);
 
     if (read != 1 || savedVersion[0] == '\0') {
-        debug("No version string found in save file (legacy save).");
+        // debug("No version string found in save file (legacy save).");
         fclose(file);
         return 2;
     }
     if (strcmp(savedVersion, VERSION_STRING) != 0) { // version différentes, sûrement imcompatible, on compare le format de sauvegarde
-        debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
+        // debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
         fclose(file);
         return 1;
     }
@@ -541,6 +525,7 @@ static int loadFile(char *filename) {
     // load world
     if (strcmp(filename, "main.wld") == 0) {
         loadWorldInternal(filename, loadEManager, loadWorldData);
+        // TODO : error interpretation
         loadHadWorld = true;
     }
 
