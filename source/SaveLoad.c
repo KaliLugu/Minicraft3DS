@@ -366,7 +366,7 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
     e->slotNum = j;
 }
 
-void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldData) {
+int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldData) {
     FILE *file = fopen(filename, "rb"); // TODO: should be checked
 
     int i, j;
@@ -406,16 +406,22 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     // read version string
     char savedVersion[16] = {0};
     fread(savedVersion, sizeof(savedVersion), 1, file);
+    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
     debug("Loaded version string: %s", savedVersion);
 
-    if (strcmp(savedVersion, VERSION_STRING) != 0) {
-        // la version a été faite avant la mise a jour qui rajoute la version dans la save, on part donc du principe que c'est la version 2.0.0 et on ne met qu'un warning
+    if (read != 1 || savedVersion[0] == '\0') {
+        debug("No version string found in save file (legacy save).");
+        fclose(file);
+        return 2;
+    }
+    if (strcmp(savedVersion, VERSION_STRING) != 0) { // version différentes, sûrement imcompatible, on compare le format de sauvegarde
         debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
         fclose(file);
-        return;
+        return 1;
     }
 
     fclose(file);
+    return 0;
 }
 
 void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
