@@ -405,7 +405,7 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
 
     // read version string
     char savedVersion[16] = {0};
-    char savedVersion[16] = {0};
+    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
     size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
     debug("Loaded version string: %s", savedVersion);
     debug("Loaded version string: %s", savedVersion);
