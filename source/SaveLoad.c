@@ -1,6 +1,7 @@
 #include "SaveLoad.h"
 
 #include "version.h"
+#include "Globals.h"
 #include "ZipHelper.h"
 #include <ctype.h>
 #include <dirent.h>
@@ -165,7 +166,7 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     int i, j;
 
     // write savefile version
-    int version = SAVE_VERSION; // idk if i keep save version AND version string, version string can do both version check and file validation, but for now i'll keep both just in case
+    int version = SAVE_VERSION;
     fwrite(&version, sizeof(int), 1, file);
 
     // Inventory Data
@@ -520,13 +521,17 @@ EntityManager *loadEManager;
 WorldData *loadWorldData;
 PlayerData *loadPlayers;
 uByte loadPlayerCount;
+int lastLoadError = LOAD_ERROR_NONE;
 
 static int loadFile(char *filename) {
     // load world
     if (strcmp(filename, "main.wld") == 0) {
-        loadWorldInternal(filename, loadEManager, loadWorldData);
-        // TODO : error interpretation
-        loadHadWorld = true;
+        int result = loadWorldInternal(filename, loadEManager, loadWorldData);
+        if (result != 0) {
+            // Track the specific error code
+            lastLoadError = (result == 2) ? LOAD_ERROR_LEGACY_SAVE : LOAD_ERROR_VERSION_MISMATCH;
+        }
+        loadHadWorld = (result == 0);
     }
 
     // load player data of active players
@@ -577,18 +582,22 @@ bool loadWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
         fclose(testFile);
         exists = true;
     }
-    if (!exists)
+    if (!exists) {
+        lastLoadError = LOAD_ERROR_FILE_MISSING;
         return false;
+    }
 
     loadHadWorld = false;
     loadEManager = eManager;
     loadWorldData = worldData;
     loadPlayers = players;
     loadPlayerCount = playerCount;
+    lastLoadError = LOAD_ERROR_NONE;
 
     // extract files
     int result = unzipAndLoad(filename, &loadFile, SAVE_COMMENT, ZIPHELPER_CLEANUP_FILES);
     if (result != 0) {
+        lastLoadError = LOAD_ERROR_ZIP_FAILED;
         FILE *errorfile;
         if ((errorfile = fopen("m3ds_error.bin", "wb"))) {
             fwrite(&result, sizeof(int), 1, errorfile);
@@ -598,6 +607,9 @@ bool loadWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
     }
 
     if (!loadHadWorld) {
+        if (lastLoadError == LOAD_ERROR_NONE) {
+            lastLoadError = LOAD_ERROR_MISSING_WORLD;
+        }
         return false;
     }
 
@@ -644,4 +656,8 @@ int checkFileNameForErrors(char *filename) {
     }
 
     return 0; // No errors found!
+}
+
+int getLastLoadError() {
+    return lastLoadError;
 }

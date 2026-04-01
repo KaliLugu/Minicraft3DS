@@ -125,6 +125,7 @@ Load operations return error codes to help with debugging:
 #define LOAD_ERROR_LEGACY_SAVE 2       // Old save format
 #define LOAD_ERROR_ZIP_FAILED 3        // Corrupted ZIP file
 #define LOAD_ERROR_MISSING_WORLD 4     // World data missing
+#define LOAD_ERROR_FILE_MISSING 5      // Save file not found
 ```
 
 Retrieved via: `int errorCode = getLastLoadError();`
@@ -149,6 +150,7 @@ void MenuErrorLoadingRender(int screen, int width, int height);  // Display
 - **Legacy Save**: "This is an old save file format. Some data may not be loaded correctly."
 - **ZIP Failed**: "Save file is corrupted or cannot be read."
 - **Missing World**: "World data is missing from the save file."
+- **File Missing**: "The save file was not found."
 
 **User Interaction Flow**:
 1. Player attempts to load a save

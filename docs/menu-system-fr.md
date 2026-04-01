@@ -125,6 +125,7 @@ Les opérations de chargement retournent des codes d'erreur pour aider au débog
 #define LOAD_ERROR_LEGACY_SAVE 2       // Ancien format de sauvegarde
 #define LOAD_ERROR_ZIP_FAILED 3        // Fichier ZIP corrompu
 #define LOAD_ERROR_MISSING_WORLD 4     // Données du monde manquantes
+#define LOAD_ERROR_FILE_MISSING 5      // Fichier de sauvegarde introuvable
 ```
 
 Récupérés via: `int errorCode = getLastLoadError();`
@@ -149,6 +150,7 @@ void MenuErrorLoadingRender(int screen, int width, int height);  // Afficher
 - **Sauvegarde Ancienne**: "C'est un ancien format de sauvegarde. Certaines données peuvent ne pas être chargées correctement."
 - **ZIP Échoué**: "Le fichier de sauvegarde est corrompu ou ne peut pas être lu."
 - **Monde Manquant**: "Les données du monde manquent dans le fichier de sauvegarde."
+- **Fichier Introuvable**: "Le fichier de sauvegarde est introuvable."
 
 **Flux d'Interaction Utilisateur**:
 1. Le joueur essaie de charger une sauvegarde
