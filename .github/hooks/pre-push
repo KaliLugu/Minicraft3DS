@@ -1,0 +1,16 @@
+#!/bin/sh
+echo "Running pre-push hook..."
+
+if ! command -v act > /dev/null 2>&1; then
+    echo "⚠️  'act' not found — skipping pre-push CI check."
+    exit 0
+fi
+act push
+
+if [ $? -ne 0 ]; then
+    echo "❌ Failure - push aborted."
+    exit 1
+fi
+
+echo "✅ Success - push allowed."
+exit 0
