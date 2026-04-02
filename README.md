@@ -7,17 +7,23 @@ Current Version: Version 2.0.0
 
 **Download:**
 
-If you just want to download the game prebuilt check the releases tab in Github: 
+If you just want to download the game prebuilt check the releases tab in Github:
 <https://github.com/KaliLugu/Minicraft3DS/releases>
 
 For building the game yourself look below.  
+
+----------
+**Setup repository**
+
+- git clone `git@github.com:KaliLugu/Minicraft3DS.git`
+- make init
 
 ----------
 
 **Building via Docker (recommended):**
 
 - have Act and Docker installed
-- type "sudo act push"
+- type "act push"
 
 ----------
 
