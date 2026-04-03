@@ -49,8 +49,13 @@ void renderTextColorSpecial(char *msg, int x, int y, MColor color, MColor color2
 }
 
 void centerAndRender(const char *text, int y, int width) {
-    int centerX = ((width / 2) - strlen(text) * 8) / 2;
-    renderText((char *)text, centerX, y);
+    if (!text) return;
+
+    int textWidth = (int)strlen(text) * 8;
+    int centerX = (width - textWidth) / 2;
+    if (centerX < 0) centerX = 0;
+
+    renderText(text, centerX, y);
 }
 
 void centerRenderWrapped(const char *text, int y, int width, int maxLineChars) {
