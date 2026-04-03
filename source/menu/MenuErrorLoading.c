@@ -6,6 +6,13 @@
 #include "../Inputs.h"
 
 static int currentErrorCode = LOAD_ERROR_NONE;
+
+// Helper function for proper text centering
+static void centerAndRender(const char *text, int y, int width) {
+    int centerX = (width - strlen(text) * 8) / 2;
+    renderText((char *)text, centerX, y);
+}
+
 static int selectedOption = 0; // 0 = Continue, 1 = Back to menu
 
 static bool canContinueLoadError() {
@@ -56,35 +63,35 @@ void MenuErrorLoadingRender(int screen, int width, int height) {
         drawRect(0, 0, width, height, 0x0C0C0CFF);
 
         // Title
-        renderTextCentered("Error loading game", 20, width);
+        centerAndRender("Error loading game", 20, width);
 
         // Error message based on error code
         int messageY = 60;
         switch (currentErrorCode) {
         case LOAD_ERROR_VERSION_MISMATCH:
-            renderTextCentered("Save file version is", messageY, width);
-            renderTextCentered("incompatible with this", messageY + 20, width);
-            renderTextCentered("version of the game.", messageY + 40, width);
+            centerAndRender("Save file version is", messageY, width);
+            centerAndRender("incompatible with this", messageY + 20, width);
+            centerAndRender("version of the game.", messageY + 40, width);
             break;
         case LOAD_ERROR_LEGACY_SAVE:
-            renderTextCentered("This is an old save file", messageY, width);
-            renderTextCentered("format. Some data may", messageY + 20, width);
-            renderTextCentered("not be loaded correctly.", messageY + 40, width);
+            centerAndRender("This is an old save file", messageY, width);
+            centerAndRender("format. Some data may", messageY + 20, width);
+            centerAndRender("not be loaded correctly.", messageY + 40, width);
             break;
         case LOAD_ERROR_ZIP_FAILED:
-            renderTextCentered("Save file is corrupted", messageY, width);
-            renderTextCentered("or cannot be read.", messageY + 20, width);
+            centerAndRender("Save file is corrupted", messageY, width);
+            centerAndRender("or cannot be read.", messageY + 20, width);
             break;
         case LOAD_ERROR_MISSING_WORLD:
-            renderTextCentered("World data is missing", messageY, width);
-            renderTextCentered("from the save file.", messageY + 20, width);
+            centerAndRender("World data is missing", messageY, width);
+            centerAndRender("from the save file.", messageY + 20, width);
             break;
         case LOAD_ERROR_FILE_MISSING:
-            renderTextCentered("Save file not found.", messageY, width);
-            renderTextCentered("Please choose another file.", messageY + 20, width);
+            centerAndRender("Save file not found.", messageY, width);
+            centerAndRender("Please choose another file.", messageY + 20, width);
             break;
         default:
-            renderTextCentered("Unknown error occurred", messageY, width);
+            centerAndRender("Unknown error occurred", messageY, width);
             break;
         }
 
@@ -92,18 +99,18 @@ void MenuErrorLoadingRender(int screen, int width, int height) {
         int optionY = 140;
 
         if (canContinueLoadError()) {
-            renderTextCentered("Continue", optionY, width);
+            centerAndRender("Continue", optionY, width);
             if (selectedOption == 0) {
-                renderTextCentered(">", optionY, width - 40);
+                centerAndRender(">", optionY, width - 40);
             }
-            renderTextCentered("Back to Menu", optionY + 30, width);
+            centerAndRender("Back to Menu", optionY + 30, width);
             if (selectedOption == 1) {
-                renderTextCentered(">", optionY + 30, width - 40);
+                centerAndRender(">", optionY + 30, width - 40);
             }
         } else {
-            renderTextCentered("Back to Menu", optionY, width);
+            centerAndRender("Back to Menu", optionY, width);
             if (selectedOption == 1) {
-                renderTextCentered(">", optionY, width - 40);
+                centerAndRender(">", optionY, width - 40);
             }
         }
     }
