@@ -723,7 +723,3 @@ void menuAdaptiveRender(int screen, int width, int height) {
 - Ignorer le paramètre `width` lors de calculs
 
 ---
-
-**Dernière mise à jour :** Avril 2026  
-**Version :** 1.0  
-**Langue :** Français

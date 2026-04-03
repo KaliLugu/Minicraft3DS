@@ -47,3 +47,40 @@ void renderTextColorSpecial(char *msg, int x, int y, MColor color, MColor color2
         }
     }
 }
+
+void centerAndRender(const char *text, int y, int width) {
+    int centerX = ((width / 2) - strlen(text) * 8) / 2;
+    renderText((char *)text, centerX, y);
+}
+
+void centerRenderWrapped(const char *text, int y, int width, int maxLineChars) {
+    char copy[256];
+    snprintf(copy, sizeof(copy), "%s", text);
+
+    char *word = strtok(copy, " ");
+    char line[256] = "";
+    int currentY = y;
+
+    while (word != NULL) {
+        int lineLen = strlen(line);
+        int wordLen = strlen(word);
+        int nextLen = lineLen > 0 ? lineLen + 1 + wordLen : wordLen;
+        if (nextLen > maxLineChars) {
+            if (lineLen > 0) {
+                centerAndRender(line, currentY, width);
+                currentY += 20;
+                line[0] = '\0';
+            }
+        }
+
+        if (line[0] != '\0')
+            strcat(line, " ");
+        strcat(line, word);
+
+        word = strtok(NULL, " ");
+    }
+
+    if (line[0] != '\0') {
+        centerAndRender(line, currentY, width);
+    }
+}

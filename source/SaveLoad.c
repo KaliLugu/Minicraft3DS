@@ -400,7 +400,7 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
         fclose(file);
         return 2;
     }
-    if (strcmp(savedVersion, VERSION_STRING) != 0) { // version différentes, sûrement imcompatible, on compare le format de sauvegarde
+    if (!isSameVersion(savedVersion)) {
         // debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
         fclose(file);
         return 1;
@@ -528,7 +528,7 @@ static int loadFile(char *filename) {
     if (strcmp(filename, "main.wld") == 0) {
         int result = loadWorldInternal(filename, loadEManager, loadWorldData);
         if (result != 0) {
-            // Track the specific error code
+            // Track the specific error code, in futur use idNewerVersion and idOlderVersion to show more specific error, for now just show a generic version mismatch error for both cases cause the text in menu is big and specific error messages would be too long
             lastLoadError = (result == 2) ? LOAD_ERROR_LEGACY_SAVE : LOAD_ERROR_VERSION_MISMATCH;
         }
         loadHadWorld = (result == 0);
