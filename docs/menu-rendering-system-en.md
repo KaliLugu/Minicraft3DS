@@ -372,23 +372,6 @@ renderTextColor(msg, centerX + 1, y + 1, 0x000000FF);  // Black (shadow)
 renderTextColor(msg, centerX, y, textColor);           // Text color
 ```
 
-### Known Issue: `renderTextCentered` Bug
-
-⚠️ **WARNING:** The `renderTextCentered` function has incorrect centering calculation:
-
-```c
-void renderTextCentered(char *text, int y, int width) {
-    renderText(text, (width / 2 - strlen(text) * 8) / 2, y);
-    // Problematic formula!
-}
-```
-
-**Better approach:**
-```c
-int centerX = (width - strlen(text) * 8) / 2;
-renderText(text, centerX, y);
-```
-
 ---
 
 ## Tile System

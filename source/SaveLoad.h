@@ -7,7 +7,7 @@
 
 typedef struct _worldData WorldData;
 
-#define SAVE_VERSION 2 // Increment this when making incompatible save changes. need more test to know if he need to be incremented.
+#define SAVE_VERSION 2 // Increment this when making incompatible save changes.
 
 #define SAVE_COMMENT "Minicraft3DSSave"
 #define SAVE_COPYBUFFER_SIZE 4096

@@ -369,23 +369,6 @@ renderTextColor(msg, centerX + 1, y + 1, 0x000000FF);  // Noir (ombre)
 renderTextColor(msg, centerX, y, textColor);           // Couleur texte
 ```
 
-### Limitation unique : `renderTextCentered` bug
-
-⚠️ **ATTENTION :** La fonction `renderTextCentered` a un calcul de centrage incorrect :
-
-```c
-void renderTextCentered(char *text, int y, int width) {
-    renderText(text, (width / 2 - strlen(text) * 8) / 2, y);
-    // Formule problématique !
-}
-```
-
-**Meilleure approche :**
-```c
-int centerX = (width - strlen(text) * 8) / 2;
-renderText(text, centerX, y);
-```
-
 ---
 
 ## Système de tuiles
