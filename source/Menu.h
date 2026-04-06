@@ -14,6 +14,7 @@
 #define MENU_SETTINGS_REBIND 11
 #define MENU_SETTINGS_TP 12
 #define MENU_ABOUT 13
+#define MENU_ERROR_LOADING 14
 
 #include "menu/MenuAbout.h"
 #include "menu/MenuChooseGame.h"
@@ -27,6 +28,7 @@
 #include "menu/MenuSettingsTexture.h"
 #include "menu/MenuTitle.h"
 #include "menu/MenuTutorial.h"
+#include "menu/MenuErrorLoading.h"
 
 extern void initMenus();
 extern void renderMenu(int menu, int screen, int width, int height);
