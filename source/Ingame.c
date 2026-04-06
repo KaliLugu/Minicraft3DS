@@ -91,8 +91,23 @@ void startGame(bool load, char *filename) {
 
     if (load) {
         if (!loadWorld(filename, &eManager, &worldData, players, playerCount)) {
-            // TODO: What do?
-            exitGame();
+            // Continue is supported only for partially loaded saves.
+            int errorCode = getLastLoadError();
+            if (errorCode == LOAD_ERROR_VERSION_MISMATCH || errorCode == LOAD_ERROR_LEGACY_SAVE) {
+                for (int i = 0; i < playerCount; i++) {
+                    if (!players[i].isSpawned) {
+                        playerSpawn(players + i);
+                    }
+                }
+                for (int i = 0; i < playerCount; i++) {
+                    initMiniMap(players + i);
+                }
+                stallCounter = 0;
+            }
+
+            MenuErrorLoadingInit(errorCode);
+            currentMenu = MENU_ERROR_LOADING;
+            return;
         }
     } else {
         initNewMap();

@@ -1,5 +1,7 @@
 #include "SaveLoad.h"
 
+#include "version.h"
+#include "Globals.h"
 #include "ZipHelper.h"
 #include <ctype.h>
 #include <dirent.h>
@@ -199,6 +201,11 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     fwrite(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
     fwrite(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
 
+    // write version string
+    char versionBuf[16] = {0};
+    strncpy(versionBuf, VERSION_STRING, sizeof(versionBuf) - 1);
+    fwrite(versionBuf, sizeof(versionBuf), 1, file);
+
     fclose(file);
 }
 
@@ -347,7 +354,7 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
     e->slotNum = j;
 }
 
-void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldData) {
+int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldData) {
     FILE *file = fopen(filename, "rb"); // TODO: should be checked
 
     int i, j;
@@ -384,7 +391,23 @@ void loadWorldInternal(char *filename, EntityManager *eManager, WorldData *world
     fread(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
     fread(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
 
+    // read version string
+    char savedVersion[16] = {0};
+    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
+
+    if (read != 1 || savedVersion[0] == '\0') {
+        // debug("No version string found in save file (legacy save).");
+        fclose(file);
+        return 2;
+    }
+    if (!isSameVersion(savedVersion)) {
+        // debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
+        fclose(file);
+        return 1;
+    }
+
     fclose(file);
+    return 0;
 }
 
 void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
@@ -498,12 +521,17 @@ EntityManager *loadEManager;
 WorldData *loadWorldData;
 PlayerData *loadPlayers;
 uByte loadPlayerCount;
+int lastLoadError = LOAD_ERROR_NONE;
 
 static int loadFile(char *filename) {
     // load world
     if (strcmp(filename, "main.wld") == 0) {
-        loadWorldInternal(filename, loadEManager, loadWorldData);
-        loadHadWorld = true;
+        int result = loadWorldInternal(filename, loadEManager, loadWorldData);
+        if (result != 0) {
+            // Track the specific error code, in futur use idNewerVersion and idOlderVersion to show more specific error, for now just show a generic version mismatch error for both cases cause the text in menu is big and specific error messages would be too long
+            lastLoadError = (result == 2) ? LOAD_ERROR_LEGACY_SAVE : LOAD_ERROR_VERSION_MISMATCH;
+        }
+        loadHadWorld = (result == 0);
     }
 
     // load player data of active players
@@ -554,18 +582,22 @@ bool loadWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
         fclose(testFile);
         exists = true;
     }
-    if (!exists)
+    if (!exists) {
+        lastLoadError = LOAD_ERROR_FILE_MISSING;
         return false;
+    }
 
     loadHadWorld = false;
     loadEManager = eManager;
     loadWorldData = worldData;
     loadPlayers = players;
     loadPlayerCount = playerCount;
+    lastLoadError = LOAD_ERROR_NONE;
 
     // extract files
     int result = unzipAndLoad(filename, &loadFile, SAVE_COMMENT, ZIPHELPER_CLEANUP_FILES);
     if (result != 0) {
+        lastLoadError = LOAD_ERROR_ZIP_FAILED;
         FILE *errorfile;
         if ((errorfile = fopen("m3ds_error.bin", "wb"))) {
             fwrite(&result, sizeof(int), 1, errorfile);
@@ -575,6 +607,9 @@ bool loadWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
     }
 
     if (!loadHadWorld) {
+        if (lastLoadError == LOAD_ERROR_NONE) {
+            lastLoadError = LOAD_ERROR_MISSING_WORLD;
+        }
         return false;
     }
 
@@ -621,4 +656,8 @@ int checkFileNameForErrors(char *filename) {
     }
 
     return 0; // No errors found!
+}
+
+int getLastLoadError() {
+    return lastLoadError;
 }
