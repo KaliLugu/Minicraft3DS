@@ -48,3 +48,4 @@ extern int itemGetIconX(int id, int countLevel);
 extern int itemGetIconY(int id, int countLevel);
 extern bool itemIsSingle(int id, int countLevel);
 extern ItemId getIdFromName(const char *name);
+extern const char* getNameFromId(ItemId id);

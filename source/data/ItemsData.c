@@ -20,6 +20,14 @@ ItemId getIdFromName(const char *name) {
     return -1;
 }
 
+const char* getNameFromId(ItemId id) {
+    for (unsigned int i = 0; i < itemCount; ++i) {
+        if (ItemsTables[i].id == id) {
+            return ItemsTables[i].name;
+        }
+    }
+    return "null";
+}
 
 static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;

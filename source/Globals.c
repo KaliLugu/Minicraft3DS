@@ -700,10 +700,6 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             setData(syncRand() % 4, level, x, y); // determines mirroring.
             return 1;
         } else if (item->id == getIdFromName("ITEM_WALL_WOOD")) {
-<<<<<<< HEAD
-=======
-            debug("getIdFromName(""ITEM_WALL_WOOD"")");
->>>>>>> f8494ec (start debuging)
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
@@ -751,10 +747,6 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             setTile(TILE_FARM, level, x, y);
             return 1;
         } else if (item->id == getIdFromName("ITEM_WALL_WOOD")) {
-<<<<<<< HEAD
-=======
-            debug("getIdFromName(""ITEM_WALL_WOOD"")");
->>>>>>> f8494ec (start debuging)
             setTile(TILE_WOOD_WALL, level, x, y);
             --item->countLevel;
             return 1;
@@ -1224,10 +1216,6 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
         break;
     case TILE_WOOD_WALL:
         damageAndBreakTile(level, xt, yt, damage, 20, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_WOOD"), 1), 1);
-<<<<<<< HEAD
-=======
-        debug("getIdFromName(""ITEM_WALL_WOOD"")");
->>>>>>> f8494ec (start debuging)
         break;
     case TILE_STONE_WALL:
         damageAndBreakTile(level, xt, yt, damage, 30, TILE_DIRT, 1, newItem(getIdFromName("ITEM_WALL_STONE"), 1), 1);
