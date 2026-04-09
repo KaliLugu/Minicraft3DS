@@ -88,7 +88,7 @@ La sauvegarde joueur est un fichier binaire distinct et utilise aussi `SAVE_VERS
 
 ### Inventaire joueur
 
-écris des documentation français et anglais sur les 9. **Structure de l'inventaire :**
+9. **Structure de l'inventaire :**
    - `lastSlot` : sShort (2 octets)
      - Nombre d'items actuellement présents dans les slots d'inventaire.
      - Plage valide : 0 à la taille maximale (généralement 40 slots).

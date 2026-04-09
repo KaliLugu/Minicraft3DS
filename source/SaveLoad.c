@@ -390,8 +390,6 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
     int version;
     fread(&version, sizeof(int), 1, file);
 
-    // TODO : rajouté une vérification entre le SAVE_version du jeu lancé et celle de la sauvegarde pour s'assurée que la sauvegarde soit compatible
-
     // Inventory Data
     fread(&eManager->nextInv, sizeof(sShort), 1, file);
     for (i = 0; i < eManager->nextInv; ++i) {
