@@ -123,6 +123,7 @@ void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
         fwrite(&nameLen, sizeof(size_t), 1, file);
         fwrite(name, 1, nameLen, file);
 
+        // -- TODO SAVE FILE - Use item name instead of ID for save file compatibility (use-item-name-instead-of-id-in-savefiles)
         fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
         if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // chest
             int invIndex = inv->items[j].chestPtr - eManager->invs;
@@ -147,14 +148,21 @@ void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
         fwrite(&e->hostile.lvl, sizeof(sByte), 1, file);
         break;
     case ENTITY_ITEM:
-        // TODO: SAVE FILE - Convert item ID to name for save file compatibility (use-item-name-instead-of-id-in-savefiles)
-        fwrite(&e->entityItem.item.id, sizeof(sShort), 1, file);
+        const char *name = getNameFromId(e->entityItem.item.id);
+        size_t nameLen = strlen(name);
+        fwrite(&nameLen, sizeof(size_t), 1, file);
+        fwrite(name, 1, nameLen, file);
+
         fwrite(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
         fwrite(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
     case ENTITY_FURNITURE:
         // TODO: SAVE FILE - Convert furniture item ID to name for save file compatibility (use-item-name-instead-of-id-in-savefiles)
-        fwrite(&e->entityFurniture.itemID, sizeof(sShort), 1, file);
+        const char *furnitureName = getNameFromId(e->entityFurniture.itemID);
+        size_t furnitureNameLen = strlen(furnitureName);
+        fwrite(&furnitureNameLen, sizeof(size_t), 1, file);
+        fwrite(furnitureName, 1, furnitureNameLen, file);
+
         int invIndex = e->entityFurniture.inv - eManager->invs;
         fwrite(&invIndex, sizeof(int), 1, file);
         break;
@@ -274,7 +282,6 @@ void savePlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
 void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int version) {
     fread(&(inv->lastSlot), sizeof(sShort), 1, file); // read amount of items in inventory;
     for (int j = 0; j < inv->lastSlot; ++j) {
-        // Read the name string
         size_t nameLen;
         fread(&nameLen, sizeof(size_t), 1, file);
         char *name = malloc(nameLen + 1);
@@ -291,6 +298,7 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
         
         fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // read count/level of item
 
+        // TODO SAVE FILE - Use item name instead of ID for save file compatibility (use-item-name-instead-of-id-in-savefiles) --- IGNORE ---
         inv->items[j].invPtr = (int *)inv;    // setup Inventory pointer
         inv->items[j].slotNum = j;            // setup slot number
         if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // for chest item specifically.
@@ -309,8 +317,9 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
     sShort health;
     int lvl;
 
-    sShort itemID;
     int invIndex;
+
+    size_t nameLen;
 
     fread(&type, sizeof(sShort), 1, file); // read entity's type ID
     fread(&x, sizeof(sShort), 1, file);    // read entity's x coordinate
@@ -345,18 +354,38 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
         e->hostile.health = health;
         break;
     case ENTITY_ITEM:
-        // TODO: SAVE FILE - Convert item name from save file to ID (use-item-name-instead-of-id-in-savefiles)
-        *e = newEntityItem(newItem(0, 0), x, y, level);
-        fread(&e->entityItem.item.id, sizeof(sShort), 1, file);
+        fread(&nameLen, sizeof(size_t), 1, file);
+        char *name = malloc(nameLen + 1);
+
+        if (name != NULL) {
+            fread(name, 1, nameLen, file);
+            name[nameLen] = '\0';
+        } else {
+            fseek(file, (long)nameLen, SEEK_CUR);
+        }
+        
+        sShort itemId = (name != NULL) ? getIdFromName(name) : 0;
+        free(name);
+        *e = newEntityItem(newItem(itemId, 0), x, y, level);
         fread(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
         fread(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
     case ENTITY_FURNITURE:
-        // TODO: SAVE FILE - Convert furniture item name from save file to ID (use-item-name-instead-of-id-in-savefiles)
-        fread(&itemID, sizeof(sShort), 1, file);
+        fread(&nameLen, sizeof(size_t), 1, file);
+        char *nameFur = malloc(nameLen + 1);
+
+        if (nameFur != NULL) {
+            fread(nameFur, 1, nameLen, file);
+            nameFur[nameLen] = '\0';
+        } else {
+            fseek(file, (long)nameLen, SEEK_CUR);
+        }
+
         fread(&invIndex, sizeof(int), 1, file);
 
-        *e = newEntityFurniture(itemID, &eManager->invs[invIndex], x, y, level);
+        sShort Id = (nameFur != NULL) ? getIdFromName(nameFur) : 0;
+        free(nameFur);
+        *e = newEntityFurniture(Id, &eManager->invs[invIndex], x, y, level);
         break;
     case ENTITY_PASSIVE:
         *e = newEntityPassive(0, x, y, level);
@@ -661,7 +690,7 @@ int checkFileNameForErrors(char *filename) {
         return 4; // Error: Length cannot be over 64
     bool isGood = false;
     for (int i = 0; i < length; ++i) {
-        if (isalnum(filename[i]))
+        if (isalnum((int)filename[i]))
             isGood = true;
     }
     if (!isGood)
