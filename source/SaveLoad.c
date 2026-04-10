@@ -125,7 +125,7 @@ void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
 
         // -- TODO SAVE FILE - Use item name instead of ID for save file compatibility (use-item-name-instead-of-id-in-savefiles)
         fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
-        if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // chest
+        if (getNameFromId(inv->items[j].id) == getIdFromName("ITEM_CHEST")) { // chest
             int invIndex = inv->items[j].chestPtr - eManager->invs;
             fwrite(&invIndex, sizeof(int), 1, file);
         }
@@ -301,7 +301,7 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
         // TODO SAVE FILE - Use item name instead of ID for save file compatibility (use-item-name-instead-of-id-in-savefiles) --- IGNORE ---
         inv->items[j].invPtr = (int *)inv;    // setup Inventory pointer
         inv->items[j].slotNum = j;            // setup slot number
-        if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // for chest item specifically.
+        if (getNameFromId(inv->items[j].id) == getIdFromName("ITEM_CHEST")) { // for chest item specifically.
             int invIndex;
             fread(&invIndex, sizeof(int), 1, file);
             inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.
