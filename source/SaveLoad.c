@@ -125,7 +125,7 @@ void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
 
         // -- TODO SAVE FILE - Use item name instead of ID for save file compatibility (use-item-name-instead-of-id-in-savefiles)
         fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
-        if (getNameFromId(inv->items[j].id) == getIdFromName("ITEM_CHEST")) { // chest
+        if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // chest
             int invIndex = inv->items[j].chestPtr - eManager->invs;
             fwrite(&invIndex, sizeof(int), 1, file);
         }
@@ -284,24 +284,30 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
     for (int j = 0; j < inv->lastSlot; ++j) {
         size_t nameLen;
         fread(&nameLen, sizeof(size_t), 1, file);
-        char *name = malloc(nameLen + 1);
-        if (name == NULL) {
-            // Handle error
+        
+        // Utiliser un tampon temporaire pour éviter les échecs malloc
+        char temp_name[64]; // Taille réaliste basée sur les noms d'items (max ~22 chars)
+        if (nameLen >= sizeof(temp_name)) {
+            // Gestion d'erreur : nom trop long, ignorer l'item
+            fseek(file, nameLen, SEEK_CUR); // Sauter le nom
+            fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file);
+            inv->items[j].id = 0; // ID par défaut
+            inv->items[j].invPtr = (int *)inv;
+            inv->items[j].slotNum = j;
             continue;
         }
-        fread(name, 1, nameLen, file);
-        name[nameLen] = '\0';
         
-        // Get item id from name
-        inv->items[j].id = getIdFromName(name);
-        free(name);
+        fread(temp_name, 1, nameLen, file);
+        temp_name[nameLen] = '\0';
+        
+        // Obtenir l'ID depuis le nom
+        inv->items[j].id = getIdFromName(temp_name);
         
         fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // read count/level of item
-
-        // TODO SAVE FILE - Use item name instead of ID for save file compatibility (use-item-name-instead-of-id-in-savefiles) --- IGNORE ---
+        
         inv->items[j].invPtr = (int *)inv;    // setup Inventory pointer
         inv->items[j].slotNum = j;            // setup slot number
-        if (getNameFromId(inv->items[j].id) == getIdFromName("ITEM_CHEST")) { // for chest item specifically.
+        if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // for chest item specifically.
             int invIndex;
             fread(&invIndex, sizeof(int), 1, file);
             inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.

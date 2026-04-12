@@ -22,7 +22,7 @@ ItemId getIdFromName(const char *name) {
 }
 
 const char* getNameFromId(ItemId id) {
-    if (id < 0 || id > MAX_ITEM_ID_LOCAL) return "null"; // bounds check
+    if (id > MAX_ITEM_ID_LOCAL) return "null"; // bounds check (supprimer id < 0)
     for (unsigned int i = 0; i < itemCount; ++i) {
         if (ItemsTables[i].id == id) {
             return ItemsTables[i].name;
