@@ -202,9 +202,9 @@ Offset | Type       | Taille | Valeur (Hex)          | Valeur (Déc) | Descripti
 0x0022 | size_t     | 4      | 0A 00 00 00           | 10           | nameLen item 2
 0x0026 | char[10]   | 10     | 49 54 45 4D 5F 53 54 4F 4E 45 | -     | name "ITEM_STONE"
 0x0030 | sShort     | 2      | 05 00                 | 5            | countLevel item 2 (5 pierre)
-0x0032 | size_t     | 4      | 0C 00 00 00           | 12           | nameLen item 3
-0x0036 | char[12]   | 12     | 54 4F 4F 4C 5F 53 57 4F 52 44 | -     | name "TOOL_SWORD"
-0x0042 | sShort     | 2      | 01 64                 | 25601        | countLevel item 3 (1 épée, durabilité 100)
+0x0032 | size_t     | 4      | 0A 00 00 00           | 10           | nameLen item 3
+0x0036 | char[10]   | 10     | 54 4F 4F 4C 5F 53 57 4F 52 44 | -     | name "TOOL_SWORD"
+0x0040 | sShort     | 2      | 01 64                 | 25601        | countLevel item 3 (1 épée, durabilité 100)
 ...    | ...        | ...    | ...                   | ...          | (apparence, effets, minimap, quêtes suivent)
 ```
 
@@ -214,7 +214,7 @@ Offset | Type       | Taille | Valeur (Hex)          | Valeur (Déc) | Descripti
 01 00 00 00 DC 05 00 00 01 00 14 00 40 00 40 00 00 03 00 
 09 00 00 00 49 54 45 4D 5F 57 4F 4F 44 0A 00 
 0A 00 00 00 49 54 45 4D 5F 53 54 4F 4E 45 05 00 
-0C 00 00 00 54 4F 4F 4C 5F 53 57 4F 52 44 01 64 
+0A 00 00 00 54 4F 4F 4C 5F 53 57 4F 52 44 01 64 
 [apparence: 01 00 00 00 00 00 00] 
 [effets: 00 00 00 00] 
 [minimap: 128*128 octets de données] 

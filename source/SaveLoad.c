@@ -123,7 +123,7 @@ void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
         fwrite(&nameLen, sizeof(size_t), 1, file);
         fwrite(name, 1, nameLen, file);
 
-        // -- TODO SAVE FILE - Use item name instead of ID for save file compatibility (use-item-name-instead-of-id-in-savefiles)
+        // Save item count/level after the stable item name.
         fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
         if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // chest
             int invIndex = inv->items[j].chestPtr - eManager->invs;
@@ -147,7 +147,7 @@ void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
         fwrite(&e->hostile.health, sizeof(sShort), 1, file);
         fwrite(&e->hostile.lvl, sizeof(sByte), 1, file);
         break;
-    case ENTITY_ITEM:
+    case ENTITY_ITEM: {
         const char *name = getNameFromId(e->entityItem.item.id);
         size_t nameLen = strlen(name);
         fwrite(&nameLen, sizeof(size_t), 1, file);
@@ -156,8 +156,8 @@ void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
         fwrite(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
         fwrite(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
-    case ENTITY_FURNITURE:
-        // TODO: SAVE FILE - Convert furniture item ID to name for save file compatibility (use-item-name-instead-of-id-in-savefiles)
+    }
+    case ENTITY_FURNITURE: {
         const char *furnitureName = getNameFromId(e->entityFurniture.itemID);
         size_t furnitureNameLen = strlen(furnitureName);
         fwrite(&furnitureNameLen, sizeof(size_t), 1, file);
@@ -166,6 +166,7 @@ void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
         int invIndex = e->entityFurniture.inv - eManager->invs;
         fwrite(&invIndex, sizeof(int), 1, file);
         break;
+    }
     case ENTITY_PASSIVE:
         fwrite(&e->passive.health, sizeof(sShort), 1, file);
         fwrite(&e->passive.mtype, sizeof(uByte), 1, file);
@@ -289,7 +290,13 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
         char temp_name[64]; // Taille réaliste basée sur les noms d'items (max ~22 chars)
         if (nameLen >= sizeof(temp_name)) {
             // Gestion d'erreur : nom trop long, ignorer l'item
-            fseek(file, nameLen, SEEK_CUR); // Sauter le nom
+            size_t remaining = nameLen;
+            while (remaining > 0) {
+                size_t chunk_size = remaining > 1024 ? 1024 : remaining;
+                long chunk = (long)chunk_size;
+                fseek(file, chunk, SEEK_CUR); // Sauter le nom en chunks sûrs
+                remaining -= chunk_size;
+            }
             fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file);
             inv->items[j].id = 0; // ID par défaut
             inv->items[j].invPtr = (int *)inv;
@@ -310,7 +317,12 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
         if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // for chest item specifically.
             int invIndex;
             fread(&invIndex, sizeof(int), 1, file);
-            inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.
+            // Validate invIndex to prevent out-of-bounds access on corrupted save files
+            if (invIndex >= 0 && invIndex < 300) {
+                inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.
+            } else {
+                inv->items[j].chestPtr = NULL;
+            }
         }
     }
 }
@@ -361,37 +373,60 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
         break;
     case ENTITY_ITEM:
         fread(&nameLen, sizeof(size_t), 1, file);
-        char *name = malloc(nameLen + 1);
-
-        if (name != NULL) {
-            fread(name, 1, nameLen, file);
-            name[nameLen] = '\0';
-        } else {
-            fseek(file, (long)nameLen, SEEK_CUR);
+        
+        // Utiliser un tampon temporaire pour éviter les échecs malloc sur des sauvegardes corrompues
+        char temp_name[64]; // Taille réaliste basée sur les noms d'items (max ~22 chars)
+        if (nameLen >= sizeof(temp_name)) {
+            // Gestion d'erreur : nom trop long, ignorer l'entité
+            size_t remaining = nameLen;
+            while (remaining > 0) {
+                size_t chunk_size = remaining > 1024 ? 1024 : remaining;
+                long chunk = (long)chunk_size;
+                fseek(file, chunk, SEEK_CUR); // Sauter le nom en chunks sûrs
+                remaining -= chunk_size;
+            }
+            fseek(file, sizeof(sShort), SEEK_CUR); // Sauter countLevel
+            fseek(file, sizeof(sShort), SEEK_CUR); // Sauter age
+            *e = newEntityItem(newItem(0, 0), x, y, level); // Item NULL par défaut
+            break;
         }
         
-        sShort itemId = (name != NULL) ? getIdFromName(name) : 0;
-        free(name);
+        fread(temp_name, 1, nameLen, file);
+        temp_name[nameLen] = '\0';
+        
+        sShort itemId = getIdFromName(temp_name);
         *e = newEntityItem(newItem(itemId, 0), x, y, level);
         fread(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
         fread(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
     case ENTITY_FURNITURE:
         fread(&nameLen, sizeof(size_t), 1, file);
-        char *nameFur = malloc(nameLen + 1);
-
-        if (nameFur != NULL) {
-            fread(nameFur, 1, nameLen, file);
-            nameFur[nameLen] = '\0';
-        } else {
-            fseek(file, (long)nameLen, SEEK_CUR);
+        
+        // Utiliser un tampon temporaire pour éviter les échecs malloc sur des sauvegardes corrompues
+        char temp_name_fur[64]; // Taille réaliste basée sur les noms d'items (max ~22 chars)
+        if (nameLen >= sizeof(temp_name_fur)) {
+            // Gestion d'erreur : nom trop long, ignorer l'entité
+            size_t remaining = nameLen;
+            while (remaining > 0) {
+                size_t chunk_size = remaining > 1024 ? 1024 : remaining;
+                long chunk = (long)chunk_size;
+                fseek(file, chunk, SEEK_CUR); // Sauter le nom en chunks sûrs
+                remaining -= chunk_size;
+            }
+            fread(&invIndex, sizeof(int), 1, file);
+            *e = newEntityFurniture(0, NULL, x, y, level); // Item NULL par défaut
+            break;
         }
-
+        
+        fread(temp_name_fur, 1, nameLen, file);
+        temp_name_fur[nameLen] = '\0';
+        
         fread(&invIndex, sizeof(int), 1, file);
 
-        sShort Id = (nameFur != NULL) ? getIdFromName(nameFur) : 0;
-        free(nameFur);
-        *e = newEntityFurniture(Id, &eManager->invs[invIndex], x, y, level);
+        sShort Id = getIdFromName(temp_name_fur);
+        // Validate invIndex to prevent out-of-bounds access on corrupted save files
+        Inventory *invPtr = (invIndex >= 0 && invIndex < 300) ? &eManager->invs[invIndex] : NULL;
+        *e = newEntityFurniture(Id, invPtr, x, y, level);
         break;
     case ENTITY_PASSIVE:
         *e = newEntityPassive(0, x, y, level);

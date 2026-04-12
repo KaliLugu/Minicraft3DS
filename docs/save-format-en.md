@@ -120,30 +120,30 @@ The player save file is a separate binary file that also starts with `SAVE_VERSI
 
 ### Sprite Appearance
 
-10. `choosen` : bool (1 byte)
-11. `legs` : uByte (1 byte)
-12. `body` : uByte (1 byte)
-13. `arms` : uByte (1 byte)
-14. `head` : uByte (1 byte)
-15. `eyes` : uByte (1 byte)
-16. `accs` : uByte (1 byte)
+13. `choosen` : bool (1 byte)
+14. `legs` : uByte (1 byte)
+15. `body` : uByte (1 byte)
+16. `arms` : uByte (1 byte)
+17. `head` : uByte (1 byte)
+18. `eyes` : uByte (1 byte)
+19. `accs` : uByte (1 byte)
 
 ### Effects
 
-17. `esize` : int (4 bytes)
+20. `esize` : int (4 bytes)
     - Number of saved effects (`EFFECTS_MAX`).
-18. For each effect:
+21. For each effect:
     - `level` : uByte (1 byte)
     - `time` : sInt (4 bytes)
 
 ### Minimap
 
-19. `minimapData` : uByte[128 * 128] (16 KB)
+22. `minimapData` : uByte[128 * 128] (16 KB)
 
 ### Quests
 
-20. `questManager.size` : int (4 bytes)
-21. For each questline:
+23. `questManager.size` : int (4 bytes)
+24. For each questline:
     - `currentQuest` : int (4 bytes)
     - `currentQuestDone` : bool (1 byte)
 
@@ -191,9 +191,9 @@ Offset | Type       | Size | Value (Hex)              | Value (Dec) | Descriptio
 0x0022 | size_t     | 4    | 0A 00 00 00               | 10          | nameLen item 2
 0x0026 | char[10]   | 10   | 49 54 45 4D 5F 53 54 4F 4E 45   | -           | name "ITEM_STONE"
 0x0030 | sShort     | 2    | 05 00                     | 5           | countLevel item 2 (5 stone)
-0x0032 | size_t     | 4    | 0C 00 00 00               | 12          | nameLen item 3
-0x0036 | char[12]   | 12   | 54 4F 4F 4C 5F 53 57 4F 52 44   | -           | name "TOOL_SWORD"
-0x0042 | sShort     | 2    | 01 64                     | 25601       | countLevel item 3 (1 sword, durability 100)
+0x0032 | size_t     | 4    | 0A 00 00 00               | 10          | nameLen item 3
+0x0036 | char[10]   | 10   | 54 4F 4F 4C 5F 53 57 4F 52 44   | -           | name "TOOL_SWORD"
+0x0040 | sShort     | 2    | 01 64                     | 25601       | countLevel item 3 (1 sword, durability 100)
 ...    | ...        | ...  | ...                       | ...         | (appearance, effects, minimap, quests continue)
 ```
 
@@ -203,12 +203,11 @@ Offset | Type       | Size | Value (Hex)              | Value (Dec) | Descriptio
 01 00 00 00 DC 05 00 00 01 00 14 00 40 00 40 00 00 03 00 
 09 00 00 00 49 54 45 4D 5F 57 4F 4F 44 0A 00 
 0A 00 00 00 49 54 45 4D 5F 53 54 4F 4E 45 05 00 
-0C 00 00 00 54 4F 4F 4C 5F 53 57 4F 52 44 01 64 
+0A 00 00 00 54 4F 4F 4C 5F 53 57 4F 52 44 01 64 
 [appearance: 01 00 00 00 00 00 00] 
 [effects: 00 00 00 00] 
 [minimap: 128*128 bytes of data] 
 [quests: 00 00 00 00]
-```
 00000010: 0003 0001 000A 0002 0005 0003 0064 01...  .............d.
 ```
 
