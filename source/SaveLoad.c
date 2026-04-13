@@ -126,7 +126,9 @@ void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
         // Save item count/level after the stable item name.
         fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
         if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // chest
-            int invIndex = inv->items[j].chestPtr - eManager->invs;
+            int invIndex = (inv->items[j].chestPtr != NULL)
+                ? (int)(inv->items[j].chestPtr - eManager->invs)
+                : -1;
             fwrite(&invIndex, sizeof(int), 1, file);
         }
     }
@@ -163,7 +165,9 @@ void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
         fwrite(&furnitureNameLen, sizeof(size_t), 1, file);
         fwrite(furnitureName, 1, furnitureNameLen, file);
 
-        int invIndex = e->entityFurniture.inv - eManager->invs;
+        int invIndex = (e->entityFurniture.inv != NULL)
+            ? (int)(e->entityFurniture.inv - eManager->invs)
+            : -1;
         fwrite(&invIndex, sizeof(int), 1, file);
         break;
     }
@@ -318,7 +322,7 @@ void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int vers
             int invIndex;
             fread(&invIndex, sizeof(int), 1, file);
             // Validate invIndex to prevent out-of-bounds access on corrupted save files
-            if (invIndex >= 0 && invIndex < 300) {
+            if (invIndex >= 0 && invIndex < eManager->nextInv) {
                 inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.
             } else {
                 inv->items[j].chestPtr = NULL;
@@ -425,7 +429,7 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
 
         sShort Id = getIdFromName(temp_name_fur);
         // Validate invIndex to prevent out-of-bounds access on corrupted save files
-        Inventory *invPtr = (invIndex >= 0 && invIndex < 300) ? &eManager->invs[invIndex] : NULL;
+        Inventory *invPtr = (invIndex >= 0 && invIndex < eManager->nextInv) ? &eManager->invs[invIndex] : NULL;
         *e = newEntityFurniture(Id, invPtr, x, y, level);
         break;
     case ENTITY_PASSIVE:
