@@ -126,6 +126,8 @@ int main() {
         }
     }
 
+    initData();
+
     noItem = newItem(getIdFromName("NULL"), 0);
 
     initMenus();
@@ -183,8 +185,6 @@ int main() {
     } else {
         loadTexturePack(NULL);
     }
-
-    initData();
 
     initPlayers();
     initRecipes();
