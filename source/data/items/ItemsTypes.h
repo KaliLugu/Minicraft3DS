@@ -1,11 +1,6 @@
 #pragma once
 #include "ItemsData.h"
 
-extern ItemData ItemsTables[];
-
-extern const unsigned int itemCount;
-
-extern const unsigned int toolItemCount;
-extern const unsigned int foodItemCount;
-extern const unsigned int fournitureItemCount;
-extern const unsigned int genericItemCount;
+extern const unsigned int g_itemCount;
+extern ItemData *g_itemTable;
+extern void itemsTableBuild(uint16_t modCount);

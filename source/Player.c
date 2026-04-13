@@ -70,8 +70,8 @@ void playerInitInventory(PlayerData *pd) {
         addItemToInventory(newItem(getIdFromName("ITEM_MAGIC_COMPASS"), 1), &(pd->inventory));
 
         // Add all valid items for testing
-        for (int i = 1; i < itemCount; ++i) { // skip NULL
-            ItemData *data = &ItemsTables[i];
+        for (int i = 1; i < g_itemCount; ++i) { // skip NULL
+            ItemData *data = &g_itemTable[i];
             int count = data->isStackable ? 50 : (data->category == ITEM_CAT_TOOL ? 4 : 1);
             addItemToInventory(newItem(data->id, count), &(pd->inventory));
         }

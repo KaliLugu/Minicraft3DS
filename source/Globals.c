@@ -652,9 +652,9 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
 
     // Furniture items
     ItemData *data = NULL;
-    for (unsigned int i = 0; i < itemCount; ++i) {
-        if (ItemsTables[i].id == item->id) {
-            data = &ItemsTables[i];
+    for (unsigned int i = 0; i < g_itemCount; ++i) {
+        if (g_itemTable[i].id == item->id) {
+            data = &g_itemTable[i];
             break;
         }
     }

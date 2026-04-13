@@ -2,30 +2,29 @@
 #include "items/ItemsTypes.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-#define MAX_ITEM_ID_LOCAL 71
-
-static char *_itemNames[MAX_ITEM_ID_LOCAL + 1];
-static int _itemIconX[MAX_ITEM_ID_LOCAL + 1];
-static int _itemIconY[MAX_ITEM_ID_LOCAL + 1];
-static bool _itemSingle[MAX_ITEM_ID_LOCAL + 1];
+static char **_itemNames = NULL;
+static int *_itemIconX = NULL;
+static int *_itemIconY = NULL;
+static bool *_itemSingle = NULL;
 
 ItemId getIdFromName(const char *name) {
-    if (name == NULL) return ItemsTables[0].id;
-    for (unsigned int i = 0; i < itemCount; ++i) {
-        if (strcmp(ItemsTables[i].name, name) == 0) {
-            return ItemsTables[i].id;
+    if (name == NULL) return g_itemTable[0].id;
+    for (unsigned int i = 0; i < g_itemCount; ++i) {
+        if (strcmp(g_itemTable[i].name, name) == 0) {
+            return g_itemTable[i].id;
         }
     }
     // si pas trouvé, retourner l'id du premier item (NULL)
-    return ItemsTables[0].id;
+    return g_itemTable[0].id;
 }
 
 const char* getNameFromId(ItemId id) {
-    if (id > MAX_ITEM_ID_LOCAL) return "NULL"; // bounds check (supprimer id < 0)
-    for (unsigned int i = 0; i < itemCount; ++i) {
-        if (ItemsTables[i].id == id) {
-            return ItemsTables[i].name;
+    if (id > g_itemCount - 1) return "NULL"; // bounds check (supprimer id < 0)
+    for (unsigned int i = 0; i < g_itemCount; ++i) {
+        if (g_itemTable[i].id == id) {
+            return g_itemTable[i].name;
         }
     }
     return "null";
@@ -39,6 +38,10 @@ static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingl
 }
 
 void itemsDataInit() {
+    _itemNames = calloc(g_itemCount, sizeof(char*));
+    _itemIconX = calloc(g_itemCount, sizeof(int));
+    _itemIconY = calloc(g_itemCount, sizeof(int));
+    _itemSingle = calloc(g_itemCount, sizeof(bool));
 
     _itemRegister(getIdFromName("NULL"), "", 0, 0, true);
 
@@ -199,7 +202,7 @@ char *itemGetName(int id, int countLevel) {
             return "Empty Bucket";
         }
     } else {
-    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return "";
+    if (id < 0 || id >= g_itemCount) return "";
     return _itemNames[id];
     }
 }
@@ -215,7 +218,7 @@ char *itemGetNameWithCount(int id, int countLevel) {
 }
 
 int itemGetIconX(int id, int countLevel) {
-    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return 0; // bounds check
+    if (id < 0 || id >= g_itemCount) return 0; // bounds check
     if (id == getIdFromName("TOOL_SHOVEL") ||
         id == getIdFromName("TOOL_HOE") ||
         id == getIdFromName("TOOL_SWORD") ||
@@ -228,7 +231,7 @@ int itemGetIconX(int id, int countLevel) {
 }
 
 int itemGetIconY(int id, int countLevel) {
-    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return 0; // bounds check
+    if (id < 0 || id >= g_itemCount) return 0; // bounds check
     switch (id) {
     // handle special cases here
 
@@ -239,6 +242,6 @@ int itemGetIconY(int id, int countLevel) {
 }
 
 bool itemIsSingle(int id, int countLevel) {
-    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return true; // bounds check
+    if (id < 0 || id >= g_itemCount) return true; // bounds check
     return _itemSingle[id];
 }

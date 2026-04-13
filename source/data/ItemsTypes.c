@@ -1,12 +1,11 @@
 #include "items/ItemsData.h"
+#include <stdlib.h>
 
 #define ITEM_ENTRY(name, displayname, cat, stackable, data) \
-    {__COUNTER__, name, displayname, cat, stackable, data}
+    {0, name, displayname, cat, stackable, data}
 
-/* Export the items table so other translation units (like ItemsData.c)
-   can refer to it. The header `ItemsTypes.h` declares `extern ItemData ItemsTables[]`.
-*/
-ItemData ItemsTables[] = {
+/* Vanilla items definitions */
+static const ItemData _vanillaDefs[] = {
     // name, display name, cat, stackable, data
     ITEM_ENTRY("NULL", "", ITEM_CAT_GENERIC, false, {.generic = {false}}),
     ITEM_ENTRY("TOOL_SHOVEL", "Shovel", ITEM_CAT_TOOL, false, {.tool = {0}}),
@@ -81,4 +80,16 @@ ItemData ItemsTables[] = {
     ITEM_ENTRY("ITEM_SCROLL_NIGHTVISION", "Scroll of Nightvision", ITEM_CAT_GENERIC, true, {}),
 };
 
-const unsigned int itemCount = sizeof(ItemsTables) / sizeof(ItemsTables[0]);
+static const unsigned int _vanillaCount = sizeof(_vanillaDefs) / sizeof(_vanillaDefs[0]);
+
+ItemData *g_itemTable = NULL;
+unsigned int g_itemCount;
+
+void itemsTableBuild(uint16_t modCount) {
+    g_itemCount = _vanillaCount + modCount;
+    g_itemTable = malloc(g_itemCount * sizeof(ItemData));
+    for (unsigned int i = 0; i < _vanillaCount; i++) {
+        g_itemTable[i] = _vanillaDefs[i];
+        g_itemTable[i].id = (ItemId)i;  // IDs séquentiels, ordre conservé
+    }
+}
