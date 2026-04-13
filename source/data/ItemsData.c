@@ -35,6 +35,30 @@ bool itemIsStackable(ItemId id) {
     return g_itemTable[id].isStackable;
 }
 
+unsigned int getToolCountLevel(ItemId id) {
+    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (g_itemTable[id].category != ITEM_CAT_TOOL) return 0; // not tool
+    return g_itemTable[id].data.tool.countLevel;
+}
+
+unsigned int getFoodHealth(ItemId id) {
+    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (g_itemTable[id].category != ITEM_CAT_FOOD) return 0; // not food
+    return g_itemTable[id].data.food.health;
+}
+
+unsigned int getSpellDuration(ItemId id) {
+    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (g_itemTable[id].category != ITEM_CAT_SPELL) return 0; // not spell
+    return g_itemTable[id].data.spell.duration;
+}
+
+unsigned int getSpellEffect(ItemId id) {
+    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (g_itemTable[id].category != ITEM_CAT_SPELL) return 0; // not spell
+    return g_itemTable[id].data.spell.effect;
+}
+
 static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;
     _itemIconX[id] = iconX; // sur la largeur
