@@ -311,7 +311,7 @@ void menuTutorialRender(int screen, int width, int height) {
             renderText(">", 80, 57);
             renderText(">", 80, 77);
             renderItemIcon(getIdFromName("ITEM_IRONINGOT"), 1, 88, 36); // Iron ingot item
-            renderItemIcon(getIdFromName("ITEM_GOLDORE"), 1, 88, 56); // Gold ingot item
+            renderItemIcon(getIdFromName("ITEM_GOLDINGOT"), 1, 88, 56); // Gold ingot item
             renderItemIcon(getIdFromName("TOOL_PICKAXE"), 4, 88, 76);   // Gem Pickaxe
             renderText(">", 100, 37);
             renderText(">", 100, 57);
