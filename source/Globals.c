@@ -726,7 +726,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
             return 1;
         } else if (item->id == getIdFromName("TOOL_SHOVEL") && playerUseEnergy(pd, 4 - item->countLevel)) {
             if (syncRand() % 5 == 0)
-                addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
+                addItemsToWorld(newItem(getIdFromName("ITEM_SEED"), 1), level, (x << 4) + 8, (y << 4) + 8, 1);
             setTile(TILE_DIRT, level, x, y);
             return 1;
         }
@@ -826,7 +826,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
         }
         break;
     case TILE_FARM:
-        if (item->id == getIdFromName("ITEM_SEEDS")) {
+        if (item->id == getIdFromName("ITEM_SEED")) {
             setTile(TILE_WHEAT, level, x, y);
             setData(0, level, x, y);
             --item->countLevel;
@@ -840,7 +840,7 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
                 int count = (syncRand() % 2);
                 if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_SEED"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
                     count = (syncRand() % 3) + 2;
@@ -1200,7 +1200,7 @@ void playerHurtTile(PlayerData *pd, int tile, uByte level, int xt, int yt, int d
             int count = (syncRand() % 2);
             if (age >= 80)
                 count = (syncRand() % 2) + 1;
-            addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
+            addItemsToWorld(newItem(getIdFromName("ITEM_SEED"), 1), level, (xt << 4) + 8, (yt << 4) + 8, count);
             count = 0;
             if (age == 100)
                 count = (syncRand() % 3) + 2;
@@ -1324,7 +1324,7 @@ void entityTileInteract(Entity *e, int tile, uByte level, int x, int y) {
                 int count = (syncRand() % 2);
                 if (age >= 80)
                     count = (syncRand() % 2) + 1;
-                addItemsToWorld(newItem(getIdFromName("ITEM_SEEDS"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
+                addItemsToWorld(newItem(getIdFromName("ITEM_SEED"), 1), level, (x << 4) + 8, (y << 4) + 8, count);
                 count = 0;
                 if (age == 100)
                     count = (syncRand() % 3) + 2;
