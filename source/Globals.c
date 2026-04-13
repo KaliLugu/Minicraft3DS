@@ -10,7 +10,6 @@
 
 // TODO REFACTO: la golden apple quand on la prend elles semble ce comporté comme une fourniture et pouvoir être posée sur le sol, les 50 sont consommées d'un coup, et elle ne soigne pas le joueur.
 
-char versionText[34] = "Version 2.0.0";
 char fpsstr[34];
 uByte currentMenu = 0;
 
