@@ -11,15 +11,25 @@ static int _itemIconY[MAX_ITEM_ID_LOCAL + 1];
 static bool _itemSingle[MAX_ITEM_ID_LOCAL + 1];
 
 ItemId getIdFromName(const char *name) {
+    if (name == NULL) return ItemsTables[0].id;
     for (unsigned int i = 0; i < itemCount; ++i) {
         if (strcmp(ItemsTables[i].name, name) == 0) {
             return ItemsTables[i].id;
         }
     }
-    // si pas trouvé, retourner un ID invalide (ex: -1)
-    return -1;
+    // si pas trouvé, retourner l'id du premier item (NULL)
+    return ItemsTables[0].id;
 }
 
+const char* getNameFromId(ItemId id) {
+    if (id > MAX_ITEM_ID_LOCAL) return "NULL"; // bounds check (supprimer id < 0)
+    for (unsigned int i = 0; i < itemCount; ++i) {
+        if (ItemsTables[i].id == id) {
+            return ItemsTables[i].name;
+        }
+    }
+    return "null";
+}
 
 static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;
