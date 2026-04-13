@@ -55,20 +55,6 @@ void playerInitInventory(PlayerData *pd) {
 
     // TODO : modify this for testing new items system
     if (TESTGODMODE) {
-        addItemToInventory(newItem(getIdFromName("TOOL_SHOVEL"), 4), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("TOOL_HOE"), 4), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("TOOL_SWORD"), 4), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("TOOL_PICKAXE"), 4), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("TOOL_AXE"), 4), &(pd->inventory));
-
-        addItemToInventory(newItem(getIdFromName("ITEM_ANVIL"), 0), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("ITEM_CHEST"), 0), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("ITEM_OVEN"), 0), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("ITEM_FURNACE"), 0), &(pd->inventory));
-        addItemToInventory(newItem(getIdFromName("ITEM_LANTERN"), 0), &(pd->inventory));
-
-        addItemToInventory(newItem(getIdFromName("ITEM_MAGIC_COMPASS"), 1), &(pd->inventory));
-
         // Add all valid items for testing
         for (int i = 1; i < g_itemCount; ++i) { // skip NULL
             ItemData *data = &g_itemTable[i];

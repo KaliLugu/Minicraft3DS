@@ -30,6 +30,11 @@ const char* getNameFromId(ItemId id) {
     return "null";
 }
 
+bool itemIsStackable(ItemId id) {
+    if (id < 0 || id >= g_itemCount) return false; // bounds check
+    return g_itemTable[id].isStackable;
+}
+
 static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
     _itemNames[id] = name;
     _itemIconX[id] = iconX; // sur la largeur
@@ -243,5 +248,5 @@ int itemGetIconY(int id, int countLevel) {
 
 bool itemIsSingle(int id, int countLevel) {
     if (id < 0 || id >= g_itemCount) return true; // bounds check
-    return _itemSingle[id];
+    return !itemIsStackable(id);
 }
