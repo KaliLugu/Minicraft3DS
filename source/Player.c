@@ -256,15 +256,6 @@ bool playerUseItem(PlayerData *pd) {
         getIdFromName("ITEM_BEEF_COOKED")
     };
 
-    for (int i = 0; i < 8; i++) {
-        item = getItemFromInventory(healthItems[i], &(pd->inventory));
-        if (item != NULL) {
-            aitemID = healthItems[i];
-            aitem = item;
-            break; 
-        }
-    }
-
     // Utiliser l'item de santé actif
     if (pd->activeItem->id == getIdFromName("ITEM_APPLE")) { // Apple
         if (_playerUseItemEat(pd, 2, 1))
