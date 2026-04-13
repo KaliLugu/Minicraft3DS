@@ -198,7 +198,10 @@ char *itemGetName(int id, int countLevel) {
         default:
             return "Empty Bucket";
         }
-    } else return _itemNames[id];
+    } else {
+    if (id < 0 || id >= MAX_ITEM_ID_LOCAL) return "";
+    return _itemNames[id];
+    }
 }
 
 char _itemCurrentName[32];
