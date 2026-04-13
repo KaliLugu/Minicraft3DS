@@ -201,7 +201,7 @@ char *itemGetName(int id, int countLevel) {
     } else return _itemNames[id];
 }
 
-char _itemCurrentName[20];
+char _itemCurrentName[32];
 char *itemGetNameWithCount(int id, int countLevel) {
     if (itemIsSingle(id, countLevel)) {
         return itemGetName(id, countLevel);
