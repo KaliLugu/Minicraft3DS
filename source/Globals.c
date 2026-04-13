@@ -651,7 +651,15 @@ int itemTileInteract(int tile, PlayerData *pd, Item *item, uByte level, int x, i
     if (item->id == getIdFromName("NULL")) return 0;
 
     // Furniture items
-    if (item->id > 27 && item->id < 51) {
+    ItemData *data = NULL;
+    for (unsigned int i = 0; i < itemCount; ++i) {
+        if (ItemsTables[i].id == item->id) {
+            data = &ItemsTables[i];
+            break;
+        }
+    }
+
+    if (data != NULL && data->category == ITEM_CAT_FURNITURE) {
         if (!tileIsSolid(getTile(level, x, y), NULL)) {
             addEntityToList(newEntityFurniture(item->id, item->chestPtr, (x << 4) + 8, (y << 4) + 8, level), &eManager);
             removeItemFromCurrentInv(item);
