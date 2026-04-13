@@ -211,12 +211,12 @@ bool playerUseItem(PlayerData *pd) {
             getIdFromName("ITEM_ARROW_GEM")   // Gem Arrow
         };
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 4; i >= 0; i--) {
             item = getItemFromInventory(arrowIDs[i], &(pd->inventory));
             if (item != NULL) {
                 aitemID = arrowIDs[i];
                 aitem = item;
-                break;  // Utiliser la première flèche trouvée
+                break; // Utiliser la meilleure flèche disponible
             }
         }
 
