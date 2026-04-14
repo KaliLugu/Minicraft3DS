@@ -49,3 +49,7 @@ extern int itemGetIconY(int id, int countLevel);
 extern bool itemIsSingle(int id, int countLevel);
 extern ItemId getIdFromName(const char *name);
 extern const char* getNameFromId(ItemId id);
+extern unsigned int getToolCountLevel(ItemId id);
+extern unsigned int getFoodHealth(ItemId id);
+extern unsigned int getSpellDuration(ItemId id);
+extern unsigned int getSpellEffect(ItemId id);

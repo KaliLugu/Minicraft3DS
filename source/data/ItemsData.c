@@ -4,10 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-static char **_itemNames = NULL;
 static int *_itemIconX = NULL;
 static int *_itemIconY = NULL;
-static bool *_itemSingle = NULL;
 
 ItemId getIdFromName(const char *name) {
     if (name == NULL) return g_itemTable[0].id;
@@ -28,11 +26,6 @@ const char* getNameFromId(ItemId id) {
         }
     }
     return "null";
-}
-
-bool itemIsStackable(ItemId id) {
-    if (id < 0 || id >= g_itemCount) return false; // bounds check
-    return g_itemTable[id].isStackable;
 }
 
 unsigned int getToolCountLevel(ItemId id) {
@@ -59,18 +52,20 @@ unsigned int getSpellEffect(ItemId id) {
     return g_itemTable[id].data.spell.effect;
 }
 
+unsigned int getItemCategory(ItemId id) {
+    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    return g_itemTable[id].category;
+}
+
 static void _itemRegister(int id, char *name, int iconX, int iconY, bool isSingle) {
-    _itemNames[id] = name;
+    g_itemTable[id].displayName = name;
     _itemIconX[id] = iconX; // sur la largeur
     _itemIconY[id] = iconY; // sur la hauteur
-    _itemSingle[id] = isSingle;
 }
 
 void itemsDataInit() {
-    _itemNames = calloc(g_itemCount, sizeof(char*));
     _itemIconX = calloc(g_itemCount, sizeof(int));
     _itemIconY = calloc(g_itemCount, sizeof(int));
-    _itemSingle = calloc(g_itemCount, sizeof(bool));
 
     _itemRegister(getIdFromName("NULL"), "", 0, 0, true);
 
@@ -153,87 +148,86 @@ void itemsDataInit() {
     _itemRegister(getIdFromName("ITEM_SCROLL_NIGHTVISION"), "Scroll of Nightvision", 18, 21, false);
 }
 
-// use temporary if else, for future change that for use for cycle and recup the value to return from the struct
 char *itemGetName(int id, int countLevel) {
-    if (id == getIdFromName("TOOL_SHOVEL")) {
-    // handle special cases here
-        switch (countLevel) {
-        case 1:
-            return "Rock Shovel";
-        case 2:
-            return "Iron Shovel";
-        case 3:
-            return "Gold Shovel";
-        case 4:
-            return "Gem Shovel";
-        default:
-            return "Wood Shovel";
-        }
-    } else if (id == getIdFromName("TOOL_HOE")) {
-        switch (countLevel) {
-        case 1:
-            return "Rock Hoe";
-        case 2:
-            return "Iron Hoe";
-        case 3:
-            return "Gold Hoe";
-        case 4:
-            return "Gem Hoe";
-        default:
-            return "Wood Hoe";
-        }
-    } else if (id == getIdFromName("TOOL_SWORD")) {
-        switch (countLevel) {
-        case 1:
-            return "Rock Sword";
-        case 2:
-            return "Iron Sword";
-        case 3:
-            return "Gold Sword";
-        case 4:
-            return "Gem Sword";
-        default:
-            return "Wood Sword";
-        }
-    } else if (id == getIdFromName("TOOL_PICKAXE")) {
-        switch (countLevel) {
-        case 1:
-            return "Rock Pickaxe";
-        case 2:
-            return "Iron Pickaxe";
-        case 3:
-            return "Gold Pickaxe";
-        case 4:
-            return "Gem Pickaxe";
-        default:
-            return "Wood Pickaxe";
-        }
-    } else if (id == getIdFromName("TOOL_AXE")) {
-        switch (countLevel) {
-        case 1:
-            return "Rock Axe";
-        case 2:
-            return "Iron Axe";
-        case 3:
-            return "Gold Axe";
-        case 4:
-            return "Gem Axe";
-        default:
-            return "Wood Axe";
-        }
-    } else if (id == getIdFromName("TOOL_BUCKET")) {
-        switch (countLevel) {
-        case 1:
-            return "Water Bucket";
-        case 2:
-            return "Lava Bucket";
-        default:
-            return "Empty Bucket";
-        }
-    } else {
     if (id < 0 || id >= g_itemCount) return "";
-    return _itemNames[id];
+    if (getItemCategory(id) == ITEM_CAT_TOOL) {
+        if (id == getIdFromName("TOOL_SHOVEL")) {
+            switch (countLevel) {
+            case 1:
+                return "Rock Shovel";
+            case 2:
+                return "Iron Shovel";
+            case 3:
+                return "Gold Shovel";
+            case 4:
+                return "Gem Shovel";
+            default:
+                return "Wood Shovel";
+            }
+        } else if (id == getIdFromName("TOOL_HOE")) {
+            switch (countLevel) {
+            case 1:
+                return "Rock Hoe";
+            case 2:
+                return "Iron Hoe";
+            case 3:
+                return "Gold Hoe";
+            case 4:
+                return "Gem Hoe";
+            default:
+                return "Wood Hoe";
+            }
+        } else if (id == getIdFromName("TOOL_SWORD")) {
+            switch (countLevel) {
+            case 1:
+                return "Rock Sword";
+            case 2:
+                return "Iron Sword";
+            case 3:
+                return "Gold Sword";
+            case 4:
+                return "Gem Sword";
+            default:
+                return "Wood Sword";
+            }
+        } else if (id == getIdFromName("TOOL_PICKAXE")) {
+            switch (countLevel) {
+            case 1:
+                return "Rock Pickaxe";
+            case 2:
+                return "Iron Pickaxe";
+            case 3:
+                return "Gold Pickaxe";
+            case 4:
+                return "Gem Pickaxe";
+            default:
+                return "Wood Pickaxe";
+            }
+        } else if (id == getIdFromName("TOOL_AXE")) {
+            switch (countLevel) {
+            case 1:
+                return "Rock Axe";
+            case 2:
+                return "Iron Axe";
+            case 3:
+                return "Gold Axe";
+            case 4:
+                return "Gem Axe";
+            default:
+                return "Wood Axe";
+            }
+        } else if (id == getIdFromName("TOOL_BUCKET")) {
+            switch (countLevel) {
+            case 1:
+                return "Water Bucket";
+            case 2:
+                return "Lava Bucket";
+            default:
+                return "Empty Bucket";
+            }
+        }
     }
+    return g_itemTable[id].displayName;
 }
 
 char _itemCurrentName[32];
@@ -272,5 +266,5 @@ int itemGetIconY(int id, int countLevel) {
 
 bool itemIsSingle(int id, int countLevel) {
     if (id < 0 || id >= g_itemCount) return true; // bounds check
-    return !itemIsStackable(id);
+    return !g_itemTable[id].isStackable;
 }

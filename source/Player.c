@@ -247,25 +247,25 @@ bool playerUseItem(PlayerData *pd) {
         if (_playerUseItemEat(pd, 2, 1))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_GOLDEN_APPLE")) { // Golden Apple
-        if (_playerUseItemEat(pd, 2, 7))
+        if (_playerUseItemEat(pd, 2, getFoodHealth(getIdFromName("ITEM_GOLDEN_APPLE"))))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_FLESH")) { // Flesh
-        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), getFoodHealth(getIdFromName("ITEM_FLESH"))))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_BREAD")) { // Bread
-        if (_playerUseItemEat(pd, 3, 2))
+        if (_playerUseItemEat(pd, 3, getFoodHealth(getIdFromName("ITEM_BREAD"))))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_PORK_RAW")) { // Raw Pork
-        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), getFoodHealth(getIdFromName("ITEM_PORK_RAW"))))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_PORK_COOKED")) { // Cooked Pork
-        if (_playerUseItemEat(pd, 3, 3))
+        if (_playerUseItemEat(pd, 3, getFoodHealth(getIdFromName("ITEM_PORK_COOKED"))))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_BEEF_RAW")) { // Raw Beef
-        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), getFoodHealth(getIdFromName("ITEM_BEEF_RAW"))))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_BEEF_COOKED")) { // Steak
-        if (_playerUseItemEat(pd, 3, 4))
+        if (_playerUseItemEat(pd, 3, getFoodHealth(getIdFromName("ITEM_BEEF_COOKED"))))
             return true;
     }
 
