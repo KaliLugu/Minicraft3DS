@@ -22,7 +22,7 @@ typedef struct {
     const char* displayName; // nom affiché (optionnel, ou variante)
     uint8_t category;     // TOOL, FOOD, FURNITURE, GENERIC
     bool isStackable;     // si l’item est stackabmes
-
+    uint8_t texX, texY;         // coordonnées X et Y de l'item
     union { // selon la catégorie
         struct {
             sShort countLevel; // les matériaux d'item
