@@ -230,18 +230,6 @@ bool playerUseItem(PlayerData *pd) {
         }
     }
 
-    // Health items
-    int healthItems[] = {
-        getIdFromName("ITEM_FLESH"),
-        getIdFromName("ITEM_BREAD"),
-        getIdFromName("ITEM_APPLE"),
-        getIdFromName("ITEM_GOLDEN_APPLE"),
-        getIdFromName("ITEM_PORK_RAW"),
-        getIdFromName("ITEM_PORK_COOKED"),
-        getIdFromName("ITEM_BEEF_RAW"),
-        getIdFromName("ITEM_BEEF_COOKED")
-    };
-
     // Utiliser l'item de santé actif
     if (pd->activeItem->id == getIdFromName("ITEM_APPLE")) { // Apple
         if (_playerUseItemEat(pd, 2, 1))

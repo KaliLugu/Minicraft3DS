@@ -4,9 +4,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-static int *_itemIconX = NULL;
-static int *_itemIconY = NULL;
-
 ItemId getIdFromName(const char *name) {
     if (name == NULL) return g_itemTable[0].id;
     for (unsigned int i = 0; i < g_itemCount; ++i) {
