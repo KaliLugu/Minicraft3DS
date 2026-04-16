@@ -463,6 +463,10 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
     // read savefile version
     int version;
     fread(&version, sizeof(int), 1, file);
+    if (version != SAVE_VERSION) {
+        fclose(file);
+        return -1; // format incompatible
+    }
 
     // Inventory Data
     fread(&eManager->nextInv, sizeof(sShort), 1, file);
@@ -511,7 +515,7 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
     return 0;
 }
 
-void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
+int loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
     FILE *file = fopen(filename, "rb"); // TODO: should be checked
 
     int i;
@@ -519,6 +523,10 @@ void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     // read savefile version
     int version;
     fread(&version, sizeof(int), 1, file);
+    if (version != SAVE_VERSION) {
+        fclose(file);
+        return -1; // format incompatible
+    }
 
     // basic player info
     fread(&player->score, sizeof(int), 1, file);
@@ -662,6 +670,10 @@ static int loadFileState(char *filename) {
         // read savefile version
         int version;
         fread(&version, sizeof(int), 1, file);
+        if (version != SAVE_VERSION) {
+            fclose(file);
+            return -1; // format incompatible
+        }
 
         // basic player info
         bool dummy;
