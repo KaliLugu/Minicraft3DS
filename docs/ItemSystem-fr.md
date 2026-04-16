@@ -15,7 +15,7 @@ Ces deux symboles sont initialisés par `itemsTableBuild(uint16_t modCount)`.
 ### Construction de la table
 Le chargement d'items se fait en deux phases :
 1. `itemsTableBuild(0)` alloue `g_itemTable` sur le heap et copie les définitions vanilla de `_vanillaDefs[]`
-2. `itemsDataInit()` initialise les structures dérivées (`_itemNames`, `_itemIconX`, `_itemIconY`, `_itemSingle`) selon la taille de `g_itemTable`
+2. `itemsDataInit()` initialise les structures dérivées (`_itemIconX`, `_itemIconY`) selon la taille de `g_itemTable`
 
 L'appel est effectué dans `source/Data.c` :
 ```c
@@ -37,6 +37,7 @@ Chaque item est décrit par `ItemData` :
 - `displayName` : nom à afficher à l'écran
 - `category` : type d'item (`ITEM_CAT_TOOL`, `ITEM_CAT_FOOD`, `ITEM_CAT_FURNITURE`, `ITEM_CAT_GENERIC`, `ITEM_CAT_SPELL`)
 - `isStackable` : si l'item peut s'empiler
+- `texX`, `texY` : coordonnées de la texture dans le spritesheet
 - `data` : union contenant les données spécifiques à la catégorie
 
 ### Lookups
@@ -45,12 +46,12 @@ Chaque item est décrit par `ItemData` :
 
 ### Gestion dynamique des données dérivées
 Les tableaux d'affichage sont désormais heap-alloués :
-- `_itemNames`
 - `_itemIconX`
 - `_itemIconY`
-- `_itemSingle`
 
 Ils sont créés dans `itemsDataInit()` avec `calloc(g_itemCount, ...)`, ce qui permet de supporter un nombre d'items variable.
+
+> `_itemNames` et `_itemSingle` ont été supprimés — ces données sont désormais directement dans `ItemData` (`displayName` et `isStackable`).
 
 ### Sécurité des bornes
 Les vérifications utilisent maintenant `g_itemCount` au lieu d'une constante fixe.
@@ -74,7 +75,9 @@ La compatibilité est maintenue tant que les noms vanilla restent inchangés.
   - plus d'`extern const unsigned int itemCount`
   - exporte `g_itemTable`, `g_itemCount`, `itemsTableBuild()`
 - `ItemsData.c`
-  - les arrays d'affichage sont heap-alloués via `calloc`
+  - les arrays d'affichage (`_itemIconX`, `_itemIconY`) sont heap-alloués via `calloc`
+  - `_itemNames` et `_itemSingle` supprimés (données migrées dans `ItemData`)
+  - `_itemRegister()` : paramètre `isSingle` supprimé (signature : `_itemRegister(id, name, iconX, iconY)`)
   - `getNameFromId()` et les bornes utilisent `g_itemCount`
 - `Data.c`
   - appelle `itemsTableBuild(0)` avant `itemsDataInit()`
@@ -103,7 +106,7 @@ L'architecture actuelle est prête pour le prochain palier :
 |---|---|
 | `source/data/items/ItemsData.h` | Déclaration de `ItemData`, `ItemId`, `ItemCategory`, fonctions liées aux items |
 | `source/data/items/ItemsTypes.h` | Expose `g_itemTable`, `g_itemCount` et `itemsTableBuild()` |
-| `source/data/items/ItemsTypes.c` | Définitions vanilla, build dynamique de la table d'items |
-| `source/data/items/ItemsData.c` | Recherche d'items, initialisation des arrays dérivés, bounds checks |
+| `source/data/ItemsTypes.c` | Définitions vanilla, build dynamique de la table d'items |
+| `source/data/ItemsData.c` | Recherche d'items, initialisation des arrays dérivés, bounds checks |
 | `source/Data.c` | Ordre d'initialisation : build de la table puis init des données |
 | `source/SaveLoad.c` | Sérialisation et désérialisation des items via noms logiques |

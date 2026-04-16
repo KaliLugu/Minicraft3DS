@@ -40,8 +40,6 @@ typedef struct {
     } data;
 } ItemData;
 
-extern void itemsDataInit();
-
 extern char *itemGetName(int id, int countLevel);
 extern char *itemGetNameWithCount(int id, int countLevel);
 extern int itemGetIconX(int id, int countLevel);
