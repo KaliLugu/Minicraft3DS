@@ -567,6 +567,7 @@ int loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManag
     }
 
     fclose(file);
+    return 0;
 }
 
 bool saveWorld(char *filename, EntityManager *eManager, WorldData *worldData, PlayerData *players, int playerCount) {
@@ -650,7 +651,8 @@ static int loadFile(char *filename) {
         sprintf(playerFilename, "%lu.plr", loadPlayers[i].id);
 
         if (strcmp(filename, playerFilename) == 0) {
-            loadPlayerInternal(filename, loadPlayers + i, loadEManager);
+            int result = loadPlayerInternal(filename, loadPlayers + i, loadEManager);
+            lastLoadError = (result == 2) ? LOAD_ERROR_LEGACY_SAVE : LOAD_ERROR_VERSION_MISMATCH;
         }
     }
 
