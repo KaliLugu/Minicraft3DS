@@ -14,7 +14,6 @@ ItemId getIdFromName(const char *name) {
             return g_itemTable[i].id;
         }
     }
-    // si pas trouvé, retourner l'id du premier item (NULL)
     return g_itemTable[0].id;
 }
 
