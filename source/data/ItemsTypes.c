@@ -85,11 +85,17 @@ static const unsigned int _vanillaCount = sizeof(_vanillaDefs) / sizeof(_vanilla
 ItemData *g_itemTable = NULL;
 unsigned int g_itemCount;
 
+
+
 void itemsTableBuild(uint16_t modCount) {
     g_itemCount = _vanillaCount + modCount;
     g_itemTable = malloc(g_itemCount * sizeof(ItemData));
+    if (!g_itemTable) {
+        g_itemCount = 0;
+        return;
+    }
     for (unsigned int i = 0; i < _vanillaCount; i++) {
         g_itemTable[i] = _vanillaDefs[i];
-        g_itemTable[i].id = (ItemId)i;  // IDs séquentiels, ordre conservé
+        g_itemTable[i].id = (ItemId)i;
     }
 }
