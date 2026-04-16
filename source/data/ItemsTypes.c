@@ -72,12 +72,12 @@ static const ItemData _vanillaDefs[] = {
     ITEM_ENTRY("TOOL_BUCKET", "Bucket", ITEM_CAT_TOOL, false, 25, 18, {.tool = {2}}),
     ITEM_ENTRY("ITEM_BOW", "Bow", ITEM_CAT_GENERIC, false, 8, 21, {}),
     ITEM_ENTRY("ITEM_MAGIC_COMPASS", "Magic Compass", ITEM_CAT_GENERIC, false, 14, 21, {}),
-    ITEM_ENTRY("ITEM_SCROLL_UNDYING", "Scroll of Undying", ITEM_CAT_GENERIC, true ,18, 21, {}),
-    ITEM_ENTRY("ITEM_SCROLL_REGENERATION", "Scroll of Regeneration", ITEM_CAT_GENERIC, true, 18, 21, {}),
-    ITEM_ENTRY("ITEM_SCROLL_SPEED", "Scroll of Speed", ITEM_CAT_GENERIC, true, 18, 21, {}),
-    ITEM_ENTRY("ITEM_SCROLL_STRENGTH", "Scroll of Strength", ITEM_CAT_GENERIC, true, 18, 21, {}),
-    ITEM_ENTRY("ITEM_SCROLL_SHIELDING", "Scroll of Shielding", ITEM_CAT_GENERIC, true, 18, 21, {}),
-    ITEM_ENTRY("ITEM_SCROLL_NIGHTVISION", "Scroll of Nightvision", ITEM_CAT_GENERIC, true, 18, 21, {}),
+    ITEM_ENTRY("ITEM_SCROLL_UNDYING", "Scroll of Undying", ITEM_CAT_SPELL, true ,18, 21, {.spell = {0}}),
+    ITEM_ENTRY("ITEM_SCROLL_REGENERATION", "Scroll of Regeneration", ITEM_CAT_SPELL, true, 18, 21, {.spell = {0}}),
+    ITEM_ENTRY("ITEM_SCROLL_SPEED", "Scroll of Speed", ITEM_CAT_SPELL, true, 18, 21, {.spell = {0}}),
+    ITEM_ENTRY("ITEM_SCROLL_STRENGTH", "Scroll of Strength", ITEM_CAT_SPELL, true, 18, 21, {.spell = {1}}),
+    ITEM_ENTRY("ITEM_SCROLL_SHIELDING", "Scroll of Shielding", ITEM_CAT_SPELL, true, 18, 21, {.spell = {2}}),
+    ITEM_ENTRY("ITEM_SCROLL_NIGHTVISION", "Scroll of Nightvision", ITEM_CAT_SPELL, true, 18, 21, {.spell = {3}}),
 };
 
 static const unsigned int _vanillaCount = sizeof(_vanillaDefs) / sizeof(_vanillaDefs[0]);
