@@ -95,7 +95,7 @@ static char textBuffer[256] = {0};
 
 char *inputText(char *initial, uShort minLength, uShort maxLength, TextCallback check) {
     SwkbdState kb;
-    swkbdInit(&kb, SWKBD_TYPE_NORMAL, 3, maxLength);
+    swkbdInit(&kb, SWKBD_TYPE_NORMAL, 2, maxLength);
     swkbdSetValidation(&kb, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
     if (initial != NULL)
         swkbdSetInitialText(&kb, initial);
