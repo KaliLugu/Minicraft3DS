@@ -8,7 +8,6 @@
         printf("[%s:%d:%s] " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
     } while(0)
 
-// TODO REFACTO: la golden apple quand on la prend elles semble ce comporté comme une fourniture et pouvoir être posée sur le sol, les 50 sont consommées d'un coup, et elle ne soigne pas le joueur.
 
 char fpsstr[34];
 uByte currentMenu = 0;

@@ -3,11 +3,8 @@
 
 typedef struct Inventory Inventory;
 
-// TODO REFACTO : stocker le nom de l'item pour pouvoir l'utilisé lors de la sauvegarde, ça évitera les coruptions de données si jamais l'id d'un item change d'id
-
 typedef struct
 {
-    char *name;           // Name of the item, used for saving and loading.
     sShort id;
     sShort countLevel;   // Count for items, Level for tools.
     sShort slotNum;      // Read-only. Do not mess with this.

@@ -187,7 +187,6 @@ void menuTutorialRender(int screen, int width, int height) {
             renderTile16(12 + 8, 20 + 4, 16, 3, 0);           // Tree
             renderTile8(12 + 9, 20 + 14, 2, 20, 0);           // Slash (Up)
             renderTile8(12 + 9 + 8, 20 + 14, 3, 20, 0);       // Slash (Up)
-            // TODO REFACTO: pour la fonction renderItemIcon il est peut être plus simple pour juste rendre le code rapidement compilable de passé la function dans l'argument pour pas avoir a touché (ou alors j'ai juste la flemme)
             renderItemIcon(getIdFromName("TOOL_AXE"), 1, 12 + 9 + 4, 20 + 14); // Axe
             renderTile16(12 + 9, 20 + 18, 1, 7, 0);           // Player-up
 
