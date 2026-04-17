@@ -462,10 +462,26 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
 
     // read savefile version
     int version;
+    char savedVersion[16] = {0};
+    
+    fseek(file, -16, SEEK_END);
+    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
+    fseek(file, 0, SEEK_SET); // retour au début pour lire SAVE_VERSION
+
     fread(&version, sizeof(int), 1, file);
     if (version != SAVE_VERSION) {
         fclose(file);
         return -1; // format incompatible
+    } 
+    if (read != 1 || savedVersion[0] == '\0') {
+        // debug("No version string found in save file (legacy save).");
+        fclose(file);
+        return 2;
+    }
+    if (!isSameVersion(savedVersion)) {
+        // debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
+        fclose(file);
+        return 1;
     }
 
     // Inventory Data
@@ -495,21 +511,6 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
     // Don't write or load dungeon, so only first 5 levels not 6
     fread(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
     fread(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
-
-    // read version string
-    char savedVersion[16] = {0};
-    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
-
-    if (read != 1 || savedVersion[0] == '\0') {
-        // debug("No version string found in save file (legacy save).");
-        fclose(file);
-        return 2;
-    }
-    if (!isSameVersion(savedVersion)) {
-        // debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
-        fclose(file);
-        return 1;
-    }
 
     fclose(file);
     return 0;
@@ -651,8 +652,7 @@ static int loadFile(char *filename) {
         sprintf(playerFilename, "%lu.plr", loadPlayers[i].id);
 
         if (strcmp(filename, playerFilename) == 0) {
-            int result = loadPlayerInternal(filename, loadPlayers + i, loadEManager);
-            lastLoadError = (result == 2) ? LOAD_ERROR_LEGACY_SAVE : LOAD_ERROR_VERSION_MISMATCH;
+            loadPlayerInternal(filename, loadPlayers + i, loadEManager);
         }
     }
 

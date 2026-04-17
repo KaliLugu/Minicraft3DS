@@ -156,7 +156,6 @@ void initRecipes() {
     furnaceRecipes.recipes[1] = defineRecipe(getIdFromName("ITEM_GOLDINGOT"), 1, 2, getIdFromName("ITEM_GOLDORE"), 4, getIdFromName("ITEM_COAL"), 1);
     furnaceRecipes.recipes[2] = defineRecipe(getIdFromName("ITEM_GLASS"), 1, 2, getIdFromName("ITEM_SAND"), 4, getIdFromName("ITEM_COAL"), 1);
 
-    // TODO REFACTO : le craft de la golden apple n'a plus de texture
     ovenRecipes.size = 4;
     ovenRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (ovenRecipes.size));
     ovenRecipes.recipes[0] = defineRecipe(getIdFromName("ITEM_BREAD"), 1, 1, getIdFromName("ITEM_WHEAT"), 4);
