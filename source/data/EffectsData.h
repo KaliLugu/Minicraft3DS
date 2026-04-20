@@ -1,17 +1,23 @@
+#include <stdint.h>
 #pragma once
 
-#define EFFECT_UNDYING 0
-#define EFFECT_REGENERATION 1
-#define EFFECT_SPEED 2
-#define EFFECT_STRENGTH 3
-#define EFFECT_SHIELDING 4
-#define EFFECT_NIGHTVISION 5
+#define vanillaEffectCount 6
 
-#define EFFECTS_MAX 6
+typedef struct {
+    int id;
+    char *name;
+    int iconX, iconY;
+} EffectData;
+
 #define EFFECTS_DURATION_INFINITE 429496729
+extern EffectData *g_effectTable;
+extern unsigned int g_effectCount;
 
 extern void effectsDataInit();
+extern void effectsTableBuild(uint16_t modCount);
 
 extern char *effectGetName(int id);
 extern int effectGetIconX(int id);
 extern int effectGetIconY(int id);
+extern int effectGetIdFromName(const char *name);
+extern int effectGetLastId();
