@@ -185,6 +185,11 @@ static void synchronizerLoadWorld(sInt seed, uByte initPlayerCount, uByte initPl
     // start the game
     startGame(doLoad, loadName);
 
+    if (currentMenu != MENU_NONE) {
+        synchronizerRunning = false;
+        return;
+    }
+
     // remove transfered save file from clients
     if (playerLocalIndex != 0) {
         FILE *file = fopen("tmpTransfer.bin", "rb");
