@@ -131,7 +131,7 @@ The player save file is a separate binary file that also starts with `SAVE_VERSI
 ### Effects
 
 20. `esize` : int (4 bytes)
-    - Number of saved effects (`EFFECTS_MAX`).
+    - Number of saved effects (`vanillaEffectCount`).
 21. For each effect:
     - `level` : uByte (1 byte)
     - `time` : sInt (4 bytes)

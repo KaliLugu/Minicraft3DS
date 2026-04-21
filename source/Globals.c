@@ -176,8 +176,8 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
 
     // strength effect of players
     if (damager != NULL && damager->type == ENTITY_PLAYER) {
-        if (playerEffectActive(damager->p.data, EFFECT_STRENGTH)) {
-            uByte slevel = playerEffectGetLevel(damager->p.data, EFFECT_STRENGTH);
+        if (playerEffectActive(damager->p.data, effectGetIdFromName("strength"))) {
+            uByte slevel = playerEffectGetLevel(damager->p.data, effectGetIdFromName("strength"));
             damage *= 1.0 + 0.5 * slevel;
         }
     }

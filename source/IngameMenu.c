@@ -459,7 +459,7 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
         renderTextColor("Effects", 180 + 104 + 1, 17 + 1, 0x000000FF);
         renderTextColor("Effects", 180 + 104, 17, 0xFFFFFFFF);
         int epos = 0;
-        for (i = 0; i < EFFECTS_MAX; i++) {
+        for (i = 0; i < vanillaEffectCount; i++) {
             if (playerEffectActive(pd, i)) {
                 // can only display a limited amount of effects at once
                 if (epos == 3) {

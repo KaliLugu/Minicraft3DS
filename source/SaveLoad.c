@@ -263,9 +263,9 @@ void savePlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     fwrite(&(player->sprite.accs), sizeof(uByte), 1, file);
 
     // Effect Data
-    int esize = EFFECTS_MAX;
+    int esize = vanillaEffectCount;
     fwrite(&esize, sizeof(int), 1, file);
-    for (i = 0; i < EFFECTS_MAX; i++) {
+    for (i = 0; i < vanillaEffectCount; i++) {
         fwrite(&(player->effects[i].level), sizeof(uByte), 1, file);
         fwrite(&(player->effects[i].time), sizeof(sInt), 1, file);
     }

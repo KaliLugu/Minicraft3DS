@@ -13,7 +13,6 @@ typedef struct {
 extern EffectData *g_effectTable;
 extern unsigned int g_effectCount;
 
-extern void effectsDataInit();
 extern void effectsTableBuild(uint16_t modCount);
 
 extern char *effectGetName(int id);

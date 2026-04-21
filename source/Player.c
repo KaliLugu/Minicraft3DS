@@ -66,7 +66,7 @@ void playerInitInventory(PlayerData *pd) {
 
 void playerInitEffects(PlayerData *pd) {
     int i;
-    for (i = 0; i < EFFECTS_MAX; i++) {
+    for (i = 0; i < vanillaEffectCount; i++) {
         pd->effects[i].level = 0;
         pd->effects[i].time = 0;
     }
@@ -268,22 +268,22 @@ bool playerUseItem(PlayerData *pd) {
 
     // scrolls
     if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_UNDYING")) { // scrolls
-        if (_playerUseItemScroll(pd, EFFECT_UNDYING, 1, EFFECTS_DURATION_INFINITE))
+        if (_playerUseItemScroll(pd, effectGetIdFromName("undying"), 1, EFFECTS_DURATION_INFINITE))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_REGENERATION")) {
-        if (_playerUseItemScroll(pd, EFFECT_REGENERATION, 1, 3002))
+        if (_playerUseItemScroll(pd, effectGetIdFromName("regeneration"), 1, 3002))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_SPEED")) {
-        if (_playerUseItemScroll(pd, EFFECT_SPEED, 1, 3600 * 2))
+        if (_playerUseItemScroll(pd, effectGetIdFromName("speed"), 1, 3600 * 2))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_STRENGTH")) {
-        if (_playerUseItemScroll(pd, EFFECT_STRENGTH, 1, 3600 * 4))
+        if (_playerUseItemScroll(pd, effectGetIdFromName("strength"), 1, 3600 * 4))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_SHIELDING")) {
-        if (_playerUseItemScroll(pd, EFFECT_SHIELDING, 1, 3600 * 4))
+        if (_playerUseItemScroll(pd, effectGetIdFromName("shielding"), 1, 3600 * 4))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_NIGHTVISION")) {
-        if (_playerUseItemScroll(pd, EFFECT_NIGHTVISION, 1, 3600 * 8))
+        if (_playerUseItemScroll(pd, effectGetIdFromName("nightVision"), 1, 3600 * 8))
             return true;
     }
 
@@ -413,8 +413,8 @@ void tickPlayer(PlayerData *pd, bool inmenu) {
     playerEffectsUpdate(pd);
 
     // regeneration
-    if (playerEffectActive(pd, EFFECT_REGENERATION)) {
-        if (playerEffectGetTime(pd, EFFECT_REGENERATION) % (60 * 10 / playerEffectGetLevel(pd, EFFECT_REGENERATION)) == 1) {
+    if (playerEffectActive(pd, effectGetIdFromName("regeneration"))) {
+        if (playerEffectGetTime(pd, effectGetIdFromName("regeneration")) % (60 * 10 / playerEffectGetLevel(pd, effectGetIdFromName("regeneration"))) == 1) {
             playerHeal(pd, 1);
         }
     }
@@ -457,8 +457,8 @@ void tickPlayer(PlayerData *pd, bool inmenu) {
         pd->entity.p.ay = 0;
 
         int moveSpeed = 1;
-        if (playerEffectActive(pd, EFFECT_SPEED)) {
-            moveSpeed += playerEffectGetLevel(pd, EFFECT_SPEED);
+        if (playerEffectActive(pd, effectGetIdFromName("speed"))) {
+            moveSpeed += playerEffectGetLevel(pd, effectGetIdFromName("speed"));
         }
 
         if (pd->inputs.k_left.down) {
@@ -573,8 +573,8 @@ void playerDamage(PlayerData *pd, int damage, int dir, MColor hurtColor, Entity 
         return;
 
     // damage reducing effects
-    if (playerEffectActive(pd, EFFECT_SHIELDING)) {
-        uByte level = playerEffectGetLevel(pd, EFFECT_SHIELDING);
+    if (playerEffectActive(pd, effectGetIdFromName("shielding"))) {
+        uByte level = playerEffectGetLevel(pd, effectGetIdFromName("shielding"));
         damage -= level;
     }
     if (damage <= 0)
@@ -586,9 +586,9 @@ void playerDamage(PlayerData *pd, int damage, int dir, MColor hurtColor, Entity 
 
     // player death
     if (pd->entity.p.health < 1) {
-        if (playerEffectActive(pd, EFFECT_UNDYING)) {
+        if (playerEffectActive(pd, effectGetIdFromName("undying"))) {
             pd->entity.p.health = 10;
-            playerEffectRemove(pd, EFFECT_UNDYING);
+            playerEffectRemove(pd, effectGetIdFromName("undying"));
         } else {
             playSoundPositioned(snd_bossdeath, pd->entity.level, pd->entity.x, pd->entity.y);
             pd->entity.p.endTimer = 60;
@@ -655,7 +655,7 @@ void playerSpawn(PlayerData *pd) {
 // effects
 void playerEffectsUpdate(PlayerData *pd) {
     int i;
-    for (i = 0; i < EFFECTS_MAX; i++) {
+    for (i = 0; i < vanillaEffectCount; i++) {
         // if effect is active and not infinite
         if (pd->effects[i].level != 0) {
             if (pd->effects[i].time != EFFECTS_DURATION_INFINITE) {

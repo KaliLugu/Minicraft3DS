@@ -1,4 +1,5 @@
 #include "EffectsData.h"
+#include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -10,12 +11,12 @@
 
 static EffectData _effectDefs[] = {
     // Vanilla effects
-    EFFECT_ENTRY("Undying", 44, 0),
-    EFFECT_ENTRY("Regeneration", 44, 1),
-    EFFECT_ENTRY("Speed", 44, 2),
-    EFFECT_ENTRY("Strength", 44, 3),
-    EFFECT_ENTRY("Shielding", 44, 4),
-    EFFECT_ENTRY("Night Vision", 44, 5),
+    EFFECT_ENTRY("undying", 44, 0),
+    EFFECT_ENTRY("regeneration", 44, 1),
+    EFFECT_ENTRY("speed", 44, 2),
+    EFFECT_ENTRY("strength", 44, 3),
+    EFFECT_ENTRY("shielding", 44, 4),
+    EFFECT_ENTRY("nightVision", 44, 5),
 };
 
 static const unsigned int _vanillaEffectCount = sizeof(_effectDefs) / sizeof(_effectDefs[0]);

@@ -303,7 +303,7 @@ void renderGame(int screen, int width, int height) {
         offsetY = yscr;
         drawRect(0, 0, width, height, 0x0C0C0CFF);
 
-        bool nightvision = playerEffectActive(getLocalPlayer(), EFFECT_NIGHTVISION);
+        bool nightvision = playerEffectActive(getLocalPlayer(), effectGetIdFromName("nightVision"));
         if (!nightvision) {
             renderLightsToStencil(getLocalPlayer(), false, false, true);
         }

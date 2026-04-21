@@ -142,7 +142,7 @@ La sauvegarde joueur est un fichier binaire distinct et utilise aussi `SAVE_VERS
 ### Effets
 
 17. `esize` : int (4 octets)
-    - Nombre d'effets sauvegardés (doit être `EFFECTS_MAX`).
+    - Nombre d'effets sauvegardés (doit être `vanillaEffectCount`).
 18. Pour chaque effet :
     - `level` : uByte (1 octet)
     - `time` : sInt (4 octets)
