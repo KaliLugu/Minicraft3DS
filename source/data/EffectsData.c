@@ -53,6 +53,7 @@ int effectGetIconY(int id) {
 }
 
 int effectGetIdFromName(const char *name) {
+    if (!g_effectTable || !name) return -1;
     for (unsigned int i = 0; i < g_effectCount; i++) {
         if (strcmp(g_effectTable[i].name, name) == 0) {
             return g_effectTable[i].id;
