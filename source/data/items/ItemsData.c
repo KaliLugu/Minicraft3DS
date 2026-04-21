@@ -1,5 +1,5 @@
-#include "items/ItemsData.h"
-#include "items/ItemsTypes.h"
+#include "ItemsData.h"
+#include "ItemsTypes.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

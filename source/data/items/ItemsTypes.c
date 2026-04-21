@@ -1,4 +1,4 @@
-#include "items/ItemsData.h"
+#include "ItemsData.h"
 #include <stdlib.h>
 
 #define ITEM_ENTRY(name, displayname, cat, stackable, texX, texY, ...) \
