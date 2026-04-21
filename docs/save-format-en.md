@@ -6,8 +6,8 @@ This document describes the binary save file format used by Minicraft3DS.
 
 - Save files are binary, not text.
 - Data is written in the exact order defined by the save code.
-- Each save file begins with a save format version number (`SAVE_VERSION`) and ends with a full version string.
-- The full version string at the end of the file is included to ensure compatibility between older versions that did not store it and newer versions that do.
+- Each save file begins with a save format version number (`SAVE_VERSION`).
+- **World save files** end with a 16-byte version string for compatibility. **Player save files do not** include a trailing version string.
 
 ## World Save File Structure
 
@@ -151,7 +151,7 @@ The player save file is a separate binary file that also starts with `SAVE_VERSI
 
 - The save format depends on the exact binary sizes and order of fields in code.
 - Changing field order or type sizes breaks compatibility.
-- The final version string is written to support compatibility with newer versions while preserving older saves.
+- The world save's trailing version string supports compatibility between game versions. Player saves do not have one.
 - Older saves without the trailing version string should still be usable if the loader relies on the initial save version number.
 - A truncated or corrupted file may fail to load.
 
@@ -223,4 +223,4 @@ Offset | Type       | Size | Value (Hex)              | Value (Dec) | Descriptio
   - `sByte`: 8-bit signed integer
   - `bool`: 8-bit boolean (0 = false, 1 = true)
 - **File Size:** This minimal example is 30 bytes; real files are much larger due to minimap (16KB), effects, and quests.
-- **Version String:** The file would end with a 16-byte version string (not shown in this minimal example).
+- **Version String:** Player save files do **not** end with a version string (unlike world saves).

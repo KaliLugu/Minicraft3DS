@@ -60,7 +60,12 @@ Called once per frame with user input available. Responsibilities:
 - `localInputs.k_accept.clicked` - Confirm button
 - `localInputs.k_decline.clicked` - Cancel/Back button
 - `localInputs.k_up.clicked` / `k_down.clicked` / `k_left.clicked` / `k_right.clicked`
+- `localInputs.k_attack.clicked` - Attack action
+- `localInputs.k_menu.clicked` - Open in-game menu
+- `localInputs.k_pause.clicked` - Pause
+- `localInputs.k_menuNext.clicked` / `k_menuPrev.clicked` - Navigate menu tabs
 - `localInputs.k_delete.clicked` - Delete/Specialized action
+- `localInputs.k_touchX` / `k_touchY` - Touch screen position (sInt, not Key)
 
 ### Render Function
 
@@ -75,7 +80,6 @@ Rendering utilities available:
 - `drawRect(x, y, width, height, color)` - Draw colored rectangle
 - `renderTextCentered(text, y, width)` - Centered text
 - `renderText(text, x, y)` - Positioned text
-- `renderTextFitWidth(text, x, y, maxWidth)` - Text with max width
 
 ### Color Format
 
@@ -332,14 +336,6 @@ void menuCustomTick() {
 }
 ```
 
-## Debugging
-
-To add debug output, use functions from `Render.h`:
-```c
-debugMessage("Menu state: %d", currentMenu);
-debug("Custom information");
-```
-
 ## Performance Notes
 
 - Menus run at 60 FPS cap on 3DS
@@ -350,11 +346,10 @@ debug("Custom information");
 ## Inputs Details
 
 Complete input names available in `Inputs.h`:
-- `localInputs.circlepad_x` / `circlepad_y` - Analog stick position
-- `localInputs.cstick_x` / `cstick_y` - C-stick position (New 3DS)
-- All directional buttons (up, down, left, right)
-- Action buttons (accept, decline)
-- Shoulder buttons (l, r)
-- Specialized buttons (delete, etc.)
+- Directional: `k_up`, `k_down`, `k_left`, `k_right`
+- Action: `k_accept`, `k_decline`, `k_attack`, `k_delete`
+- Menu: `k_menu`, `k_pause`, `k_menuNext`, `k_menuPrev`
+- Touch: `k_touchX`, `k_touchY` (type `sInt`, no `.clicked`)
 
-Check `.pressed` vs `.clicked` for held vs. pressed-this-frame distinction.
+Each `Key` field has `.clicked` (pressed this frame) and `.down` (held).
+Touch coordinates are raw integers, updated every frame.

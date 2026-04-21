@@ -3,7 +3,7 @@
 ## Architecture actuelle
 
 ### Définition des items
-Les items vanilla sont maintenant définis dans `source/data/items/ItemsTypes.c` via un tableau statique interne `_vanillaDefs[]`.
+Les items vanilla sont maintenant définis dans `source/data/ItemsTypes.c` via un tableau statique interne `_vanillaDefs[]`.
 Ce tableau contient uniquement les définitions des items du jeu de base et n'est pas exposé directement aux autres modules.
 
 La table d'items accessible globalement est :
@@ -23,9 +23,8 @@ void initData() {
     uint16_t modCount = 0;
     // TODO: scanner sdmc:/mods/ ici
     itemsTableBuild(modCount);
-    itemsDataInit();
+    effectsTableBuild(modCount);
     tilesDataInit();
-    effectsDataInit();
     entityDataInit();
 }
 ```
@@ -44,12 +43,13 @@ Chaque item est décrit par `ItemData` :
 - `getIdFromName(const char *name)` → ID runtime
 - `getNameFromId(ItemId id)` → nom logique
 
-### Gestion dynamique des données dérivées
-Les tableaux d'affichage sont désormais heap-alloués :
-- `_itemIconX`
-- `_itemIconY`
+### Données d'affichage
+Les coordonnées d'icônes ne sont plus stockées dans des tableaux séparés.
+Elles sont calculées à la volée via :
+- `itemGetIconX(id, countLevel)` → coordonnée X dans le spritesheet
+- `itemGetIconY(id, countLevel)` → coordonnée Y dans le spritesheet
 
-Ils sont créés dans `itemsDataInit()` avec `calloc(g_itemCount, ...)`, ce qui permet de supporter un nombre d'items variable.
+Ces fonctions lisent directement `texX` et `texY` depuis `g_itemTable[id]`, avec une logique spéciale pour les outils multi-niveaux (sword, shovel, etc.).
 
 > `_itemNames` et `_itemSingle` ont été supprimés — ces données sont désormais directement dans `ItemData` (`displayName` et `isStackable`).
 
@@ -75,12 +75,11 @@ La compatibilité est maintenue tant que les noms vanilla restent inchangés.
   - plus d'`extern const unsigned int itemCount`
   - exporte `g_itemTable`, `g_itemCount`, `itemsTableBuild()`
 - `ItemsData.c`
-  - les arrays d'affichage (`_itemIconX`, `_itemIconY`) sont heap-alloués via `calloc`
   - `_itemNames` et `_itemSingle` supprimés (données migrées dans `ItemData`)
-  - `_itemRegister()` : paramètre `isSingle` supprimé (signature : `_itemRegister(id, name, iconX, iconY)`)
+  - `itemGetIconX()` et `itemGetIconY()` remplacent les anciens tableaux (`_itemIconX`, `_itemIconY`)
   - `getNameFromId()` et les bornes utilisent `g_itemCount`
 - `Data.c`
-  - appelle `itemsTableBuild(0)` avant `itemsDataInit()`
+  - appelle `itemsTableBuild(0)` puis `effectsTableBuild(0)` avant les autres inits
 
 ---
 
