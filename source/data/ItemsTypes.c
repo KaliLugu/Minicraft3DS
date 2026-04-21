@@ -52,7 +52,7 @@ static const ItemData _vanillaDefs[] = {
     ITEM_ENTRY("ITEM_WOOL", "Wool", ITEM_CAT_GENERIC, true, 8, 20, {}),
     ITEM_ENTRY("ITEM_STRING", "String", ITEM_CAT_GENERIC, true, 9, 20, {}),
     ITEM_ENTRY("ITEM_PORK_RAW", "Raw Pork", ITEM_CAT_FOOD, true, 10, 20, {.food = {1}}),
-    ITEM_ENTRY("ITEM_PORK_COOKED", "Coocked Pork", ITEM_CAT_FOOD, true, 11, 20, {.food = {3}}),
+    ITEM_ENTRY("ITEM_PORK_COOKED", "Cooked Pork", ITEM_CAT_FOOD, true, 11, 20, {.food = {3}}),
     ITEM_ENTRY("ITEM_BEEF_RAW", "Raw Beef", ITEM_CAT_FOOD, true, 12, 20, {.food = {1}}),
     ITEM_ENTRY("ITEM_BEEF_COOKED", "Cooked Beef", ITEM_CAT_FOOD, true, 13, 20, {.food = {4}}),
     ITEM_ENTRY("ITEM_LEATHER", "Leather", ITEM_CAT_GENERIC, true, 14, 20, {}),
