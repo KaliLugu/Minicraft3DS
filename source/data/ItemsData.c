@@ -135,12 +135,12 @@ char *itemGetName(int id, int countLevel) {
     return g_itemTable[id].displayName;
 }
 
-char _itemCurrentName[32];
 char *itemGetNameWithCount(int id, int countLevel) {
+    static char _itemCurrentName[32];
     if (itemIsSingle(id, countLevel)) {
         return itemGetName(id, countLevel);
     } else {
-        sprintf(_itemCurrentName, "%d %s", countLevel, itemGetName(id, countLevel));
+        snprintf(_itemCurrentName, sizeof(_itemCurrentName), "%d %s", countLevel, itemGetName(id, countLevel));
         return _itemCurrentName;
     }
 }
