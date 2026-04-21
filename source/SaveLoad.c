@@ -398,7 +398,7 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
         fread(temp_name, 1, nameLen, file);
         temp_name[nameLen] = '\0';
         
-        sShort itemId = getIdFromName(temp_name);
+        ItemId itemId = getIdFromName(temp_name);
         *e = newEntityItem(newItem(itemId, 0), x, y, level);
         fread(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
         fread(&e->entityItem.age, sizeof(sShort), 1, file);
@@ -427,7 +427,7 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
         
         fread(&invIndex, sizeof(int), 1, file);
 
-        sShort Id = getIdFromName(temp_name_fur);
+        ItemId Id = getIdFromName(temp_name_fur);
         // Validate invIndex to prevent out-of-bounds access on corrupted save files
         Inventory *invPtr = (invIndex >= 0 && invIndex < eManager->nextInv) ? &eManager->invs[invIndex] : NULL;
         *e = newEntityFurniture(Id, invPtr, x, y, level);
@@ -584,7 +584,7 @@ bool saveWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
 
     if (exists) {
         // create backup copy
-        char *filenameBackup = malloc(sizeof(filename) + 4 + 1);
+        char *filenameBackup = malloc(strlen(filename) + 4 + 1);
         if (filenameBackup == NULL) {
             return false;
         }

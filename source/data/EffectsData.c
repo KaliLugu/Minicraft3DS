@@ -38,14 +38,17 @@ void effectsTableBuild(uint16_t modCount) {
 }
 
 char *effectGetName(int id) {
+    if (!g_effectTable || id < 0 || (unsigned)id >= g_effectCount) return "";
     return g_effectTable[id].name;
 }
 
 int effectGetIconX(int id) {
+    if (!g_effectTable || id < 0 || (unsigned)id >= g_effectCount) return 0;
     return g_effectTable[id].iconX;
 }
 
 int effectGetIconY(int id) {
+    if (!g_effectTable || id < 0 || (unsigned)id >= g_effectCount) return 0;
     return g_effectTable[id].iconY;
 }
 
