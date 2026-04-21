@@ -11,12 +11,12 @@
 
 static EffectData _effectDefs[] = {
     // Vanilla effects
-    EFFECT_ENTRY("undying", 44, 0),
-    EFFECT_ENTRY("regeneration", 44, 1),
-    EFFECT_ENTRY("speed", 44, 2),
-    EFFECT_ENTRY("strength", 44, 3),
-    EFFECT_ENTRY("shielding", 44, 4),
-    EFFECT_ENTRY("nightVision", 44, 5),
+    EFFECT_ENTRY("undying", 0, 44),
+    EFFECT_ENTRY("regeneration", 1, 44),
+    EFFECT_ENTRY("speed", 2, 44),
+    EFFECT_ENTRY("strength", 3, 44),
+    EFFECT_ENTRY("shielding", 4, 44),
+    EFFECT_ENTRY("nightVision", 5, 44),
 };
 
 static const unsigned int _vanillaEffectCount = sizeof(_effectDefs) / sizeof(_effectDefs[0]);
