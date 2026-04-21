@@ -15,46 +15,41 @@ ItemId getIdFromName(const char *name) {
 }
 
 const char* getNameFromId(ItemId id) {
-    if (id >= g_itemCount) return "NULL"; // bounds check (supprimer id < 0)
-    for (unsigned int i = 0; i < g_itemCount; ++i) {
-        if (g_itemTable[i].id == id) {
-            return g_itemTable[i].name;
-        }
-    }
-    return "null";
+    if (id >= g_itemCount) return "NULL";
+    return g_itemTable[id].name;
 }
 
 unsigned int getToolCountLevel(ItemId id) {
-    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (id >= g_itemCount) return 0;
     if (g_itemTable[id].category != ITEM_CAT_TOOL) return 0; // not tool
     return g_itemTable[id].data.tool.countLevel;
 }
 
 unsigned int getFoodHealth(ItemId id) {
-    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (id >= g_itemCount) return 0;
     if (g_itemTable[id].category != ITEM_CAT_FOOD) return 0; // not food
     return g_itemTable[id].data.food.health;
 }
 
 unsigned int getSpellDuration(ItemId id) {
-    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (id >= g_itemCount) return 0;
     if (g_itemTable[id].category != ITEM_CAT_SPELL) return 0; // not spell
     return g_itemTable[id].data.spell.duration;
 }
 
 unsigned int getSpellEffect(ItemId id) {
-    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (id >= g_itemCount) return 0;
     if (g_itemTable[id].category != ITEM_CAT_SPELL) return 0; // not spell
     return g_itemTable[id].data.spell.effect;
 }
 
 unsigned int getItemCategory(ItemId id) {
-    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+    if (id >= g_itemCount) return 0;
     return g_itemTable[id].category;
 }
 
-char *itemGetName(int id, int countLevel) {
-    if (id < 0 || id >= g_itemCount) return "";
+char *itemGetName(ItemId id, int countLevel) {
+    if (id >= g_itemCount) return "";
     if (getItemCategory(id) == ITEM_CAT_TOOL) {
         if (id == getIdFromName("TOOL_SHOVEL")) {
             switch (countLevel) {
@@ -135,7 +130,7 @@ char *itemGetName(int id, int countLevel) {
     return g_itemTable[id].displayName;
 }
 
-char *itemGetNameWithCount(int id, int countLevel) {
+char *itemGetNameWithCount(ItemId id, int countLevel) {
     static char _itemCurrentName[32];
     if (itemIsSingle(id, countLevel)) {
         return itemGetName(id, countLevel);
@@ -145,8 +140,8 @@ char *itemGetNameWithCount(int id, int countLevel) {
     }
 }
 
-int itemGetIconX(int id, int countLevel) {
-    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+int itemGetIconX(ItemId id, int countLevel) {
+    if (id >= g_itemCount) return 0;
     if (id == getIdFromName("TOOL_SHOVEL") || 
         id == getIdFromName("TOOL_HOE") ||
         id == getIdFromName("TOOL_SWORD") ||
@@ -158,12 +153,12 @@ int itemGetIconX(int id, int countLevel) {
     } else return g_itemTable[id].texX;
 }
 
-int itemGetIconY(int id, int countLevel) {
-    if (id < 0 || id >= g_itemCount) return 0; // bounds check
+int itemGetIconY(ItemId id, int countLevel) {
+    if (id >= g_itemCount) return 0;
     return g_itemTable[id].texY;
 }
 
-bool itemIsSingle(int id, int countLevel) {
-    if (id < 0 || id >= g_itemCount) return true; // bounds check
+bool itemIsSingle(ItemId id, int countLevel) {
+    if (id >= g_itemCount) return true;
     return !g_itemTable[id].isStackable;
 }

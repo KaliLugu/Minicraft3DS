@@ -232,7 +232,7 @@ bool playerUseItem(PlayerData *pd) {
 
     // Utiliser l'item de santé actif
     if (pd->activeItem->id == getIdFromName("ITEM_APPLE")) { // Apple
-        if (_playerUseItemEat(pd, 2, 1))
+        if (_playerUseItemEat(pd, 2, getFoodHealth(pd->activeItem->id)))
             return true;
     } else if (pd->activeItem->id == getIdFromName("ITEM_GOLDEN_APPLE")) { // Golden Apple
         if (_playerUseItemEat(pd, 2, getFoodHealth(getIdFromName("ITEM_GOLDEN_APPLE"))))
@@ -541,10 +541,8 @@ void tickPlayer(PlayerData *pd, bool inmenu) {
 
 void playerSetActiveItem(PlayerData *pd, Item *item) {
     pd->activeItem = item;
-    if (pd->activeItem->id > 27 && pd->activeItem->id < 51)
-        pd->entity.p.isCarrying = true;
-    else
-        pd->entity.p.isCarrying = false;
+    pd->entity.p.isCarrying = (pd->activeItem->id < g_itemCount &&
+        g_itemTable[pd->activeItem->id].category == ITEM_CAT_FURNITURE);
 }
 
 bool playerUseEnergy(PlayerData *pd, int amount) {

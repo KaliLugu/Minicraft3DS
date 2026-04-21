@@ -40,11 +40,11 @@ typedef struct {
     } data;
 } ItemData;
 
-extern char *itemGetName(int id, int countLevel);
-extern char *itemGetNameWithCount(int id, int countLevel);
-extern int itemGetIconX(int id, int countLevel);
-extern int itemGetIconY(int id, int countLevel);
-extern bool itemIsSingle(int id, int countLevel);
+extern char *itemGetName(ItemId id, int countLevel);
+extern char *itemGetNameWithCount(ItemId id, int countLevel);
+extern int itemGetIconX(ItemId id, int countLevel);
+extern int itemGetIconY(ItemId id, int countLevel);
+extern bool itemIsSingle(ItemId id, int countLevel);
 extern ItemId getIdFromName(const char *name);
 extern const char* getNameFromId(ItemId id);
 extern unsigned int getToolCountLevel(ItemId id);
