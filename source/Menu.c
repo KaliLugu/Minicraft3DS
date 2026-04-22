@@ -10,6 +10,7 @@ void initMenus() {
 void tickMenu(int menu) {
     switch (menu) {
     case MENU_TITLE:
+        // here add latest version check and compare, if not latest, show "new version available" before title screen
         menuTitleTick();
         break;
     case MENU_CHOOSE_GAME:
