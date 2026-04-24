@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 ItemId getIdFromName(const char *name) {
+    if (g_itemTable == NULL || g_itemCount == 0) return 0;
     if (name == NULL) return g_itemTable[0].id;
     for (unsigned int i = 0; i < g_itemCount; ++i) {
         if (strcmp(g_itemTable[i].name, name) == 0) {
