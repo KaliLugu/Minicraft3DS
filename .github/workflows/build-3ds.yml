@@ -19,4 +19,5 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/src \
             devkitpro/devkitarm:20251231 \
+            bash -lc "cd /src && sh fetch-ssl.sh"
             bash -lc "cd /src && make clean && make"
