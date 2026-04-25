@@ -20,4 +20,4 @@ jobs:
             -v ${{ github.workspace }}:/src \
             devkitpro/devkitarm:20251231 \
             bash -lc "cd /src && sh fetch-ssl.sh"
-            bash -lc "cd /src && make clean && make"
+            bash -lc "make clean && make"
