@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "version.h"
+#include "cJSON.h"
+#include "network/miniCurl.h"
 
 static bool isValidVersionFormat(const char *version) {
     if (version == NULL) return false;
@@ -28,4 +30,23 @@ bool isOlderVersion(const char *version) {
 
 bool isNewerVersion(const char *version) {
     return compareVersions(version) > 0;
+}
+
+// use version start with 0.x.x for error cases, so that it will be considered as older than any valid version and we can determinate error to show
+char *getLatestRemoteVersion() {
+    if (internetInit() != 0) {
+        return "0.0.1";
+    }
+    char *json = miniCurlGet("https://api.github.com/repos/KaliLugu/Minicraft3DS/tags");
+    if (!json) {
+        return "0.0.2";
+    }
+    if (exitInternet() != 0) {
+        return "0.0.3";
+    }
+
+    // continue tomorrow, need to read "name" in the json and return it
+
+    // Placeholder for actual implementation to fetch the latest version from a remote source
+    return "0.0.0";  // Return a dummy version for now
 }
