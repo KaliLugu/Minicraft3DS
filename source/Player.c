@@ -1,5 +1,6 @@
 #include "Player.h"
-
+#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 #include "Globals.h"
 #include <limits.h>
 
@@ -49,37 +50,23 @@ void playerInitInventory(PlayerData *pd) {
     pd->inventory.lastSlot = 0;
     pd->activeItem = &noItem;
 
-    addItemToInventory(newItem(ITEM_WORKBENCH, 0), &(pd->inventory));
-    addItemToInventory(newItem(ITEM_POWGLOVE, 0), &(pd->inventory));
+    addItemToInventory(newItem(getIdFromName("ITEM_WORKBENCH"), 0), &(pd->inventory));
+    addItemToInventory(newItem(getIdFromName("ITEM_POWGLOVE"), 0), &(pd->inventory));
 
+    // TODO : modify this for testing new items system
     if (TESTGODMODE) {
-        addItemToInventory(newItem(TOOL_SHOVEL, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_HOE, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_SWORD, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_PICKAXE, 4), &(pd->inventory));
-        addItemToInventory(newItem(TOOL_AXE, 4), &(pd->inventory));
-
-        addItemToInventory(newItem(ITEM_ANVIL, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_CHEST, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_OVEN, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_FURNACE, 0), &(pd->inventory));
-        addItemToInventory(newItem(ITEM_LANTERN, 0), &(pd->inventory));
-
-        addItemToInventory(newItem(TOOL_MAGIC_COMPASS, 1), &(pd->inventory));
-
-        int i;
-        for (i = 7; i < 28; ++i)
-            addItemToInventory(newItem(i, 50), &(pd->inventory));
-        for (i = 51; i < 76; ++i)
-            addItemToInventory(newItem(i, 50), &(pd->inventory));
-        for (i = 1001; i < 1008; ++i)
-            addItemToInventory(newItem(i, 50), &(pd->inventory));
+        // Add all valid items for testing
+        for (int i = 1; i < g_itemCount; ++i) { // skip NULL
+            ItemData *data = &g_itemTable[i];
+            int count = data->isStackable ? 50 : (data->category == ITEM_CAT_TOOL ? 4 : 1);
+            addItemToInventory(newItem(data->id, count), &(pd->inventory));
+        }
     }
 }
 
 void playerInitEffects(PlayerData *pd) {
     int i;
-    for (i = 0; i < EFFECTS_MAX; i++) {
+    for (i = 0; i < vanillaEffectCount; i++) {
         pd->effects[i].level = 0;
         pd->effects[i].time = 0;
     }
@@ -104,6 +91,10 @@ void playerInitMenus(PlayerData *pd) {
     pd->ingameMenuAreYouSure = false;
     pd->ingameMenuAreYouSureSave = false;
     pd->ingameMenuTimer = 0;
+
+    // Initialize current recipes
+    pd->currentRecipes.size = 0;
+    pd->currentRecipes.recipes = NULL;
 
     resetNPCMenuData(&(pd->npcMenuData));
 
@@ -195,33 +186,24 @@ bool playerUseItem(PlayerData *pd) {
     Item *aitem;
     Item *item;
 
-    switch (pd->activeItem->id) {
     // shooting arrows
-    case TOOL_BOW:
-        item = getItemFromInventory(ITEM_ARROW_WOOD, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_WOOD;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_STONE, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_STONE;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_IRON, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_IRON;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_GOLD, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_GOLD;
-            aitem = item;
-        }
-        item = getItemFromInventory(ITEM_ARROW_GEM, &(pd->inventory));
-        if (item != NULL) {
-            aitemID = ITEM_ARROW_GEM;
-            aitem = item;
+    if (pd->activeItem->id == getIdFromName("ITEM_BOW")) { // si l'user a l'arc en main
+        // Vérifier les flèches dans l'inventaire
+        int arrowIDs[] = {
+            getIdFromName("ITEM_ARROW_WOOD"),  // Wood Arrow
+            getIdFromName("ITEM_ARROW_STONE"),  // Stone Arrow
+            getIdFromName("ITEM_ARROW_IRON"),  // Iron Arrow
+            getIdFromName("ITEM_ARROW_GOLD"),  // Gold Arrow
+            getIdFromName("ITEM_ARROW_GEM")   // Gem Arrow
+        };
+
+        for (int i = 4; i >= 0; i--) {
+            item = getItemFromInventory(arrowIDs[i], &(pd->inventory));
+            if (item != NULL) {
+                aitemID = arrowIDs[i];
+                aitem = item;
+                break; // Utiliser la meilleure flèche disponible
+            }
         }
 
         if (aitemID != 0) {
@@ -246,77 +228,63 @@ bool playerUseItem(PlayerData *pd) {
             }
             return true;
         }
-        break;
+    }
 
-    // Health items
-    case ITEM_APPLE:
-        if (_playerUseItemEat(pd, 2, 1))
+    // Utiliser l'item de santé actif
+    if (pd->activeItem->id == getIdFromName("ITEM_APPLE")) { // Apple
+        if (_playerUseItemEat(pd, 2, getFoodHealth(pd->activeItem->id)))
             return true;
-        break;
-    case ITEM_GOLDEN_APPLE:
-        if (_playerUseItemEat(pd, 2, 7))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_GOLDEN_APPLE")) { // Golden Apple
+        if (_playerUseItemEat(pd, 2, getFoodHealth(getIdFromName("ITEM_GOLDEN_APPLE"))))
             return true;
-        break;
-    case ITEM_FLESH:
-        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_FLESH")) { // Flesh
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), getFoodHealth(getIdFromName("ITEM_FLESH"))))
             return true;
-        break;
-    case ITEM_BREAD:
-        if (_playerUseItemEat(pd, 3, 2))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_BREAD")) { // Bread
+        if (_playerUseItemEat(pd, 3, getFoodHealth(getIdFromName("ITEM_BREAD"))))
             return true;
-        break;
-    case ITEM_PORK_RAW:
-        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_PORK_RAW")) { // Raw Pork
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), getFoodHealth(getIdFromName("ITEM_PORK_RAW"))))
             return true;
-        break;
-    case ITEM_PORK_COOKED:
-        if (_playerUseItemEat(pd, 3, 3))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_PORK_COOKED")) { // Cooked Pork
+        if (_playerUseItemEat(pd, 3, getFoodHealth(getIdFromName("ITEM_PORK_COOKED"))))
             return true;
-        break;
-    case ITEM_BEEF_RAW:
-        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), 1))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_BEEF_RAW")) { // Raw Beef
+        if (_playerUseItemEat(pd, 4 + (syncRand() % 4), getFoodHealth(getIdFromName("ITEM_BEEF_RAW"))))
             return true;
-        break;
-    case ITEM_BEEF_COOKED:
-        if (_playerUseItemEat(pd, 3, 4))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_BEEF_COOKED")) { // Steak
+        if (_playerUseItemEat(pd, 3, getFoodHealth(getIdFromName("ITEM_BEEF_COOKED"))))
             return true;
-        break;
+    }
 
     // special item
-    case ITEM_WIZARD_SUMMON:
+    if (pd->activeItem->id == getIdFromName("ITEM_WIZARD_SUMMON")) { // wizard summon
         if (pd->entity.level == 0) {
             --(pd->activeItem->countLevel);
-
             airWizardHealthDisplay = 2000;
             addEntityToList(newEntityAirWizard(630, 820, 0), &eManager);
         }
-        break;
+    }
 
     // scrolls
-    case ITEM_SCROLL_UNDYING:
-        if (_playerUseItemScroll(pd, EFFECT_UNDYING, 1, EFFECTS_DURATION_INFINITE))
+    if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_UNDYING")) { // scrolls
+        if (_playerUseItemScroll(pd, effectGetIdFromName("undying"), 1, EFFECTS_DURATION_INFINITE))
             return true;
-        break;
-    case ITEM_SCROLL_REGENERATION:
-        if (_playerUseItemScroll(pd, EFFECT_REGENERATION, 1, 3002))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_REGENERATION")) {
+        if (_playerUseItemScroll(pd, effectGetIdFromName("regeneration"), 1, 3002))
             return true;
-        break;
-    case ITEM_SCROLL_SPEED:
-        if (_playerUseItemScroll(pd, EFFECT_SPEED, 1, 3600 * 2))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_SPEED")) {
+        if (_playerUseItemScroll(pd, effectGetIdFromName("speed"), 1, 3600 * 2))
             return true;
-        break;
-    case ITEM_SCROLL_STRENGTH:
-        if (_playerUseItemScroll(pd, EFFECT_STRENGTH, 1, 3600 * 4))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_STRENGTH")) {
+        if (_playerUseItemScroll(pd, effectGetIdFromName("strength"), 1, 3600 * 4))
             return true;
-        break;
-    case ITEM_SCROLL_SHIELDING:
-        if (_playerUseItemScroll(pd, EFFECT_SHIELDING, 1, 3600 * 4))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_SHIELDING")) {
+        if (_playerUseItemScroll(pd, effectGetIdFromName("shielding"), 1, 3600 * 4))
             return true;
-        break;
-    case ITEM_SCROLL_NIGHTVISION:
-        if (_playerUseItemScroll(pd, EFFECT_NIGHTVISION, 1, 3600 * 8))
+    } else if (pd->activeItem->id == getIdFromName("ITEM_SCROLL_NIGHTVISION")) {
+        if (_playerUseItemScroll(pd, effectGetIdFromName("nightVision"), 1, 3600 * 8))
             return true;
-        break;
     }
 
     if (isItemEmpty(pd->activeItem)) {
@@ -407,7 +375,7 @@ void playerAttack(PlayerData *pd) {
         return;
 
     // breaking tiles
-    if (pd->activeItem == &noItem || pd->activeItem->id == TOOL_SWORD || pd->activeItem->id == TOOL_AXE) {
+    if (pd->activeItem == &noItem || pd->activeItem->id == getIdFromName("TOOL_SWORD") || pd->activeItem->id == getIdFromName("TOOL_AXE")) {
         if (xt >= 0 && yt >= 0 && xt < 128 && 128) {
             playerHurtTile(pd, getTile(pd->entity.level, xt, yt), pd->entity.level, xt, yt, (syncRand() % 3) + 1, pd->entity.p.dir);
         }
@@ -445,8 +413,8 @@ void tickPlayer(PlayerData *pd, bool inmenu) {
     playerEffectsUpdate(pd);
 
     // regeneration
-    if (playerEffectActive(pd, EFFECT_REGENERATION)) {
-        if (playerEffectGetTime(pd, EFFECT_REGENERATION) % (60 * 10 / playerEffectGetLevel(pd, EFFECT_REGENERATION)) == 1) {
+    if (playerEffectActive(pd, effectGetIdFromName("regeneration"))) {
+        if (playerEffectGetTime(pd, effectGetIdFromName("regeneration")) % (60 * 10 / playerEffectGetLevel(pd, effectGetIdFromName("regeneration"))) == 1) {
             playerHeal(pd, 1);
         }
     }
@@ -489,8 +457,8 @@ void tickPlayer(PlayerData *pd, bool inmenu) {
         pd->entity.p.ay = 0;
 
         int moveSpeed = 1;
-        if (playerEffectActive(pd, EFFECT_SPEED)) {
-            moveSpeed += playerEffectGetLevel(pd, EFFECT_SPEED);
+        if (playerEffectActive(pd, effectGetIdFromName("speed"))) {
+            moveSpeed += playerEffectGetLevel(pd, effectGetIdFromName("speed"));
         }
 
         if (pd->inputs.k_left.down) {
@@ -573,10 +541,8 @@ void tickPlayer(PlayerData *pd, bool inmenu) {
 
 void playerSetActiveItem(PlayerData *pd, Item *item) {
     pd->activeItem = item;
-    if (pd->activeItem->id > 27 && pd->activeItem->id < 51)
-        pd->entity.p.isCarrying = true;
-    else
-        pd->entity.p.isCarrying = false;
+    pd->entity.p.isCarrying = (pd->activeItem->id < g_itemCount &&
+        g_itemTable[pd->activeItem->id].category == ITEM_CAT_FURNITURE);
 }
 
 bool playerUseEnergy(PlayerData *pd, int amount) {
@@ -605,8 +571,8 @@ void playerDamage(PlayerData *pd, int damage, int dir, MColor hurtColor, Entity 
         return;
 
     // damage reducing effects
-    if (playerEffectActive(pd, EFFECT_SHIELDING)) {
-        uByte level = playerEffectGetLevel(pd, EFFECT_SHIELDING);
+    if (playerEffectActive(pd, effectGetIdFromName("shielding"))) {
+        uByte level = playerEffectGetLevel(pd, effectGetIdFromName("shielding"));
         damage -= level;
     }
     if (damage <= 0)
@@ -618,9 +584,9 @@ void playerDamage(PlayerData *pd, int damage, int dir, MColor hurtColor, Entity 
 
     // player death
     if (pd->entity.p.health < 1) {
-        if (playerEffectActive(pd, EFFECT_UNDYING)) {
+        if (playerEffectActive(pd, effectGetIdFromName("undying"))) {
             pd->entity.p.health = 10;
-            playerEffectRemove(pd, EFFECT_UNDYING);
+            playerEffectRemove(pd, effectGetIdFromName("undying"));
         } else {
             playSoundPositioned(snd_bossdeath, pd->entity.level, pd->entity.x, pd->entity.y);
             pd->entity.p.endTimer = 60;
@@ -687,7 +653,7 @@ void playerSpawn(PlayerData *pd) {
 // effects
 void playerEffectsUpdate(PlayerData *pd) {
     int i;
-    for (i = 0; i < EFFECTS_MAX; i++) {
+    for (i = 0; i < vanillaEffectCount; i++) {
         // if effect is active and not infinite
         if (pd->effects[i].level != 0) {
             if (pd->effects[i].time != EFFECTS_DURATION_INFINITE) {

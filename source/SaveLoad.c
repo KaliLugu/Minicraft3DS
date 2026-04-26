@@ -1,3 +1,5 @@
+#include "data/items/ItemsData.h"
+
 #include "SaveLoad.h"
 
 #include "version.h"
@@ -109,14 +111,24 @@ extern bool renameWorld(char *oldFilename, char *newFilename) {
     return rename(oldFilename, newFilename) == 0;
 }
 
+// TODO CRITICAL CHANGE SIZE OF INVENTORY FOR USE GOOD
 // internal save methods
 void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
     fwrite(&inv->lastSlot, sizeof(sShort), 1, file); // write amount of items in inventory;
     for (int j = 0; j < inv->lastSlot; ++j) {
-        fwrite(&(inv->items[j].id), sizeof(sShort), 1, file);         // write ID of item
+        // Get the stable internal name for the item, not the display name.
+        const char *name = getNameFromId(inv->items[j].id);
+        size_t nameLen = strlen(name);
+        // Write name length and name
+        fwrite(&nameLen, sizeof(size_t), 1, file);
+        fwrite(name, 1, nameLen, file);
+
+        // Save item count/level after the stable item name.
         fwrite(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
-        if (inv->items[j].id == ITEM_CHEST) {
-            int invIndex = inv->items[j].chestPtr - eManager->invs;
+        if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // chest
+            int invIndex = (inv->items[j].chestPtr != NULL)
+                ? (int)(inv->items[j].chestPtr - eManager->invs)
+                : -1;
             fwrite(&invIndex, sizeof(int), 1, file);
         }
     }
@@ -137,16 +149,28 @@ void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
         fwrite(&e->hostile.health, sizeof(sShort), 1, file);
         fwrite(&e->hostile.lvl, sizeof(sByte), 1, file);
         break;
-    case ENTITY_ITEM:
-        fwrite(&e->entityItem.item.id, sizeof(sShort), 1, file);
+    case ENTITY_ITEM: {
+        const char *name = getNameFromId(e->entityItem.item.id);
+        size_t nameLen = strlen(name);
+        fwrite(&nameLen, sizeof(size_t), 1, file);
+        fwrite(name, 1, nameLen, file);
+
         fwrite(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
         fwrite(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
-    case ENTITY_FURNITURE:
-        fwrite(&e->entityFurniture.itemID, sizeof(sShort), 1, file);
-        int invIndex = e->entityFurniture.inv - eManager->invs;
+    }
+    case ENTITY_FURNITURE: {
+        const char *furnitureName = getNameFromId(e->entityFurniture.itemID);
+        size_t furnitureNameLen = strlen(furnitureName);
+        fwrite(&furnitureNameLen, sizeof(size_t), 1, file);
+        fwrite(furnitureName, 1, furnitureNameLen, file);
+
+        int invIndex = (e->entityFurniture.inv != NULL)
+            ? (int)(e->entityFurniture.inv - eManager->invs)
+            : -1;
         fwrite(&invIndex, sizeof(int), 1, file);
         break;
+    }
     case ENTITY_PASSIVE:
         fwrite(&e->passive.health, sizeof(sShort), 1, file);
         fwrite(&e->passive.mtype, sizeof(uByte), 1, file);
@@ -239,9 +263,9 @@ void savePlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     fwrite(&(player->sprite.accs), sizeof(uByte), 1, file);
 
     // Effect Data
-    int esize = EFFECTS_MAX;
+    int esize = vanillaEffectCount;
     fwrite(&esize, sizeof(int), 1, file);
-    for (i = 0; i < EFFECTS_MAX; i++) {
+    for (i = 0; i < vanillaEffectCount; i++) {
         fwrite(&(player->effects[i].level), sizeof(uByte), 1, file);
         fwrite(&(player->effects[i].time), sizeof(sInt), 1, file);
     }
@@ -263,15 +287,46 @@ void savePlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
 void loadInventory(Inventory *inv, EntityManager *eManager, FILE *file, int version) {
     fread(&(inv->lastSlot), sizeof(sShort), 1, file); // read amount of items in inventory;
     for (int j = 0; j < inv->lastSlot; ++j) {
-        fread(&(inv->items[j].id), sizeof(sShort), 1, file);         // write ID of item
-        fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // write count/level of item
-
+        size_t nameLen;
+        fread(&nameLen, sizeof(size_t), 1, file);
+        
+        // Utiliser un tampon temporaire pour éviter les échecs malloc
+        char temp_name[64]; // Taille réaliste basée sur les noms d'items (max ~22 chars)
+        if (nameLen >= sizeof(temp_name)) {
+            // Gestion d'erreur : nom trop long, ignorer l'item
+            size_t remaining = nameLen;
+            while (remaining > 0) {
+                size_t chunk_size = remaining > 1024 ? 1024 : remaining;
+                long chunk = (long)chunk_size;
+                fseek(file, chunk, SEEK_CUR); // Sauter le nom en chunks sûrs
+                remaining -= chunk_size;
+            }
+            fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file);
+            inv->items[j].id = 0; // ID par défaut
+            inv->items[j].invPtr = (int *)inv;
+            inv->items[j].slotNum = j;
+            continue;
+        }
+        
+        fread(temp_name, 1, nameLen, file);
+        temp_name[nameLen] = '\0';
+        
+        // Obtenir l'ID depuis le nom
+        inv->items[j].id = getIdFromName(temp_name);
+        
+        fread(&(inv->items[j].countLevel), sizeof(sShort), 1, file); // read count/level of item
+        
         inv->items[j].invPtr = (int *)inv;    // setup Inventory pointer
         inv->items[j].slotNum = j;            // setup slot number
-        if (inv->items[j].id == ITEM_CHEST) { // for chest item specifically.
+        if (inv->items[j].id == getIdFromName("ITEM_CHEST")) { // for chest item specifically.
             int invIndex;
             fread(&invIndex, sizeof(int), 1, file);
-            inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.
+            // Validate invIndex to prevent out-of-bounds access on corrupted save files
+            if (invIndex >= 0 && invIndex < eManager->nextInv) {
+                inv->items[j].chestPtr = (Inventory *)&eManager->invs[invIndex]; // setup chest inventory pointer.
+            } else {
+                inv->items[j].chestPtr = NULL;
+            }
         }
     }
 }
@@ -284,8 +339,9 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
     sShort health;
     int lvl;
 
-    sShort itemID;
     int invIndex;
+
+    size_t nameLen;
 
     fread(&type, sizeof(sShort), 1, file); // read entity's type ID
     fread(&x, sizeof(sShort), 1, file);    // read entity's x coordinate
@@ -320,16 +376,61 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
         e->hostile.health = health;
         break;
     case ENTITY_ITEM:
-        *e = newEntityItem(newItem(0, 0), x, y, level);
-        fread(&e->entityItem.item.id, sizeof(sShort), 1, file);
+        fread(&nameLen, sizeof(size_t), 1, file);
+        
+        // Utiliser un tampon temporaire pour éviter les échecs malloc sur des sauvegardes corrompues
+        char temp_name[64]; // Taille réaliste basée sur les noms d'items (max ~22 chars)
+        if (nameLen >= sizeof(temp_name)) {
+            // Gestion d'erreur : nom trop long, ignorer l'entité
+            size_t remaining = nameLen;
+            while (remaining > 0) {
+                size_t chunk_size = remaining > 1024 ? 1024 : remaining;
+                long chunk = (long)chunk_size;
+                fseek(file, chunk, SEEK_CUR); // Sauter le nom en chunks sûrs
+                remaining -= chunk_size;
+            }
+            fseek(file, sizeof(sShort), SEEK_CUR); // Sauter countLevel
+            fseek(file, sizeof(sShort), SEEK_CUR); // Sauter age
+            *e = newEntityItem(newItem(0, 0), x, y, level); // Item NULL par défaut
+            break;
+        }
+        
+        fread(temp_name, 1, nameLen, file);
+        temp_name[nameLen] = '\0';
+        
+        ItemId itemId = getIdFromName(temp_name);
+        *e = newEntityItem(newItem(itemId, 0), x, y, level);
         fread(&e->entityItem.item.countLevel, sizeof(sShort), 1, file);
         fread(&e->entityItem.age, sizeof(sShort), 1, file);
         break;
     case ENTITY_FURNITURE:
-        fread(&itemID, sizeof(sShort), 1, file);
+        fread(&nameLen, sizeof(size_t), 1, file);
+        
+        // Utiliser un tampon temporaire pour éviter les échecs malloc sur des sauvegardes corrompues
+        char temp_name_fur[64]; // Taille réaliste basée sur les noms d'items (max ~22 chars)
+        if (nameLen >= sizeof(temp_name_fur)) {
+            // Gestion d'erreur : nom trop long, ignorer l'entité
+            size_t remaining = nameLen;
+            while (remaining > 0) {
+                size_t chunk_size = remaining > 1024 ? 1024 : remaining;
+                long chunk = (long)chunk_size;
+                fseek(file, chunk, SEEK_CUR); // Sauter le nom en chunks sûrs
+                remaining -= chunk_size;
+            }
+            fread(&invIndex, sizeof(int), 1, file);
+            *e = newEntityFurniture(0, NULL, x, y, level); // Item NULL par défaut
+            break;
+        }
+        
+        fread(temp_name_fur, 1, nameLen, file);
+        temp_name_fur[nameLen] = '\0';
+        
         fread(&invIndex, sizeof(int), 1, file);
 
-        *e = newEntityFurniture(itemID, &eManager->invs[invIndex], x, y, level);
+        ItemId Id = getIdFromName(temp_name_fur);
+        // Validate invIndex to prevent out-of-bounds access on corrupted save files
+        Inventory *invPtr = (invIndex >= 0 && invIndex < eManager->nextInv) ? &eManager->invs[invIndex] : NULL;
+        *e = newEntityFurniture(Id, invPtr, x, y, level);
         break;
     case ENTITY_PASSIVE:
         *e = newEntityPassive(0, x, y, level);
@@ -361,7 +462,27 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
 
     // read savefile version
     int version;
+    char savedVersion[16] = {0};
+    
+    fseek(file, -16, SEEK_END);
+    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
+    fseek(file, 0, SEEK_SET); // retour au début pour lire SAVE_VERSION
+
     fread(&version, sizeof(int), 1, file);
+    if (version != SAVE_VERSION) {
+        fclose(file);
+        return -1; // format incompatible
+    } 
+    if (read != 1 || savedVersion[0] == '\0') {
+        // debug("No version string found in save file (legacy save).");
+        fclose(file);
+        return 2;
+    }
+    if (!isSameVersion(savedVersion)) {
+        // debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
+        fclose(file);
+        return 1;
+    }
 
     // Inventory Data
     fread(&eManager->nextInv, sizeof(sShort), 1, file);
@@ -391,26 +512,11 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
     fread(worldData->map, sizeof(uByte), 128 * 128 * 5, file);  // Map Tile IDs, 128*128*5 bytes = 80KB
     fread(worldData->data, sizeof(uByte), 128 * 128 * 5, file); // Map Tile Data (Damage done to trees/rocks, age of wheat & saplings, etc). 80KB
 
-    // read version string
-    char savedVersion[16] = {0};
-    size_t read = fread(savedVersion, sizeof(savedVersion), 1, file);
-
-    if (read != 1 || savedVersion[0] == '\0') {
-        // debug("No version string found in save file (legacy save).");
-        fclose(file);
-        return 2;
-    }
-    if (!isSameVersion(savedVersion)) {
-        // debug("Version string mismatch, expected: %s, got: %s.", VERSION_STRING, savedVersion);
-        fclose(file);
-        return 1;
-    }
-
     fclose(file);
     return 0;
 }
 
-void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
+int loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
     FILE *file = fopen(filename, "rb"); // TODO: should be checked
 
     int i;
@@ -418,6 +524,10 @@ void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     // read savefile version
     int version;
     fread(&version, sizeof(int), 1, file);
+    if (version != SAVE_VERSION) {
+        fclose(file);
+        return -1; // format incompatible
+    }
 
     // basic player info
     fread(&player->score, sizeof(int), 1, file);
@@ -458,6 +568,7 @@ void loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eMana
     }
 
     fclose(file);
+    return 0;
 }
 
 bool saveWorld(char *filename, EntityManager *eManager, WorldData *worldData, PlayerData *players, int playerCount) {
@@ -473,7 +584,7 @@ bool saveWorld(char *filename, EntityManager *eManager, WorldData *worldData, Pl
 
     if (exists) {
         // create backup copy
-        char *filenameBackup = malloc(sizeof(filename) + 4 + 1);
+        char *filenameBackup = malloc(strlen(filename) + 4 + 1);
         if (filenameBackup == NULL) {
             return false;
         }
@@ -561,6 +672,10 @@ static int loadFileState(char *filename) {
         // read savefile version
         int version;
         fread(&version, sizeof(int), 1, file);
+        if (version != SAVE_VERSION) {
+            fclose(file);
+            return -1; // format incompatible
+        }
 
         // basic player info
         bool dummy;
@@ -634,7 +749,7 @@ int checkFileNameForErrors(char *filename) {
         return 4; // Error: Length cannot be over 64
     bool isGood = false;
     for (int i = 0; i < length; ++i) {
-        if (isalnum(filename[i]))
+        if (isalnum((int)filename[i]))
             isGood = true;
     }
     if (!isGood)

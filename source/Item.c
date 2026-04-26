@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "data/items/ItemsData.h"
 
 #include "Data.h"
 
@@ -55,10 +56,12 @@ void removeItemFromInventory(int slot, Inventory *inv) {
     inv->items[inv->lastSlot] = nullItem; // Make the last slot null.
 }
 
+// REFACTO TODO : 
+//cette fonction utilise le countlevel qui semble être soit le nombre d'item dans l'inventaire soit le niveau de l'item, trouvé ce qu'est ici countlevel et refacto en conséquence
 Item newItem(int id, int cLevel) {
     Item item;
     item.id = id;
-    if (id != ITEM_NULL) {
+    if (id != getIdFromName("NULL")) {
         if (cLevel > 999)
             cLevel = 999;
         item.countLevel = cLevel;

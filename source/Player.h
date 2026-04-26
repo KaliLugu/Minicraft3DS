@@ -59,7 +59,7 @@ typedef struct _plrd {
     Inventory inventory;
     Item *activeItem;
 
-    PlayerEffect effects[EFFECTS_MAX];
+    PlayerEffect effects[vanillaEffectCount]; // FUTUR TODO MODDING : make this dynamic for modded effects
 
     PlayerSprite sprite;
 

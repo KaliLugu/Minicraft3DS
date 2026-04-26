@@ -38,14 +38,16 @@ case TILE_YOUR_TILE:
 // Ou avec tiling connecté (comme GRASS/ROCK)
 case TILE_YOUR_TILE:
     checkSurrTiles8(level, x >> 4, y >> 4, TILE_YOUR_TILE);
-    renderConnected(x, y, 22, 5); // colones 22, ligne 5
+    renderConnectedTile8(x, y, 22, 5); // colones 22, ligne 5
     break;
+    // Note: utiliser renderConnectedTile4() pour un tiling sur 4 directions (haut/bas/gauche/droite)
+    // checkSurrTiles4/8 sont des fonctions statiques internes à RenderTiles.c
 ```
 
 .4 Mettre a jour `MAX_TILE_ID_USED` -> [TilesData.h](../source/data/TilesData.h)
 
 ```c
-#define MAX_TILE_ID_USED 39 // adapté au nombre de tile
+#define MAX_TILE_ID_USED 36 // adapté au nombre de tile (actuellement TILE_ICE = 36)
 ```
 
 .5 ajouter les pixels dans [icon.png](../resources/icons.png)

@@ -1,8 +1,10 @@
 #include "Data.h"
+    // TODO: scanner sdmc:/3ds/Minicraft3ds/mods/ ici
 
 void initData() {
-    itemsDataInit();
+    uint16_t modCount = 0;
+    itemsTableBuild(modCount);
+    effectsTableBuild(modCount);
     tilesDataInit();
-    effectsDataInit();
     entityDataInit();
 }

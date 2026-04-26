@@ -18,6 +18,7 @@
 #include "network/RP2P.h"
 #include "network/Synchronizer.h"
 #include "render/TextureManager.h"
+#include "data/items/ItemsData.h"
 #include "texturepack.h"
 
 // TODO: Dungeon is way to difficult
@@ -125,7 +126,9 @@ int main() {
         }
     }
 
-    noItem = newItem(ITEM_NULL, 0);
+    initData();
+
+    noItem = newItem(getIdFromName("NULL"), 0);
 
     initMenus();
     currentMenu = MENU_TITLE;
@@ -182,8 +185,6 @@ int main() {
     } else {
         loadTexturePack(NULL);
     }
-
-    initData();
 
     initPlayers();
     initRecipes();

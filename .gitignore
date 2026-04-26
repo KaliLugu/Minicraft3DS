@@ -1,6 +1,7 @@
 # Dev
 *.elf
 *.lst
+*.log
 
 # 3DS Dev
 *.3dsx

@@ -1,3 +1,5 @@
+#include "../data/items/ItemsData.h"
+
 #include "../Entity.h"
 
 #include "../Data.h"
@@ -21,9 +23,9 @@ Entity newEntityFurniture(int itemID, Inventory *invPtr, int x, int y, uByte lev
     e.yr = 3;
     e.entityFurniture.itemID = itemID;
     e.canPass = false;
-    if (itemID == ITEM_LANTERN) {
+    if (itemID == getIdFromName("ITEM_LANTERN")) { // Lantern
         e.entityFurniture.r = 8;
-    } else if (itemID == ITEM_CHEST) { // TODO: This should not happen here, the new functions should not mess with any outside state
+    } else if (itemID == getIdFromName("ITEM_CHEST")) { // TODO: This should not happen here, the new functions should not mess with any outside state
         if (invPtr == NULL)
             assignInventory(&e);
         else

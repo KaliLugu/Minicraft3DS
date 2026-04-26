@@ -43,7 +43,7 @@ LIBDIRS	:=	$(DEVKITPRO)/portlibs/3ds $(CTRULIB)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 
-SOURCES		:=	source source/minizip source/data source/menu source/editor source/network source/ingamemenu source/entity source/render source/engine source/engine/3ds
+SOURCES		:=	source source/minizip source/data source/data/items source/menu source/editor source/network source/ingamemenu source/entity source/render source/engine source/engine/3ds
 INCLUDES	:=	include
 ROMFS		:=	resources
 
@@ -95,7 +95,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean 3ds build files ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds
+	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds compile.log
 
 #---------------------------------------------------------------------------------
 else
