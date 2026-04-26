@@ -42,11 +42,32 @@ char *getLatestRemoteVersion() {
         return "0.0.2";
     }
     if (exitInternet() != 0) {
+        free(json);
         return "0.0.3";
     }
 
-    // continue tomorrow, need to read "name" in the json and return it
+    cJSON* request_json = NULL;
+    cJSON* name = NULL;
+    request_json = cJSON_Parse(json);
+    if (!request_json) {
+        free(json);
+        return "0.0.4";
+    }
+    free(json);
 
-    // Placeholder for actual implementation to fetch the latest version from a remote source
-    return "0.0.0";  // Return a dummy version for now
+    cJSON* first_tag = cJSON_GetArrayItem(request_json, 0);
+    if (!first_tag) {
+        cJSON_Delete(request_json);
+        return "0.0.5";
+    }
+
+    name = cJSON_GetObjectItem(first_tag, "name");
+    if (!name || !name->valuestring) {
+        cJSON_Delete(request_json);
+        return "0.0.6";
+    }
+
+    char *version = strdup(name->valuestring);
+    cJSON_Delete(request_json);
+    return version;
 }
