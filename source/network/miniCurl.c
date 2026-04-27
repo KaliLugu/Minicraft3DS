@@ -17,6 +17,10 @@ int internetInit() {
         return -1;
     }
     _socBuffer = (u32 *)memalign(0x1000, 0x100000);
+    if (!_socBuffer) {
+        httpcExit();
+        return -1;
+    }
     socInit(_socBuffer, 0x100000);
     return 0;
 }
