@@ -26,6 +26,8 @@ int internetInit() {
 }
 
 int exitInternet() {
+    socExit();
+    httpcExit();
     if (_socBuffer) {
         free(_socBuffer);
         _socBuffer = NULL;
