@@ -55,14 +55,25 @@ char *miniCurlGet(const char *url) {
     response.string = calloc(1, 1);
     response.size = 0;
 
-    CURL *curl;
-    result = curl_easy_perform(curl);
-    if (result != CURLE_OK) {
-        fprintf(stderr, "Error: %s\n", curl_easy_strerror(result));
+    CURL *curl = curl_easy_init();
+    if (!curl) {
+        free(response.string);
+        return NULL;
+    }
+
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_chunk);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+    CURLcode curlResult = curl_easy_perform(curl);
+    if (curlResult != CURLE_OK) {
+        fprintf(stderr, "Error: %s\n", curl_easy_strerror(curlResult));
         curl_easy_cleanup(curl);
         free(response.string);
         return NULL;
     }
+
     curl_easy_cleanup(curl);
     return response.string;
 }
