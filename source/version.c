@@ -38,7 +38,9 @@ char *getLatestRemoteVersion() {
         return "0.0.1";
     }
     char *json = miniCurlGet("https://api.github.com/repos/KaliLugu/Minicraft3DS/tags");
+    char *json = miniCurlGet("https://api.github.com/repos/KaliLugu/Minicraft3DS/tags");
     if (!json) {
+        exitInternet();
         return "0.0.2";
     }
     if (exitInternet() != 0) {
