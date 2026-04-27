@@ -56,23 +56,7 @@ char *miniCurlGet(const char *url) {
     response.size = 0;
 
     CURL *curl;
-    CURLcode result;
-
-    curl = curl_easy_init();
-
-    if (!curl) {
-        fprintf(stderr, "Failed to initialize curl\n");
-        free(response.string);
-        return NULL;
-    }
-
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-    curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_CAINFO, "romfs:/cacert.pem");
-    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_chunk);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response);
+    result = curl_easy_perform(curl);
     if (result != CURLE_OK) {
         fprintf(stderr, "Error: %s\n", curl_easy_strerror(result));
         curl_easy_cleanup(curl);
