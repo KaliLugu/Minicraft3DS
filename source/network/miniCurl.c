@@ -56,6 +56,7 @@ char *miniCurlGet(const char *url) {
 
     if (!curl) {
         fprintf(stderr, "Failed to initialize curl\n");
+        free(response.string);
         return NULL;
     }
 
