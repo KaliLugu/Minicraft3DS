@@ -5,8 +5,8 @@ set -euo pipefail
 DEST_DIR="resources"
 DEST_FILE="${DEST_DIR}/cacert.pem"
 URL="https://curl.se/ca/cacert.pem"
+URL_SHA256="https://curl.se/ca/cacert.pem.sha256"
 TMP_FILE="${DEST_FILE}.tmp"
-EXPECTED_SHA256="b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171"
 
 # function
 log()  { echo "[INFO]  $*"; }
@@ -60,15 +60,19 @@ fi
 ACTUAL_SHA256="$(sha256sum "${TMP_FILE}" | awk '{print $1}')"
 log "SHA256: ${ACTUAL_SHA256}"
 
-# hash check
-if [[ -n "${EXPECTED_SHA256}" ]]; then
-    if [[ "${ACTUAL_SHA256}" != "${EXPECTED_SHA256}" ]]; then
-        die "SHA256 mismatch! Expected: ${EXPECTED_SHA256} | Got: ${ACTUAL_SHA256}"
-    fi
-    log "SHA256 hash verified OK."
-else
-    warn "No reference hash set (EXPECTED_SHA256 is empty). Content integrity check skipped."
+# fetch reference hash from curl.se (HTTPS-trusted — no hardcoded value to maintain)
+log "Fetching reference SHA256 from ${URL_SHA256}..."
+EXPECTED_SHA256="$(curl \
+    --silent --show-error --fail \
+    --proto '=https' --tlsv1.2 \
+    --max-time 30 \
+    "${URL_SHA256}" | awk '{print $1}')" \
+    || die "Failed to fetch reference SHA256 from ${URL_SHA256}"
+
+if [[ "${ACTUAL_SHA256}" != "${EXPECTED_SHA256}" ]]; then
+    die "SHA256 mismatch! Expected: ${EXPECTED_SHA256} | Got: ${ACTUAL_SHA256}"
 fi
+log "SHA256 hash verified OK."
 
 # change destination file
 mv "${TMP_FILE}" "${DEST_FILE}" \
