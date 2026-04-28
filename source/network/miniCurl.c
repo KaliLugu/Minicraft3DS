@@ -1,4 +1,5 @@
 #include "miniCurl.h"
+#include "../version.h"
 
 static u32 *_socBuffer = NULL;
 
@@ -60,6 +61,7 @@ char *miniCurlGet(const char *url) {
     }
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "Minicraft3DS/" VERSION_STRING);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_chunk);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);

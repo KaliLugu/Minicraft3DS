@@ -28,8 +28,8 @@ void menuTitleTick() {
 
     static bool _threadStarted = false;
     if (!_threadStarted) {
-        _threadStarted = true;
-        mthreadCreate(&_versionCheckThread, 32 * 1024);
+        MThread t = mthreadCreate(&_versionCheckThread, 32 * 1024);
+        if (t) _threadStarted = true;
     }
 
     if (localInputs.k_up.clicked) {

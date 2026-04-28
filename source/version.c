@@ -42,10 +42,7 @@ char *getLatestRemoteVersion() {
         exitInternet();
         return strdup("0.0.2");
     }
-    if (exitInternet() != 0) {
-        free(json);
-        return strdup("0.0.3");
-    }
+    exitInternet();
 
     cJSON* request_json = NULL;
     cJSON* name = NULL;
