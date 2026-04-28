@@ -1,5 +1,6 @@
 #include "MenuTitle.h"
 
+#include "../version.h"
 #include "../Globals.h"
 #include "../Menu.h"
 #include "../Render.h"
@@ -11,8 +12,18 @@
 
 char options[][12] = {"Start Game", "Editor", "How To Play", "Settings", "About", "Exit"};
 
+static bool _hasNewVersion = false;
+static bool _versionChecked = false;
+
 void menuTitleTick() {
     menuUpdateMapBG();
+
+    if (!_versionChecked) {
+        _versionChecked = true;
+        char *v = getLatestRemoteVersion();
+        _hasNewVersion = isNewerVersion(v);
+        free(v);
+    }
 
     if (localInputs.k_up.clicked) {
         --currentSelection;
@@ -58,6 +69,10 @@ void menuTitleRender(int screen, int width, int height) {
     /* Top Screen */
     if (screen == 0) {
         menuRenderMapBGTop();
+
+        if (_hasNewVersion) {
+            renderText("new update is available", 0, 232);
+        }
 
         renderTitle(76, 12);
 

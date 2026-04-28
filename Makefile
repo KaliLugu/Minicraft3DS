@@ -28,7 +28,7 @@ CFLAGS	+=	$(INCLUDE) -D__3DS__
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lpng -lz -lcitro2d -lcitro3d -lctru -lm
+LIBS	:= -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lpng -lz -lcitro2d -lcitro3d -lctru -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -43,7 +43,7 @@ LIBDIRS	:=	$(DEVKITPRO)/portlibs/3ds $(CTRULIB)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 
-SOURCES		:=	source source/minizip source/data source/menu source/editor source/network source/ingamemenu source/entity source/render source/engine source/engine/3ds
+SOURCES		:=	source source/minizip source/data source/menu source/editor source/network source/ingamemenu source/entity source/render source/engine source/engine/3ds lib
 INCLUDES	:=	include
 ROMFS		:=	resources
 
