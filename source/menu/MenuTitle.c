@@ -9,20 +9,27 @@
 #include "MenuTutorial.h"
 
 #include "../render/TextureManager.h"
+#include "../engine/sync.h"
 
 char options[][12] = {"Start Game", "Editor", "How To Play", "Settings", "About", "Exit"};
 
-static bool _hasNewVersion = false;
-static bool _versionChecked = false;
+static volatile bool _hasNewVersion = false;
+static volatile bool _versionChecked = false;
+
+static void _versionCheckThread() {
+    char *v = getLatestRemoteVersion();
+    _hasNewVersion = isNewerVersion(v);
+    free(v);
+    _versionChecked = true;
+}
 
 void menuTitleTick() {
     menuUpdateMapBG();
 
-    if (!_versionChecked) {
-        _versionChecked = true;
-        char *v = getLatestRemoteVersion();
-        _hasNewVersion = isNewerVersion(v);
-        free(v);
+    static bool _threadStarted = false;
+    if (!_threadStarted) {
+        _threadStarted = true;
+        mthreadCreate(&_versionCheckThread, 32 * 1024);
     }
 
     if (localInputs.k_up.clicked) {
