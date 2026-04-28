@@ -11,14 +11,8 @@ typedef struct {
 size_t write_chunk(void *data, size_t size, size_t nmemb, void *userdata);
 
 int internetInit() {
-    Result ret = httpcInit(0);
-    if (R_FAILED(ret)) {
-        fprintf(stderr, "httpcInit failed: 0x%08lX\n", ret);
-        return -1;
-    }
     _socBuffer = (u32 *)memalign(0x1000, 0x100000);
     if (!_socBuffer) {
-        httpcExit();
         return -1;
     }
     socInit(_socBuffer, 0x100000);
@@ -27,7 +21,6 @@ int internetInit() {
 
 int exitInternet() {
     socExit();
-    httpcExit();
     if (_socBuffer) {
         free(_socBuffer);
         _socBuffer = NULL;
