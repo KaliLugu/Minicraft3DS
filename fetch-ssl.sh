@@ -6,7 +6,7 @@ DEST_DIR="romfs"
 DEST_FILE="${DEST_DIR}/cacert.pem"
 URL="https://curl.se/ca/cacert.pem"
 TMP_FILE="${DEST_FILE}.tmp"
-EXPECTED_SHA256=""   # leave empty to disable fixed hash check
+EXPECTED_SHA256="b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171"
 
 # function
 log()  { echo "[INFO]  $*"; }
