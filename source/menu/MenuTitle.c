@@ -27,14 +27,15 @@ static void _versionCheckThread() {
 
 // 0 = pending init, 1 = thread running, 2 = done
 static int _netState = 0;
+static MThread _versionThread = NULL;
 
 void menuTitleTick() {
     menuUpdateMapBG();
 
     if (_netState == 0) {
         if (internetInit() == 0) {
-            MThread t = mthreadCreate(&_versionCheckThread, 32 * 1024);
-            if (t) {
+            _versionThread = mthreadCreate(&_versionCheckThread, 32 * 1024);
+            if (_versionThread) {
                 _netState = 1;
             } else {
                 exitInternet();
@@ -44,6 +45,8 @@ void menuTitleTick() {
             _netState = 2;
         }
     } else if (_netState == 1 && _versionChecked) {
+        mthreadJoin(_versionThread);
+        _versionThread = NULL;
         exitInternet();
         _netState = 2;
     }

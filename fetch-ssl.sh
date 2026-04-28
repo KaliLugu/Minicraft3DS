@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # config
-DEST_DIR="romfs"
+DEST_DIR="resources"
 DEST_FILE="${DEST_DIR}/cacert.pem"
 URL="https://curl.se/ca/cacert.pem"
 TMP_FILE="${DEST_FILE}.tmp"
