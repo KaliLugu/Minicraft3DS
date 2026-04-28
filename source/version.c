@@ -33,33 +33,22 @@ bool isNewerVersion(const char *version) {
 }
 
 // use version start with 0.x.x for error cases, so that it will be considered as older than any valid version and we can determinate error to show
-char *getLatestRemoteVersion() {
-    if (internetInit() != 0) {
-        return strdup("0.0.1");
-    }
+// Assumes SOC already initialized by caller — does NOT call internetInit/exitInternet.
+char *fetchLatestVersion() {
     char *json = miniCurlGet("https://api.github.com/repos/KaliLugu/Minicraft3DS/tags");
-    if (!json) {
-        exitInternet();
-        return strdup("0.0.2");
-    }
-    exitInternet();
+    if (!json) return strdup("0.0.2");
 
-    cJSON* request_json = NULL;
-    cJSON* name = NULL;
-    request_json = cJSON_Parse(json);
-    if (!request_json) {
-        free(json);
-        return strdup("0.0.4");
-    }
+    cJSON *request_json = cJSON_Parse(json);
     free(json);
+    if (!request_json) return strdup("0.0.4");
 
-    cJSON* first_tag = cJSON_GetArrayItem(request_json, 0);
+    cJSON *first_tag = cJSON_GetArrayItem(request_json, 0);
     if (!first_tag) {
         cJSON_Delete(request_json);
         return strdup("0.0.5");
     }
 
-    name = cJSON_GetObjectItem(first_tag, "name");
+    cJSON *name = cJSON_GetObjectItem(first_tag, "name");
     if (!name || !name->valuestring) {
         cJSON_Delete(request_json);
         return strdup("0.0.6");
@@ -68,4 +57,12 @@ char *getLatestRemoteVersion() {
     char *version = strdup(name->valuestring);
     cJSON_Delete(request_json);
     return version;
+}
+
+// Self-contained: handles SOC init/exit. Use fetchLatestVersion() for threaded calls.
+char *getLatestRemoteVersion() {
+    if (internetInit() != 0) return strdup("0.0.1");
+    char *v = fetchLatestVersion();
+    exitInternet();
+    return v;
 }

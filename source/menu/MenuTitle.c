@@ -10,6 +10,7 @@
 
 #include "../render/TextureManager.h"
 #include "../engine/sync.h"
+#include "../network/miniCurl.h"
 
 char options[][12] = {"Start Game", "Editor", "How To Play", "Settings", "About", "Exit"};
 
@@ -17,19 +18,34 @@ static volatile bool _hasNewVersion = false;
 static volatile bool _versionChecked = false;
 
 static void _versionCheckThread() {
-    char *v = getLatestRemoteVersion();
+    char *v = fetchLatestVersion();  // SOC already initialized by main thread
     _hasNewVersion = isNewerVersion(v);
     free(v);
+    __sync_synchronize();  // ensure _hasNewVersion is visible before _versionChecked
     _versionChecked = true;
 }
+
+// 0 = pending init, 1 = thread running, 2 = done
+static int _netState = 0;
 
 void menuTitleTick() {
     menuUpdateMapBG();
 
-    static bool _threadStarted = false;
-    if (!_threadStarted) {
-        MThread t = mthreadCreate(&_versionCheckThread, 32 * 1024);
-        if (t) _threadStarted = true;
+    if (_netState == 0) {
+        if (internetInit() == 0) {
+            MThread t = mthreadCreate(&_versionCheckThread, 32 * 1024);
+            if (t) {
+                _netState = 1;
+            } else {
+                exitInternet();
+                _netState = 2;
+            }
+        } else {
+            _netState = 2;
+        }
+    } else if (_netState == 1 && _versionChecked) {
+        exitInternet();
+        _netState = 2;
     }
 
     if (localInputs.k_up.clicked) {
