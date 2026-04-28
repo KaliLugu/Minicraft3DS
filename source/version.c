@@ -12,6 +12,7 @@ static bool isValidVersionFormat(const char *version) {
 }
 
 static int compareVersions(const char *a) {
+    if (a == NULL) return 0;
     int major, minor, patch;
     if (sscanf(a, "%d.%d.%d", &major, &minor, &patch) != 3) return 0;
     if (major != VERSION_MAJOR) return major - VERSION_MAJOR;

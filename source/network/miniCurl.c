@@ -22,10 +22,12 @@ int internetInit() {
         _socBuffer = NULL;
         return -1;
     }
+    curl_global_init(CURL_GLOBAL_ALL);
     return 0;
 }
 
 int exitInternet() {
+    curl_global_cleanup();
     socExit();
     if (_socBuffer) {
         free(_socBuffer);
@@ -65,6 +67,7 @@ char *miniCurlGet(const char *url) {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_chunk);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
     curl_easy_setopt(curl, CURLOPT_CAINFO, "romfs:/cacert.pem");
 
     CURLcode curlResult = curl_easy_perform(curl);
