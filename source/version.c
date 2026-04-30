@@ -56,6 +56,12 @@ char *fetchLatestVersion() {
     }
 
     char *version = strdup(name->valuestring);
+    if (version[0] == 'v') {
+        char *stripped = strdup(version + 1);
+        free(version);
+        version = stripped;
+    }
+
     cJSON_Delete(request_json);
 
     if (!isValidVersionFormat(version)) {
