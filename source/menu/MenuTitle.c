@@ -97,7 +97,7 @@ void menuTitleRender(int screen, int width, int height) {
         menuRenderMapBGTop();
 
         if (_hasNewVersion) {
-            renderText("new update is available", 0, 232);
+            renderText("new update is available", 0, 112);
         }
 
         renderTitle(76, 12);
