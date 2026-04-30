@@ -60,7 +60,6 @@ char *fetchLatestVersion() {
 
     if (!isValidVersionFormat(version)) {
         free(version);
-        cJSON_Delete(request_json);
         return strdup("null");
     }
     return version;
