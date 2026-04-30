@@ -57,7 +57,8 @@ char *fetchLatestVersion() {
 
     char *version = strdup(name->valuestring);
     cJSON_Delete(request_json);
-    return version;
+
+    return isValidVersionFormat(version) ? version : strdup("null");
 }
 
 // Self-contained: handles SOC init/exit. Use fetchLatestVersion() for threaded calls.
