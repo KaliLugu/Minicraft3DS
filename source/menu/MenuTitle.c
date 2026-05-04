@@ -96,6 +96,15 @@ void menuTitleTick() {
     }
 }
 
+void menuTitleExit() {
+    if (_netState == 1) {
+        mthreadJoin(_versionThread);
+        _versionThread = NULL;
+        exitInternet();
+        _netState = 2;
+    }
+}
+
 void menuTitleRender(int screen, int width, int height) {
     /* Top Screen */
     if (screen == 0) {

@@ -12,14 +12,28 @@ typedef struct {
 size_t write_chunk(void *data, size_t size, size_t nmemb, void *userdata);
 
 int internetInit() {
+    acInit();
+    Result acResult = acWaitInternetConnection();
+    if (R_FAILED(acResult)) {
+        FILE *f = fopen("sdmc:/minicraft_net.txt", "w");
+        if (f) { fprintf(f, "acWait failed: %ld\n", acResult); fclose(f); }
+        acExit();
+        return -1;
+    }
+
+    FILE *f = fopen("sdmc:/minicraft_net.txt", "w");
+    if (f) { fprintf(f, "acWait OK, doing socInit\n"); fclose(f); }
+
     _socBuffer = (u32 *)memalign(0x1000, 0x100000);
     if (!_socBuffer) {
+        acExit();
         return -1;
     }
     Result socResult = socInit(_socBuffer, 0x100000);
     if (R_FAILED(socResult)) {
         free(_socBuffer);
         _socBuffer = NULL;
+        acExit();
         return -1;
     }
     curl_global_init(CURL_GLOBAL_ALL);
@@ -33,6 +47,7 @@ int exitInternet() {
         free(_socBuffer);
         _socBuffer = NULL;
     }
+    acExit();
     return 0;
 }
 
@@ -69,6 +84,7 @@ char *miniCurlGet(const char *url) {
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
     curl_easy_setopt(curl, CURLOPT_CAINFO, "romfs:/cacert.pem");
+    curl_easy_setopt(curl, CURLOPT_DNS_SERVERS, "8.8.8.8");
 
     CURLcode curlResult = curl_easy_perform(curl);
     if (curlResult != CURLE_OK) {
