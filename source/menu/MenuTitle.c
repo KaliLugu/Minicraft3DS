@@ -18,10 +18,15 @@ static volatile bool _hasNewVersion = false;
 static volatile bool _versionChecked = false;
 
 static void _versionCheckThread() {
-    char *v = fetchLatestVersion();  // SOC already initialized by main thread
+    char *v = fetchLatestVersion();
+    
+    // DEBUG
+    FILE *f = fopen("sdmc:/minicraft_debug.txt", "w");
+    if (f) { fprintf(f, "version: %s\n", v); fclose(f); }
+    
     _hasNewVersion = isNewerVersion(v);
     free(v);
-    __sync_synchronize();  // ensure _hasNewVersion is visible before _versionChecked
+    __sync_synchronize();
     _versionChecked = true;
 }
 

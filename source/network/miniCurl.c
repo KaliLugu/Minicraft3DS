@@ -72,7 +72,8 @@ char *miniCurlGet(const char *url) {
 
     CURLcode curlResult = curl_easy_perform(curl);
     if (curlResult != CURLE_OK) {
-        fprintf(stderr, "Error: %s\n", curl_easy_strerror(curlResult));
+        FILE *f = fopen("sdmc:/minicraft_curl_err.txt", "w");
+        if (f) { fprintf(f, "curl error %d: %s\n", curlResult, curl_easy_strerror(curlResult)); fclose(f); }
         curl_easy_cleanup(curl);
         free(response.string);
         return NULL;
