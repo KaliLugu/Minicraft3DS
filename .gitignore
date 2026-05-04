@@ -1,6 +1,7 @@
 # Dev
 *.elf
 *.lst
+*.log
 
 # 3DS Dev
 *.3dsx
@@ -66,3 +67,7 @@ Temporary Items
 makerom
 ctrtool
 bannertool
+
+
+# ssl certs
+*.pem

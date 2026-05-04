@@ -11,6 +11,7 @@
 #include "Ingame.h"
 #include "MapGen.h"
 #include "Menu.h"
+#include "menu/MenuTitle.h"
 #include "Player.h"
 #include "Render.h"
 #include "SaveLoad.h"
@@ -191,6 +192,7 @@ int main() {
 
     runMainLoop(&tick, &draw);
 
+    menuTitleExit();
     stopMusic();
 
     freeTrades();

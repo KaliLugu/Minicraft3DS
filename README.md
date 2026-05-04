@@ -37,7 +37,7 @@ For building the game yourself look below.
 
 **2. Install further dependencies using (dpk-)pacman**
 
-- For 3ds build install: 3ds-libpng
+- For 3ds build install: 3ds-libpng 3ds-curl 3ds-mbedtls
 
 **4. You can now build Minicraft Homebrew Edition**
 
