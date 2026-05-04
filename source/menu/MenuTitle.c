@@ -10,7 +10,6 @@
 
 #include "../render/TextureManager.h"
 #include "../engine/sync.h"
-#include "../network/miniCurl.h"
 
 char options[][12] = {"Start Game", "Editor", "How To Play", "Settings", "About", "Exit"};
 
@@ -18,12 +17,7 @@ static volatile bool _hasNewVersion = false;
 static volatile bool _versionChecked = false;
 
 static void _versionCheckThread() {
-    char *v = fetchLatestVersion();
-    
-    // DEBUG
-    FILE *f = fopen("sdmc:/minicraft_debug.txt", "w");
-    if (f) { fprintf(f, "version: %s\n", v); fclose(f); }
-    
+    char *v = getLatestRemoteVersion();
     _hasNewVersion = isNewerVersion(v);
     free(v);
     __sync_synchronize();
@@ -38,21 +32,11 @@ void menuTitleTick() {
     menuUpdateMapBG();
 
     if (_netState == 0) {
-        if (internetInit() == 0) {
-            _versionThread = mthreadCreate(&_versionCheckThread, 32 * 1024);
-            if (_versionThread) {
-                _netState = 1;
-            } else {
-                exitInternet();
-                _netState = 2;
-            }
-        } else {
-            _netState = 2;
-        }
+        _versionThread = mthreadCreate(&_versionCheckThread, 32 * 1024);
+        _netState = (_versionThread) ? 1 : 2;
     } else if (_netState == 1 && _versionChecked) {
         mthreadJoin(_versionThread);
         _versionThread = NULL;
-        exitInternet();
         _netState = 2;
     }
 
@@ -100,7 +84,6 @@ void menuTitleExit() {
     if (_netState == 1) {
         mthreadJoin(_versionThread);
         _versionThread = NULL;
-        exitInternet();
         _netState = 2;
     }
 }
