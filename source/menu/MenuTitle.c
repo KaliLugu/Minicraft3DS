@@ -1,5 +1,6 @@
 #include "MenuTitle.h"
 
+#include "../version.h"
 #include "../Globals.h"
 #include "../Menu.h"
 #include "../Render.h"
@@ -8,11 +9,36 @@
 #include "MenuTutorial.h"
 
 #include "../render/TextureManager.h"
+#include "../engine/sync.h"
 
 char options[][12] = {"Start Game", "Editor", "How To Play", "Settings", "About", "Exit"};
 
+static volatile bool _hasNewVersion = false;
+static volatile bool _versionChecked = false;
+
+static void _versionCheckThread() {
+    char *v = getLatestRemoteVersion();
+    _hasNewVersion = isNewerVersion(v);
+    free(v);
+    __sync_synchronize();
+    _versionChecked = true;
+}
+
+// 0 = pending init, 1 = thread running, 2 = done
+static int _netState = 0;
+static MThread _versionThread = NULL;
+
 void menuTitleTick() {
     menuUpdateMapBG();
+
+    if (_netState == 0) {
+        _versionThread = mthreadCreate(&_versionCheckThread, 32 * 1024);
+        _netState = (_versionThread) ? 1 : 2;
+    } else if (_netState == 1 && _versionChecked) {
+        mthreadJoin(_versionThread);
+        _versionThread = NULL;
+        _netState = 2;
+    }
 
     if (localInputs.k_up.clicked) {
         --currentSelection;
@@ -54,10 +80,22 @@ void menuTitleTick() {
     }
 }
 
+void menuTitleExit() {
+    if (_netState == 1) {
+        mthreadJoin(_versionThread);
+        _versionThread = NULL;
+        _netState = 2;
+    }
+}
+
 void menuTitleRender(int screen, int width, int height) {
     /* Top Screen */
     if (screen == 0) {
         menuRenderMapBGTop();
+
+        if (_hasNewVersion) {
+            renderText("new update is available", 0, 112);
+        }
 
         renderTitle(76, 12);
 

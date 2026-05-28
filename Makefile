@@ -28,7 +28,7 @@ CFLAGS	+=	$(INCLUDE) -D__3DS__
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lpng -lz -lcitro2d -lcitro3d -lctru -lm
+LIBS	:= -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lpng -lz -lcitro2d -lcitro3d -lctru -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing

@@ -68,6 +68,8 @@ makerom
 ctrtool
 bannertool
 
+
+# ssl certs
 #logs 
 *.log
 
