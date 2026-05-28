@@ -111,7 +111,6 @@ extern bool renameWorld(char *oldFilename, char *newFilename) {
     return rename(oldFilename, newFilename) == 0;
 }
 
-// TODO CRITICAL CHANGE SIZE OF INVENTORY FOR USE GOOD
 // internal save methods
 void saveInventory(Inventory *inv, EntityManager *eManager, FILE *file) {
     fwrite(&inv->lastSlot, sizeof(sShort), 1, file); // write amount of items in inventory;
@@ -185,7 +184,10 @@ void saveEntity(Entity *e, EntityManager *eManager, FILE *file) {
 }
 
 void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *worldData) {
-    FILE *file = fopen(filename, "wb"); // TODO: should be checked
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        return;
+    }
 
     int i, j;
 
@@ -234,8 +236,10 @@ void saveWorldInternal(char *filename, EntityManager *eManager, WorldData *world
 }
 
 void savePlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
-    FILE *file = fopen(filename, "wb"); // TODO: should be checked
-
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        return;
+    }
     int i;
 
     // write savefile version
@@ -456,7 +460,10 @@ void loadEntity(Entity *e, uByte level, int j, EntityManager *eManager, FILE *fi
 }
 
 int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldData) {
-    FILE *file = fopen(filename, "rb"); // TODO: should be checked
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        return -1;
+    }
 
     int i, j;
 
@@ -517,7 +524,10 @@ int loadWorldInternal(char *filename, EntityManager *eManager, WorldData *worldD
 }
 
 int loadPlayerInternal(char *filename, PlayerData *player, EntityManager *eManager) {
-    FILE *file = fopen(filename, "rb"); // TODO: should be checked
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        return -1;
+    }
 
     int i;
 
@@ -672,7 +682,10 @@ static int loadFileState(char *filename) {
     sprintf(playerFilename, "%lu.plr", localUID);
 
     if (strcmp(filename, playerFilename) == 0) {
-        FILE *file = fopen(filename, "rb"); // TODO: should be checked
+        FILE *file = fopen(filename, "rb");
+        if (file == NULL) {
+            return -1;
+        }
 
         // read savefile version
         int version;

@@ -16,7 +16,7 @@ ItemId getIdFromName(const char *name) {
 }
 
 const char* getNameFromId(ItemId id) {
-    if (id >= g_itemCount) return "NULL";
+    if (g_itemTable == NULL || id >= g_itemCount) return "NULL";
     return g_itemTable[id].name;
 }
 

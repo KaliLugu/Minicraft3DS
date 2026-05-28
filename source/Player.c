@@ -53,7 +53,6 @@ void playerInitInventory(PlayerData *pd) {
     addItemToInventory(newItem(getIdFromName("ITEM_WORKBENCH"), 0), &(pd->inventory));
     addItemToInventory(newItem(getIdFromName("ITEM_POWGLOVE"), 0), &(pd->inventory));
 
-    // TODO : modify this for testing new items system
     if (TESTGODMODE) {
         // Add all valid items for testing
         for (int i = 1; i < g_itemCount; ++i) { // skip NULL

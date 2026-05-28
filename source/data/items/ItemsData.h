@@ -21,7 +21,7 @@ typedef struct {
     const char* name;     // nom logique / stable
     const char* displayName; // nom affiché (optionnel, ou variante)
     uint8_t category;     // TOOL, FOOD, FURNITURE, GENERIC
-    bool isStackable;     // si l’item est stackabmes
+    bool isStackable;     // si l’item est stackables
     uint8_t texX, texY;         // coordonnées X et Y de l'item
     union { // selon la catégorie
         struct {
@@ -51,3 +51,4 @@ extern unsigned int getToolCountLevel(ItemId id);
 extern unsigned int getFoodHealth(ItemId id);
 extern unsigned int getSpellDuration(ItemId id);
 extern unsigned int getSpellEffect(ItemId id);
+extern unsigned int getItemCategory(ItemId id);
