@@ -40,6 +40,15 @@ typedef struct {
     } data;
 } ItemData;
 
+extern ItemId ITEM_ID_ANVIL;
+extern ItemId ITEM_ID_CHEST;
+extern ItemId ITEM_ID_OVEN;
+extern ItemId ITEM_ID_FURNACE;
+extern ItemId ITEM_ID_WORKBENCH;
+extern ItemId ITEM_ID_LANTERN;
+extern ItemId ITEM_ID_LOOM;
+extern ItemId ITEM_ID_ENCHANTER;
+extern ItemId ITEM_ID_MAGIC_COMPASS;
 extern char *itemGetName(ItemId id, int countLevel);
 extern char *itemGetNameWithCount(ItemId id, int countLevel);
 extern int itemGetIconX(ItemId id, int countLevel);

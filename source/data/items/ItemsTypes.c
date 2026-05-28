@@ -1,6 +1,16 @@
 #include "ItemsData.h"
 #include <stdlib.h>
 
+ItemId ITEM_ID_ANVIL;
+ItemId ITEM_ID_CHEST;
+ItemId ITEM_ID_OVEN;
+ItemId ITEM_ID_FURNACE;
+ItemId ITEM_ID_WORKBENCH;
+ItemId ITEM_ID_LANTERN;
+ItemId ITEM_ID_LOOM;
+ItemId ITEM_ID_ENCHANTER;
+ItemId ITEM_ID_MAGIC_COMPASS;
+
 #define ITEM_ENTRY(name, displayname, cat, stackable, texX, texY, ...) \
     {0, name, displayname, cat, stackable, texX, texY, __VA_ARGS__}
 
@@ -90,6 +100,18 @@ unsigned int g_itemCount;
 void itemsTableBuild(uint16_t modCount) {
     g_itemCount = _vanillaCount + modCount;
     g_itemTable = malloc(g_itemCount * sizeof(ItemData));
+
+    // variable pour les id runtie des furnitures
+    ItemId ITEM_ID_ANVIL = getIdFromName("ITEM_ANVIL");
+    ItemId ITEM_ID_CHEST = getIdFromName("ITEM_CHEST");
+    ItemId ITEM_ID_OVEN = getIdFromName("ITEM_OVEN");
+    ItemId ITEM_ID_FURNACE = getIdFromName("ITEM_FURNACE");
+    ItemId ITEM_ID_WORKBENCH = getIdFromName("ITEM_WORKBENCH");
+    ItemId ITEM_ID_LANTERN = getIdFromName("ITEM_LANTERN");
+    ItemId ITEM_ID_LOOM = getIdFromName("ITEM_LOOM");
+    ItemId ITEM_ID_ENCHANTER = getIdFromName("ITEM_ENCHANTER");
+    ItemId ITEM_ID_MAGIC_COMPASS = getIdFromName("ITEM_MAGIC_COMPASS");
+
     if (!g_itemTable) {
         g_itemCount = 0;
         return;
