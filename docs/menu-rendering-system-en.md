@@ -372,6 +372,68 @@ renderTextColor(msg, centerX + 1, y + 1, 0x000000FF);  // Black (shadow)
 renderTextColor(msg, centerX, y, textColor);           // Text color
 ```
 
+### Text Placement on Screen
+
+**x and y are always in pixels.** Each character occupies **8×8 pixels**.
+
+#### Coordinate System
+
+```
+(0,0) ──────────────────────────────► x
+  │   ┌──────────────────────────────┐
+  │   │                              │
+  │   │   renderText("ABC", 10, 20)  │
+  │   │                  ▲    ▲      │
+  │   │              col px  row px  │
+  │   │                              │
+  ▼ y └──────────────────────────────┘
+```
+
+#### Limits per Screen
+
+Both screens have the **same height** (240 px) — Y limits are therefore identical.
+
+| Limit | Top (400×240) | Bottom (320×240) |
+|---|---|---|
+| Last safe column (1 char) | `x = 392` | `x = 312` |
+| Max chars per line | **50** | **40** |
+| Last safe row | `y = 232` | `y = 232` |
+| Calculation | `400 - 8 = 392` | `320 - 8 = 312` |
+| Y calculation | `240 - 8 = 232` | `240 - 8 = 232` |
+
+> Safe limit assumes text must not exceed the screen edge.
+> For N characters: `x_max = width - (N * 8)`.
+
+#### Position Examples
+
+```c
+// Top-left corner
+renderText("ABC", 0, 0);
+
+// Standard margin (10px)
+renderText("ABC", 10, 10);
+
+// Vertical center (both screens)
+renderText("ABC", x, 116);   // 232 / 2 = 116
+
+// Last visible row
+renderText("ABC", 10, 232);
+
+// Last possible char — top screen
+renderText("X", 392, 10);
+
+// Last possible char — bottom screen
+renderText("X", 312, 10);
+
+// Full line max — top screen (50 chars)
+renderText("AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDDEEEEEEEEEEFFFFF", 0, 10);
+//          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 50 chars → x=0 to x=399
+
+// Full line max — bottom screen (40 chars)
+renderText("AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD", 0, 10);
+//          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 40 chars → x=0 to x=319
+```
+
 ---
 
 ## Tile System

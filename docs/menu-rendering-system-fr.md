@@ -369,6 +369,68 @@ renderTextColor(msg, centerX + 1, y + 1, 0x000000FF);  // Noir (ombre)
 renderTextColor(msg, centerX, y, textColor);           // Couleur texte
 ```
 
+### Placement du texte à l'écran
+
+**x et y sont toujours en pixels.** Chaque caractère occupe **8×8 pixels**.
+
+#### Repère des coordonnées
+
+```
+(0,0) ──────────────────────────────► x
+  │   ┌──────────────────────────────┐
+  │   │                              │
+  │   │   renderText("ABC", 10, 20)  │
+  │   │                  ▲    ▲      │
+  │   │              col px  row px  │
+  │   │                              │
+  ▼ y └──────────────────────────────┘
+```
+
+#### Limites par écran
+
+Les deux écrans ont la **même hauteur** (240 px) — les limites en Y sont donc identiques.
+
+| Limite | Top (400×240) | Bottom (320×240) |
+|---|---|---|
+| Dernière colonne safe (1 char) | `x = 392` | `x = 312` |
+| Chars max par ligne | **50** | **40** |
+| Dernière ligne safe | `y = 232` | `y = 232` |
+| Calcul | `400 - 8 = 392` | `320 - 8 = 312` |
+| Calcul y | `240 - 8 = 232` | `240 - 8 = 232` |
+
+> La limite safe suppose que le texte ne doit pas dépasser le bord de l'écran.
+> Pour N caractères : `x_max = width - (N * 8)`.
+
+#### Exemples de positions
+
+```c
+// Coin supérieur gauche
+renderText("ABC", 0, 0);
+
+// Marge standard (10px)
+renderText("ABC", 10, 10);
+
+// Centre vertical (les deux écrans)
+renderText("ABC", x, 116);   // 232 / 2 = 116
+
+// Dernière ligne visible
+renderText("ABC", 10, 232);
+
+// Dernier char possible — top screen
+renderText("X", 392, 10);
+
+// Dernier char possible — bottom screen
+renderText("X", 312, 10);
+
+// Ligne complète max — top screen (50 chars)
+renderText("AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDDEEEEEEEEEEFFFFF", 0, 10);
+//          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 50 chars → x=0 à x=399
+
+// Ligne complète max — bottom screen (40 chars)
+renderText("AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD", 0, 10);
+//          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 40 chars → x=0 à x=319
+```
+
 ---
 
 ## Système de tuiles

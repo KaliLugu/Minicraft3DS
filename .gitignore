@@ -1,6 +1,7 @@
 # Dev
 *.elf
 *.lst
+*.log
 
 # 3DS Dev
 *.3dsx
@@ -67,6 +68,8 @@ makerom
 ctrtool
 bannertool
 
+
+# ssl certs
 #logs 
 *.log
 
