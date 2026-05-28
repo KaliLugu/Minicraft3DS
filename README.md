@@ -49,3 +49,13 @@ You can do anything with the source code (besides sell it) as long as you give p
 If you are going to make a mod of this version, be sure to give credit to Markus "Notch" Perrson because he did create the original game after all.
 
 This source code is subject to a lot of change for better optimization/cleanliness.
+
+----------
+
+<a href="https://www.star-history.com/?repos=KaliLugu%2FMinicraft3DS&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=KaliLugu/Minicraft3DS&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=KaliLugu/Minicraft3DS&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=KaliLugu/Minicraft3DS&type=date&legend=top-left" />
+ </picture>
+</a>

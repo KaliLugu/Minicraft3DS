@@ -17,7 +17,7 @@
 
 Le système réseau est divisé en deux sous-systèmes indépendants :
 
-- **HTTP** (`miniCurl`) : utilisé uniquement pour la vérification de version au démarrage, via libcurl sur le service SOC de la 3DS.
+- **HTTP** (`miniCurl`) : couche HTTP généraliste via libcurl sur le service SOC de la 3DS, appelée par tout module ayant besoin d'accéder à une URL.
 - **Multijoueur local** (`RP2P` + `Synchronizer`) : jeu local sans-fil entre plusieurs 3DS, basé sur un modèle lockstep déterministe.
 
 Ces deux sous-systèmes ne partagent aucun code entre eux.
@@ -28,7 +28,7 @@ Ces deux sous-systèmes ne partagent aucun code entre eux.
 
 ```
 ┌─────────────────────────────────┐
-│  version.c                      │  vérification de version
+│  version.c, …                   │  accès HTTP selon les besoins
 │  miniCurl (HTTP / libcurl)      │
 └────────────────┬────────────────┘
                  │ SOC (service réseau 3DS)
@@ -48,7 +48,7 @@ Ces deux sous-systèmes ne partagent aucun code entre eux.
 
 ### Rôle
 
-Effectue des requêtes HTTP GET en utilisant libcurl, après avoir initialisé le service SOC de la 3DS. Utilisé exclusivement pour récupérer la dernière version du jeu depuis l'API GitHub.
+Effectue des requêtes HTTP GET en utilisant libcurl, après avoir initialisé le service SOC de la 3DS. Outil généraliste appelé par tout module ayant besoin d'accéder à une URL. Exemple d'utilisation : `version.c` pour récupérer la version du jeu depuis l'API GitHub.
 
 ### Initialisation
 

@@ -70,4 +70,8 @@ bannertool
 
 
 # ssl certs
+#logs 
+*.log
+
+# SSL keys
 *.pem
