@@ -67,3 +67,9 @@ Temporary Items
 makerom
 ctrtool
 bannertool
+
+#logs 
+*.log
+
+# SSL keys
+*.pem
