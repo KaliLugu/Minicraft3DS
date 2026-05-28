@@ -652,7 +652,12 @@ static int loadFile(char *filename) {
         sprintf(playerFilename, "%lu.plr", loadPlayers[i].id);
 
         if (strcmp(filename, playerFilename) == 0) {
-            loadPlayerInternal(filename, loadPlayers + i, loadEManager);
+            int result = loadPlayerInternal(filename, loadPlayers + i, loadEManager);
+            if (result != 0) {
+                // Track the specific error code, in futur use idNewerVersion and idOlderVersion to show more specific error, for now just show a generic version mismatch error for both cases cause the text in menu is big and specific error messages would be too long
+                lastLoadError = (result == 2) ? LOAD_ERROR_LEGACY_SAVE : LOAD_ERROR_VERSION_MISMATCH;
+            }
+            loadHadWorld = (result == 0);
         }
     }
 
