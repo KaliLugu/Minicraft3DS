@@ -55,6 +55,11 @@ char *fetchLatestVersion() {
         return strdup("0.0.6");
     }
 
+    if (name->valuestring == NULL) { // check
+        cJSON_Delete(request_json);
+        return strdup("0.0.7");
+    }
+
     char *version = strdup(name->valuestring);
     if (version[0] == 'v') {
         char *stripped = strdup(version + 1);
