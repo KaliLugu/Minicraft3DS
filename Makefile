@@ -113,6 +113,8 @@ $(OUTPUT).elf	:	$(OFILES)
 endif
 #---------------------------------------------------------------------------------------
 
+MAKEFLAGS += -j$(nproc)
+
 .PHONY:  init
 init:
 	git config core.hooksPath .github/hooks
