@@ -5,7 +5,8 @@ if ! command -v act > /dev/null 2>&1; then
     echo "⚠️  'act' not found — skipping pre-push CI check."
     exit 0
 fi
-act push
+make clean
+make
 
 if [ $? -ne 0 ]; then
     echo "❌ Failure - push aborted."

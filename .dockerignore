@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+.github
+
+# act / CI local files
+.actrc
+
+# Build output (rebuilt inside container anyway)
+build/
+*.cia
+*.3dsx
+*.elf
+*.smdh
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Docs
+*.md
+LICENSE

@@ -43,7 +43,7 @@ LIBDIRS	:=	$(DEVKITPRO)/portlibs/3ds $(CTRULIB)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 
-SOURCES		:=	source source/minizip source/data source/data/items source/menu source/editor source/network source/ingamemenu source/entity source/render source/engine source/engine/3ds
+SOURCES		:=	source source/minizip source/data source/data/items source/menu source/editor source/network source/ingamemenu source/entity source/render source/engine source/engine/3ds lib
 INCLUDES	:=	include
 ROMFS		:=	resources
 
@@ -85,7 +85,7 @@ export DEPSDIR  := $(CURDIR)/$(BUILD)
 .PHONY: $(BUILD) clean all
 
 #---------------------------------------------------------------------------------
-all: $(BUILD)
+local: $(BUILD)
 
 $(BUILD):
 	@echo 3ds build ...
@@ -118,3 +118,10 @@ init:
 	git config core.hooksPath .github/hooks
 	chmod +x .github/hooks/pre-push
 	@echo "Git hooks initialized. Pre-push hook is now active."
+
+#---------------------------------------------------------------------------------------
+# Build docker image
+#---------------------------------------------------------------------------------------
+all:
+	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
+		bash -c "bash fetch-ssl.sh && make clean && make local -j$$(nproc) 2>&1 | tee build.log"
