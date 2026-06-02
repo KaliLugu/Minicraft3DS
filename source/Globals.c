@@ -347,7 +347,7 @@ void hurtEntity(Entity *e, int damage, int dir, MColor hurtColor, Entity *damage
 
 bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
     // TODO: To much duplicated code
-    if (item->id == getIdFromName("ITEM_POWGLOVE")) { // TODO a adapté
+    if (item->id == getIdFromName("ITEM_POWGLOVE")) {
         if (e->type == ENTITY_FURNITURE) {
             // Important: close all crafting windows using this furniture (only applies to chest) or else they will write invalid memory
             for (int i = 0; i < playerCount; i++) {
@@ -366,7 +366,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             pd->entity.p.isCarrying = true;
             return true;
         }
-    } else if (item->id == getIdFromName("TOOL_AXE")) { // TODO a adapté
+    } else if (item->id == getIdFromName("TOOL_AXE")) {
         switch (e->type) {
         case ENTITY_PASSIVE:
         case ENTITY_ZOMBIE:
@@ -387,7 +387,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-    } else if (item->id == getIdFromName("TOOL_SWORD")) { // TODO a adapté
+    } else if (item->id == getIdFromName("TOOL_SWORD")) {
         switch (e->type) {
         case ENTITY_PASSIVE:
         case ENTITY_ZOMBIE:
@@ -408,7 +408,7 @@ bool ItemVsEntity(PlayerData *pd, Item *item, Entity *e, int dir) {
             removeEntityFromList(e, e->level, &eManager);
             return true;
         }
-    } else if (item->id == getIdFromName("NULL")) { // TODO a adapté
+    } else if (item->id == getIdFromName("NULL")) {
         switch (e->type) {
         case ENTITY_PASSIVE:
         case ENTITY_ZOMBIE:
@@ -483,7 +483,7 @@ void EntityVsEntity(Entity *e1, Entity *e2) {
             hurtEntity(e2, 1, -1, 0xFFAF00FF, e1);
         break;
     case ENTITY_ARROW:
-        if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_WOOD")) { // TODO a adapté tout les switch case 
+        if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_WOOD")) {
             damage = 1 + (syncRand() % 3);
         } else if (e1->arrow.itemID == getIdFromName("ITEM_ARROW_STONE")) {
             damage = 2 + (syncRand() % 4);
