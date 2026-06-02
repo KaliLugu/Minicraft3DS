@@ -7,7 +7,7 @@
 
 typedef struct _worldData WorldData;
 
-#define SAVE_VERSION 2 // Increment this when making incompatible save changes.
+#define SAVE_VERSION 3 // Increment this when making incompatible save changes.
 
 #define SAVE_COMMENT "Minicraft3DSSave"
 #define SAVE_COPYBUFFER_SIZE 4096

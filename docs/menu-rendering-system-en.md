@@ -7,8 +7,6 @@
 3. [Screens and Resolutions](#screens-and-resolutions)
 4. [Main Rendering Functions](#main-rendering-functions)
 5. [Text System](#text-system)
-6. [Fonctions de rendu principales](#fonctions-de-rendu-principales)
-5. [Système de texte](#système-de-texte)
 6. [Smart Text Rendering (wrap + center)](#smart-text-rendering-wrap-+-center)
 7. [Tile System](#tile-system)
 8. [Small Screen Limitations](#small-screen-limitations)

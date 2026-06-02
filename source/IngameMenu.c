@@ -7,6 +7,7 @@
 #include "Render.h"
 #include "SaveLoad.h"
 #include "network/Synchronizer.h"
+#include "data/items/ItemsData.h"
 
 char pOptions[][24] = {"Return to game", "Save Progress", "Exit to title"};
 
@@ -205,7 +206,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
 
         if (pd->inputs.k_accept.clicked) {
             if (pd->entity.level != 5) {
-                Item *item = getItemFromInventory(ITEM_DUNGEON_KEY, &(pd->inventory));
+                Item *item = getItemFromInventory(getIdFromName("ITEM_DUNGEON_KEY"), &(pd->inventory));
                 if (item != NULL) {
                     --item->countLevel;
                     if (item->countLevel == 0) {
@@ -458,7 +459,7 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
         renderTextColor("Effects", 180 + 104 + 1, 17 + 1, 0x000000FF);
         renderTextColor("Effects", 180 + 104, 17, 0xFFFFFFFF);
         int epos = 0;
-        for (i = 0; i < EFFECTS_MAX; i++) {
+        for (i = 0; i < vanillaEffectCount; i++) {
             if (playerEffectActive(pd, i)) {
                 // can only display a limited amount of effects at once
                 if (epos == 3) {
