@@ -401,6 +401,8 @@ void renderFurniture(int itemID, int x, int y) {
         renderTile16(x, y, 14, 8, 0);
     } else if (itemID == ITEM_ID_ENCHANTER) {
         renderTile16(x, y, 15, 8, 0);
+    } else if (itemID == getIdFromName("ITEM_BED")) {
+        renderTile16(x, y, 16, 8, 0);
     }
 }
 

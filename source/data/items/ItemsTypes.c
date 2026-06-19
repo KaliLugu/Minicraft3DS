@@ -4,6 +4,7 @@
 ItemId ITEM_ID_ANVIL;
 ItemId ITEM_ID_CHEST;
 ItemId ITEM_ID_OVEN;
+ItemId ITEM_ID_BED;
 ItemId ITEM_ID_FURNACE;
 ItemId ITEM_ID_WORKBENCH;
 ItemId ITEM_ID_LANTERN;
@@ -88,6 +89,7 @@ static const ItemData _vanillaDefs[] = {
     ITEM_ENTRY("ITEM_SCROLL_STRENGTH", "Scroll of Strength", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 3}}),
     ITEM_ENTRY("ITEM_SCROLL_SHIELDING", "Scroll of Shielding", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 4}}),
     ITEM_ENTRY("ITEM_SCROLL_NIGHTVISION", "Scroll of Nightvision", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 5}}),
+    ITEM_ENTRY("ITEM_BED", "bed", ITEM_CAT_FURNITURE, false , 23, 20, {.generic = {false}}),
 };
 
 static const unsigned int _vanillaCount = sizeof(_vanillaDefs) / sizeof(_vanillaDefs[0]);
@@ -105,6 +107,7 @@ void itemsTableBuild(uint16_t modCount) {
     ItemId ITEM_ID_ANVIL = getIdFromName("ITEM_ANVIL");
     ItemId ITEM_ID_CHEST = getIdFromName("ITEM_CHEST");
     ItemId ITEM_ID_OVEN = getIdFromName("ITEM_OVEN");
+    ItemId ITEM_ID_BED = getIdFromName("ITEM_BED");
     ItemId ITEM_ID_FURNACE = getIdFromName("ITEM_FURNACE");
     ItemId ITEM_ID_WORKBENCH = getIdFromName("ITEM_WORKBENCH");
     ItemId ITEM_ID_LANTERN = getIdFromName("ITEM_LANTERN");
