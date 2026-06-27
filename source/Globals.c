@@ -1376,32 +1376,32 @@ void openCraftingMenu(PlayerData *pd, RecipeManager *rm, char *title) {
 
 bool useEntity(PlayerData *pd, Entity *e) {
     if (e->type == ENTITY_FURNITURE) {
-        if (e->entityFurniture.itemID == getIdFromName("ITEM_WORKBENCH")) { // adapté tout le switch case 
+        if (e->entityFurniture.itemID == ITEM_ID_WORKBENCH) { // adapté tout le switch case 
             openCraftingMenu(pd, &workbenchRecipes, "Crafting");
             return true;
-        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_FURNACE")) {
+        } else if (e->entityFurniture.itemID == ITEM_ID_FURNACE) {
             openCraftingMenu(pd, &furnaceRecipes, "Smelting");
             return true;
-        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_OVEN")) {
+        } else if (e->entityFurniture.itemID == ITEM_ID_OVEN) {
             openCraftingMenu(pd, &ovenRecipes, "Cooking");
             return true;
-        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_ANVIL")) {
+        } else if (e->entityFurniture.itemID == ITEM_ID_ANVIL) {
             openCraftingMenu(pd, &anvilRecipes, "Smithing");
             return true;
-        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_LOOM")) {
+        } else if (e->entityFurniture.itemID == ITEM_ID_LOOM) {
             openCraftingMenu(pd, &loomRecipes, "Crafting");
             return true;
-        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_ENCHANTER")) {
+        } else if (e->entityFurniture.itemID == ITEM_ID_ENCHANTER) {
             openCraftingMenu(pd, &enchanterRecipes, "Crafting");
             return true;
-        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_CHEST")) {
+        } else if (e->entityFurniture.itemID == ITEM_ID_CHEST) {
             pd->curChestEntity = e;
             pd->ingameMenuInvSel = 0;
             pd->ingameMenuInvSelOther = 0;
             pd->curChestEntityR = 0;
             pd->ingameMenu = MENU_CONTAINER;
             return true;
-        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_BED")) {
+        } else if (e->entityFurniture.itemID == ITEM_ID_BED) {
             if (worldData.daytime >= 18000) {
                 worldData.day++;
                 worldData.daytime = 6000;

@@ -359,7 +359,7 @@ void renderWeather(uByte level, int xScroll, int yScroll) {
     }
 }
 
-void renderDayNight(PlayerData *pd) {
+void renderDayNight(PlayerData *pd) { // ce basé sur ça pour faire un fondu au noir quand le joueur est sensé dormir
     if (pd->entity.level == 1 && (worldData.daytime < 6000 || worldData.daytime > 18000)) {
         int color1 = 0x0C0C0C00;
         int color2 = 0x0C0C1000;
