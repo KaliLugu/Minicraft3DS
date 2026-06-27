@@ -385,7 +385,7 @@ void renderDayNight(PlayerData *pd) { // ce basé sur ça pour faire un fondu au
 }
 
 void renderFurniture(int itemID, int x, int y) {
-    if (itemID == getIdFromName("ITEM_ANVIL")) {
+    if (itemID == ITEM_ID_ANVIL) {
         renderTile16(x, y, 4, 8, 0);
     } else if (itemID == ITEM_ID_CHEST) {
         renderTile16(x, y, 5, 8, 0);
@@ -401,7 +401,7 @@ void renderFurniture(int itemID, int x, int y) {
         renderTile16(x, y, 14, 8, 0);
     } else if (itemID == ITEM_ID_ENCHANTER) {
         renderTile16(x, y, 15, 8, 0);
-    } else if (itemID == getIdFromName("ITEM_BED")) {
+    } else if (itemID == ITEM_ID_BED) {
         renderTile16(x, y, 16, 8, 0);
     }
 }
