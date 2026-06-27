@@ -103,6 +103,15 @@ void itemsTableBuild(uint16_t modCount) {
     g_itemCount = _vanillaCount + modCount;
     g_itemTable = malloc(g_itemCount * sizeof(ItemData));
 
+    if (!g_itemTable) {
+        g_itemCount = 0;
+        return;
+    }
+    for (unsigned int i = 0; i < _vanillaCount; i++) {
+        g_itemTable[i] = _vanillaDefs[i];
+        g_itemTable[i].id = (ItemId)i;
+    }
+
     // variable pour les id runtie des furnitures
     ItemId ITEM_ID_ANVIL = getIdFromName("ITEM_ANVIL");
     ItemId ITEM_ID_CHEST = getIdFromName("ITEM_CHEST");
@@ -115,12 +124,4 @@ void itemsTableBuild(uint16_t modCount) {
     ItemId ITEM_ID_ENCHANTER = getIdFromName("ITEM_ENCHANTER");
     ItemId ITEM_ID_MAGIC_COMPASS = getIdFromName("ITEM_MAGIC_COMPASS");
 
-    if (!g_itemTable) {
-        g_itemCount = 0;
-        return;
-    }
-    for (unsigned int i = 0; i < _vanillaCount; i++) {
-        g_itemTable[i] = _vanillaDefs[i];
-        g_itemTable[i].id = (ItemId)i;
-    }
 }

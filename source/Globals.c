@@ -1401,6 +1401,14 @@ bool useEntity(PlayerData *pd, Entity *e) {
             pd->curChestEntityR = 0;
             pd->ingameMenu = MENU_CONTAINER;
             return true;
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_BED")) {
+            if (worldData.daytime >= 18000) {
+                worldData.day++;
+                worldData.daytime = 6000;
+            } else if (worldData.daytime <= 6000) {
+                worldData.daytime = 6000;
+            }
+            return true;
         }
     } else if (e->type == ENTITY_NPC) {
         openNPCMenu(pd, e->npc.type);
