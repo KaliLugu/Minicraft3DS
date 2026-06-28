@@ -402,7 +402,7 @@ void renderFurniture(int itemID, int x, int y) {
     } else if (itemID == getIdFromName("ITEM_ENCHANTER")) {
         renderTile16(x, y, 15, 8, 0);
     } else if (itemID == getIdFromName("ITEM_BED")) {
-        renderTile16(x, y, 23, 20, 0);
+        renderTile16(x, y, 16, 8, 0);
     }
 }
 
