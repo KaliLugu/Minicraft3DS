@@ -359,7 +359,7 @@ void renderWeather(uByte level, int xScroll, int yScroll) {
     }
 }
 
-void renderDayNight(PlayerData *pd) {
+void renderDayNight(PlayerData *pd) { // ce basé sur ça pour faire un fondu au noir quand le joueur est sensé dormir
     if (pd->entity.level == 1 && (worldData.daytime < 6000 || worldData.daytime > 18000)) {
         int color1 = 0x0C0C0C00;
         int color2 = 0x0C0C1000;
@@ -387,20 +387,22 @@ void renderDayNight(PlayerData *pd) {
 void renderFurniture(int itemID, int x, int y) {
     if (itemID == getIdFromName("ITEM_ANVIL")) {
         renderTile16(x, y, 4, 8, 0);
-    } else if (itemID == ITEM_ID_CHEST) {
+    } else if (itemID == getIdFromName("ITEM_CHEST")) {
         renderTile16(x, y, 5, 8, 0);
-    } else if (itemID == ITEM_ID_OVEN) {
+    } else if (itemID == getIdFromName("ITEM_OVEN")) {
         renderTile16(x, y, 6, 8, 0);
-    } else if (itemID == ITEM_ID_FURNACE) {
+    } else if (itemID == getIdFromName("ITEM_FURNACE")) {
         renderTile16(x, y, 7, 8, 0);
-    } else if (itemID == ITEM_ID_WORKBENCH) {
+    } else if (itemID == getIdFromName("ITEM_WORKBENCH")) {
         renderTile16(x, y, 8, 8, 0);
-    } else if (itemID == ITEM_ID_LANTERN) {
+    } else if (itemID == getIdFromName("ITEM_LANTERN")) {
         renderTile16(x, y, 9, 8, 0);
-    } else if (itemID == ITEM_ID_LOOM) {
+    } else if (itemID == getIdFromName("ITEM_LOOM")) {
         renderTile16(x, y, 14, 8, 0);
-    } else if (itemID == ITEM_ID_ENCHANTER) {
+    } else if (itemID == getIdFromName("ITEM_ENCHANTER")) {
         renderTile16(x, y, 15, 8, 0);
+    } else if (itemID == getIdFromName("ITEM_BED")) {
+        renderTile16(x, y, 16, 8, 0);
     }
 }
 

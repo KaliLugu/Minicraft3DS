@@ -4,6 +4,7 @@
 ItemId ITEM_ID_ANVIL;
 ItemId ITEM_ID_CHEST;
 ItemId ITEM_ID_OVEN;
+ItemId ITEM_ID_BED;
 ItemId ITEM_ID_FURNACE;
 ItemId ITEM_ID_WORKBENCH;
 ItemId ITEM_ID_LANTERN;
@@ -88,6 +89,7 @@ static const ItemData _vanillaDefs[] = {
     ITEM_ENTRY("ITEM_SCROLL_STRENGTH", "Scroll of Strength", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 3}}),
     ITEM_ENTRY("ITEM_SCROLL_SHIELDING", "Scroll of Shielding", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 4}}),
     ITEM_ENTRY("ITEM_SCROLL_NIGHTVISION", "Scroll of Nightvision", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 5}}),
+    ITEM_ENTRY("ITEM_BED", "bed", ITEM_CAT_FURNITURE, false , 23, 20, {.generic = {false}}),
 };
 
 static const unsigned int _vanillaCount = sizeof(_vanillaDefs) / sizeof(_vanillaDefs[0]);
@@ -101,17 +103,6 @@ void itemsTableBuild(uint16_t modCount) {
     g_itemCount = _vanillaCount + modCount;
     g_itemTable = malloc(g_itemCount * sizeof(ItemData));
 
-    // variable pour les id runtie des furnitures
-    ItemId ITEM_ID_ANVIL = getIdFromName("ITEM_ANVIL");
-    ItemId ITEM_ID_CHEST = getIdFromName("ITEM_CHEST");
-    ItemId ITEM_ID_OVEN = getIdFromName("ITEM_OVEN");
-    ItemId ITEM_ID_FURNACE = getIdFromName("ITEM_FURNACE");
-    ItemId ITEM_ID_WORKBENCH = getIdFromName("ITEM_WORKBENCH");
-    ItemId ITEM_ID_LANTERN = getIdFromName("ITEM_LANTERN");
-    ItemId ITEM_ID_LOOM = getIdFromName("ITEM_LOOM");
-    ItemId ITEM_ID_ENCHANTER = getIdFromName("ITEM_ENCHANTER");
-    ItemId ITEM_ID_MAGIC_COMPASS = getIdFromName("ITEM_MAGIC_COMPASS");
-
     if (!g_itemTable) {
         g_itemCount = 0;
         return;
@@ -120,4 +111,17 @@ void itemsTableBuild(uint16_t modCount) {
         g_itemTable[i] = _vanillaDefs[i];
         g_itemTable[i].id = (ItemId)i;
     }
+
+    // variable pour les id runtie des furnitures
+    ItemId ITEM_ID_ANVIL = getIdFromName("ITEM_ANVIL");
+    ItemId ITEM_ID_CHEST = getIdFromName("ITEM_CHEST");
+    ItemId ITEM_ID_OVEN = getIdFromName("ITEM_OVEN");
+    ItemId ITEM_ID_BED = getIdFromName("ITEM_BED");
+    ItemId ITEM_ID_FURNACE = getIdFromName("ITEM_FURNACE");
+    ItemId ITEM_ID_WORKBENCH = getIdFromName("ITEM_WORKBENCH");
+    ItemId ITEM_ID_LANTERN = getIdFromName("ITEM_LANTERN");
+    ItemId ITEM_ID_LOOM = getIdFromName("ITEM_LOOM");
+    ItemId ITEM_ID_ENCHANTER = getIdFromName("ITEM_ENCHANTER");
+    ItemId ITEM_ID_MAGIC_COMPASS = getIdFromName("ITEM_MAGIC_COMPASS");
+
 }

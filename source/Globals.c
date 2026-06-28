@@ -1,4 +1,5 @@
 #include "Globals.h"
+#include "Ingame.h"
 #include "data/items/ItemsData.h"
 
 #include "render/TextureManager.h"
@@ -1400,6 +1401,9 @@ bool useEntity(PlayerData *pd, Entity *e) {
             pd->ingameMenuInvSelOther = 0;
             pd->curChestEntityR = 0;
             pd->ingameMenu = MENU_CONTAINER;
+            return true;
+        } else if (e->entityFurniture.itemID == getIdFromName("ITEM_BED")) {
+            playerSleep();
             return true;
         }
     } else if (e->type == ENTITY_NPC) {

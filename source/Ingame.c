@@ -16,6 +16,27 @@
 int stallCounter;
 bool stallAreYouSure;
 
+static int fadeBlackAlpha = 0;
+static int fadeBlackStep = 0;
+static int sleepState = 0;
+
+void startFadeToBlack(int duration) {
+    fadeBlackStep = (255 - fadeBlackAlpha + duration - 1) / duration;
+    if (fadeBlackStep < 1) fadeBlackStep = 1;
+}
+
+void startFadeFromBlack(int duration) {
+    fadeBlackStep = -((fadeBlackAlpha + duration - 1) / duration);
+    if (fadeBlackStep > -1) fadeBlackStep = -1;
+}
+
+void playerSleep() {
+    if (sleepState == 0 && (worldData.daytime >= 18000 || worldData.daytime <= 6000)) {
+        sleepState = 1;
+        startFadeToBlack(35);
+    }
+}
+
 // generates stairs up and creates compass data
 void generatePass2() {
     for (uByte level = 0; level < 5; level++) {
@@ -156,6 +177,23 @@ void syncedTick() {
             }
             --players[i].entity.p.endTimer;
         }
+    }
+
+    // tick fade to/from black
+    if (fadeBlackStep != 0) {
+        fadeBlackAlpha += fadeBlackStep;
+        if (fadeBlackAlpha >= 255) { fadeBlackAlpha = 255; fadeBlackStep = 0; }
+        else if (fadeBlackAlpha <= 0) { fadeBlackAlpha = 0; fadeBlackStep = 0; }
+    }
+
+    // sleep sequence: once fully black, advance time then fade back
+    if (sleepState == 1 && fadeBlackAlpha >= 255 && fadeBlackStep == 0) {
+        if (worldData.daytime >= 18000) worldData.day++;
+        worldData.daytime = 6000;
+        sleepState = 2;
+        startFadeFromBlack(20);
+    } else if (sleepState == 2 && fadeBlackAlpha <= 0 && fadeBlackStep == 0) {
+        sleepState = 0;
     }
 
     // update worldData (daytime,season and weather)
@@ -322,6 +360,9 @@ void renderGame(int screen, int width, int height) {
         if (!nightvision) {
             renderDayNight(getLocalPlayer());
         }
+
+        if (fadeBlackAlpha > 0)
+            drawRect(0, 0, 400, 240, (unsigned int)fadeBlackAlpha);
 
         offsetX = 0;
         offsetY = 0;
