@@ -90,6 +90,7 @@ static const ItemData _vanillaDefs[] = {
     ITEM_ENTRY("ITEM_SCROLL_SHIELDING", "Scroll of Shielding", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 4}}),
     ITEM_ENTRY("ITEM_SCROLL_NIGHTVISION", "Scroll of Nightvision", ITEM_CAT_SPELL, true, 18, 21, {.spell = {5, 5}}),
     ITEM_ENTRY("ITEM_BED", "bed", ITEM_CAT_FURNITURE, false , 23, 20, {.generic = {false}}),
+    ITEM_ENTRY("ITEM_PAPER", "paper", ITEM_CAT_GENERIC, true, 19, 21, {}),
 };
 
 static const unsigned int _vanillaCount = sizeof(_vanillaDefs) / sizeof(_vanillaDefs[0]);
