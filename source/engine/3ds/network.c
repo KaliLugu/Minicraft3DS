@@ -50,11 +50,13 @@ static void networkHandleRecieve() {
         } else if (actualSize) {
             void *readPointer = networkBuffer;
 
-            while (actualSize > 0) {
+            while (actualSize >= sizeof(uShort)) {
                 // read size
                 uShort size = *((uShort *)readPointer);
                 readPointer += sizeof(uShort);
                 actualSize -= sizeof(uShort);
+
+                if (size > actualSize) break;
 
                 // handle packet
                 packetHandler(readPointer, size);

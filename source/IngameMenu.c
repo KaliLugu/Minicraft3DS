@@ -55,7 +55,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
                     pd->ingameMenu = MENU_NONE;
                     break;
                 case 1:
-                    if (!dungeonActive())
+                    if (!dungeonActive() && playerLocalIndex == 0)
                         pd->ingameMenuAreYouSureSave = true;
                     break;
                 case 2:
@@ -379,7 +379,7 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
             MColor color = 0x7F7F7FFF;
             if (i == pd->ingameMenuSelection)
                 color = 0xFFFFFFFF;
-            if ((i == 1 && dungeonActive())) {
+            if ((i == 1 && (dungeonActive() || playerLocalIndex != 0))) {
                 color = 0x7F7FFFFF;
                 if (i == pd->ingameMenuSelection)
                     color = 0xFFAFAFFF;
