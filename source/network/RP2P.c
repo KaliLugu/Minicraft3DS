@@ -2,7 +2,7 @@
 #include <string.h>
 
 #define SENDBUFFERSIZE ((NETWORK_MAXDATASIZE + 256) * 10)
-#define RECIEVEBUFFERSIZE ((NETWORK_MAXDATASIZE + 256) * 100)
+#define RECIEVEBUFFERSIZE ((NETWORK_MAXDATASIZE + 256) * 300)
 #define HEADER_SIZE (sizeof(uShort) + sizeof(uByte) + sizeof(sInt))
 #define ACK_SIZE (sizeof(uShort) + sizeof(uByte) + sizeof(sInt) * 2)
 #define INVALID_PLAYER 255
@@ -195,14 +195,17 @@ void rp2pRecvRaw(void *packet, uShort size) {
                     rp2pData.state = rp2pBeforeStart;
                 } else if (type == RP2P_MESSAGE_TYPE_APP) {
                     lockLock(recieveBufferLock);
-                    *((sInt *)(recieveBuffer + recieveBufferPos)) = sender;
-                    recieveBufferPos += sizeof(sInt);
-                    *((uByte *)(recieveBuffer + recieveBufferPos)) = player;
-                    recieveBufferPos += sizeof(uByte);
-                    *((uShort *)(recieveBuffer + recieveBufferPos)) = size - HEADER_SIZE;
-                    recieveBufferPos += sizeof(uShort);
-                    memcpy(recieveBuffer + recieveBufferPos, packet, size - HEADER_SIZE);
-                    recieveBufferPos += size - HEADER_SIZE;
+                    size_t needed = sizeof(sInt) + sizeof(uByte) + sizeof(uShort) + (size - HEADER_SIZE);
+                    if (recieveBufferPos + needed < RECIEVEBUFFERSIZE) {
+                        *((sInt *)(recieveBuffer + recieveBufferPos)) = sender;
+                        recieveBufferPos += sizeof(sInt);
+                        *((uByte *)(recieveBuffer + recieveBufferPos)) = player;
+                        recieveBufferPos += sizeof(uByte);
+                        *((uShort *)(recieveBuffer + recieveBufferPos)) = size - HEADER_SIZE;
+                        recieveBufferPos += sizeof(uShort);
+                        memcpy(recieveBuffer + recieveBufferPos, packet, size - HEADER_SIZE);
+                        recieveBufferPos += size - HEADER_SIZE;
+                    }
                     lockUnlock(recieveBufferLock);
                 }
             }

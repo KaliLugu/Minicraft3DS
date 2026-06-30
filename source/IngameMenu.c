@@ -6,14 +6,34 @@
 #include "Player.h"
 #include "Render.h"
 #include "SaveLoad.h"
+#include "engine/sync.h"
 #include "network/Synchronizer.h"
 #include "data/items/ItemsData.h"
+
+#define SAVE_THREAD_STACK (64 * 1024)
+
+static MThread saveThread = NULL;
+static volatile bool saveThreadDone = false;
+
+static void saveThreadFunc() {
+    saveWorld(currentFileName, &eManager, &worldData, players, playerCount);
+    saveThreadDone = true;
+}
 
 char pOptions[][24] = {"Return to game", "Save Progress", "Exit to title"};
 
 void ingameMenuTick(PlayerData *pd, int menu) {
     switch (menu) {
     case MENU_PAUSED:
+        if (saveThread != NULL && saveThreadDone) {
+            mthreadJoin(saveThread);
+            saveThread = NULL;
+            isSaving = false;
+            pd->ingameMenuTimer = 60;
+            pd->ingameMenuAreYouSureSave = false;
+            pd->ingameMenuAreYouSure = false;
+        }
+
         if (!pd->ingameMenuAreYouSure && !pd->ingameMenuAreYouSureSave) {
             if (pd->ingameMenuTimer > 0)
                 --pd->ingameMenuTimer;
@@ -35,7 +55,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
                     pd->ingameMenu = MENU_NONE;
                     break;
                 case 1:
-                    if (!dungeonActive())
+                    if (!dungeonActive() && playerLocalIndex == 0)
                         pd->ingameMenuAreYouSureSave = true;
                     break;
                 case 2:
@@ -43,15 +63,13 @@ void ingameMenuTick(PlayerData *pd, int menu) {
                     break;
                 }
             }
-        } else if (pd->ingameMenuAreYouSureSave) {
+        } else if (pd->ingameMenuAreYouSureSave && saveThread == NULL) {
             if (pd->inputs.k_accept.clicked) {
-                pd->ingameMenuTimer = 60;
-
                 if (playerLocalIndex == 0) {
-                    saveWorld(currentFileName, &eManager, &worldData, players, playerCount);
+                    saveThreadDone = false;
+                    isSaving = true;
+                    saveThread = mthreadCreate(&saveThreadFunc, SAVE_THREAD_STACK);
                 }
-                pd->ingameMenuAreYouSureSave = false;
-                pd->ingameMenuAreYouSure = false;
             } else if (pd->inputs.k_decline.clicked) {
                 pd->ingameMenuAreYouSureSave = false;
                 pd->ingameMenuAreYouSure = false;
@@ -361,7 +379,7 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
             MColor color = 0x7F7F7FFF;
             if (i == pd->ingameMenuSelection)
                 color = 0xFFFFFFFF;
-            if ((i == 1 && dungeonActive())) {
+            if ((i == 1 && (dungeonActive() || playerLocalIndex != 0))) {
                 color = 0x7F7FFFFF;
                 if (i == pd->ingameMenuSelection)
                     color = 0xFFAFAFFF;
@@ -369,7 +387,9 @@ void ingameMenuRender(PlayerData *pd, int menu, int screen, int width, int heigh
             renderTextColor(msg, (width / 2 - (strlen(msg) * 8)) / 2, (i * 12) + 44, color);
         }
 
-        if (pd->ingameMenuTimer > 0)
+        if (isSaving)
+            renderTextColor("Saving...", (width / 2 - (9 * 8)) / 2, 32, 0xFFFF20FF);
+        else if (pd->ingameMenuTimer > 0)
             renderTextColor("Game Saved!", (width / 2 - (11 * 8)) / 2, 32, 0x20FF20FF);
 
         if (pd->ingameMenuAreYouSure || pd->ingameMenuAreYouSureSave) {
