@@ -15,6 +15,7 @@
 
 int stallCounter;
 bool stallAreYouSure;
+bool isSaving = false;
 
 static int fadeBlackAlpha = 0;
 static int fadeBlackStep = 0;
@@ -407,6 +408,7 @@ void renderGame(int screen, int width, int height) {
                 renderButtonIcon(localInputs.k_decline.input & -localInputs.k_decline.input, 83, 80 - 4);
             }
         }
+
     }
 
     if (screen == 10) {

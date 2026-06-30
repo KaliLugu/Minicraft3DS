@@ -11,3 +11,5 @@ extern void exitGame();
 extern void startFadeToBlack(int duration);
 extern void startFadeFromBlack(int duration);
 extern void playerSleep();
+
+extern bool isSaving;
