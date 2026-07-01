@@ -97,6 +97,10 @@ void menuTitleRender(int screen, int width, int height) {
             renderText("new update is available", 0, 112);
         }
 
+        if (showChangeLog) {
+            // need to create popup for this
+        }
+
         renderTitle(76, 12);
 
         for (int i = 5; i >= 0; --i) {
