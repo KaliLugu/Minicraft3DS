@@ -21,6 +21,7 @@
 #include "render/TextureManager.h"
 #include "data/items/ItemsData.h"
 #include "texturepack.h"
+#include "version.h"
 
 // TODO: Dungeon is way to difficult
 //       -> Skeleton arrows are slower, do a little less damage
@@ -112,17 +113,34 @@ int main() {
 
     srand(time(NULL));
 
+    char *currentVersion = VERSION_STRING;
+
     // load or create localUID
     if ((file = fopen("m3ds_uid.bin", "rb"))) {
         fread(&localUID, sizeof(sInt), 1, file);
+        fseek(file, -strlen(currentVersion), SEEK_END);
+        char savedVersion[16] = {0};
+        fread(savedVersion, sizeof(savedVersion), 1, file);
+        if (!isSameVersion(savedVersion) && !isOlderVersion(savedVersion)) {
+            if (!savedVersion == NULL) {
+                bool showChangeLog = true;
+            }
+            fseek(file, 0, SEEK_END);
+            fwrite(currentVersion, sizeof(char), strlen(currentVersion), file);
+            fclose(file);
+            return 1;
+        }
         fclose(file);
     } else {
         do {
-            localUID = (((sInt)(rand() % 256)) << 24) | (((sInt)(rand() % 256)) << 16) | (((sInt)(rand() % 256)) << 8) | (((sInt)(rand() % 256)));
+            localUID = (((sInt)(rand() % 256)) << 24) | (((sInt)(rand() % 256)) << 16) | (((sInt)(rand() % 256)) << 8) | (((sInt)(rand() % 256))); // generate random 32bit number
         } while (localUID == 0);
 
         if ((file = fopen("m3ds_uid.bin", "wb"))) {
+            bool showChangeLog = true;
             fwrite(&localUID, sizeof(sInt), 1, file);
+            fseek(file, 0, SEEK_END);
+            fwrite(currentVersion, sizeof(char), strlen(currentVersion), file);
             fclose(file);
         }
     }
