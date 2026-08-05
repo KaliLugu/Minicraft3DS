@@ -123,12 +123,11 @@ int main() {
         fread(savedVersion, sizeof(savedVersion), 1, file);
         if (!isSameVersion(savedVersion) && !isOlderVersion(savedVersion)) {
             if (!savedVersion == NULL) {
-                bool showChangeLog = true;
+                showChangeLog = true;
             }
             fseek(file, 0, SEEK_END);
             fwrite(currentVersion, sizeof(char), strlen(currentVersion), file);
             fclose(file);
-            return 1;
         }
         fclose(file);
     } else {
@@ -137,7 +136,7 @@ int main() {
         } while (localUID == 0);
 
         if ((file = fopen("m3ds_uid.bin", "wb"))) {
-            bool showChangeLog = true;
+            showChangeLog = true;
             fwrite(&localUID, sizeof(sInt), 1, file);
             fseek(file, 0, SEEK_END);
             fwrite(currentVersion, sizeof(char), strlen(currentVersion), file);
