@@ -51,7 +51,6 @@ extern MImage imageBottombg;
 extern MImage imageMinimap[6];
 
 extern char currentFileName[256];
-extern bool showChangeLog;
 extern uByte currentMenu;
 extern char fpsstr[];
 extern uByte initGame;
