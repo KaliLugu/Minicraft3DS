@@ -151,10 +151,15 @@ int itemGetIconX(ItemId id, int countLevel) {
         id == getIdFromName("TOOL_BUCKET")) {
         // handle special cases here
         return g_itemTable[id].texX + countLevel;
-    } else return g_itemTable[id].texX;
+    }
+
+    if (id == getIdFromName("NULL")) return 0;
+
+    return g_itemTable[id].texX;
 }
 
 int itemGetIconY(ItemId id, int countLevel) {
+    if (id == getIdFromName("NULL")) return 0;
     if (id >= g_itemCount) return 0;
     return g_itemTable[id].texY;
 }
