@@ -24,7 +24,6 @@ static void _versionCheckThread() {
     _versionChecked = true;
 }
 
-// 0 = pending init, 1 = thread running, 2 = done
 static int _netState = 0;
 static MThread _versionThread = NULL;
 
@@ -38,6 +37,12 @@ void menuTitleTick() {
         mthreadJoin(_versionThread);
         _versionThread = NULL;
         _netState = 2;
+    }
+
+    if (showChangeLog == true) {
+        showChangeLog = false;
+        currentMenu = MENU_CHANGELOG;
+        return;
     }
 
     if (localInputs.k_up.clicked) {
@@ -95,10 +100,6 @@ void menuTitleRender(int screen, int width, int height) {
 
         if (_hasNewVersion) {
             renderText("new update is available", 0, 112);
-        }
-
-        if (showChangeLog) {
-            // need to create popup for this
         }
 
         renderTitle(76, 12);
