@@ -36,28 +36,43 @@ bool isNewerVersion(const char *version) {
 // use version start with 0.x.x for error cases, so that it will be considered as older than any valid version and we can determinate error to show
 // Assumes SOC already initialized by caller — does NOT call internetInit/exitInternet.
 char *fetchLatestVersion() {
-    char *json = miniCurlGet("https://api.github.com/repos/KaliLugu/Minicraft3DS/tags");
+    char *json = miniCurlGet("https://api.github.com/repos/KaliLugu/Minicraft3DS/releases");
     if (!json) return strdup("0.0.2");
 
     cJSON *request_json = cJSON_Parse(json);
     free(json);
     if (!request_json) return strdup("0.0.4");
 
-    cJSON *first_tag = cJSON_GetArrayItem(request_json, 0);
-    if (!first_tag) {
+    if (!cJSON_IsArray(request_json)) {
         cJSON_Delete(request_json);
         return strdup("0.0.5");
     }
 
-    cJSON *name = cJSON_GetObjectItem(first_tag, "name");
-    if (!name || !name->valuestring) {
-        cJSON_Delete(request_json);
-        return strdup("0.0.6");
+    cJSON *release = NULL;
+    cJSON *chosen = NULL;
+
+    cJSON_ArrayForEach(release, request_json) {
+        cJSON *draft = cJSON_GetObjectItem(release, "draft");
+        cJSON *prerelease = cJSON_GetObjectItem(release, "prerelease");
+
+        // On ignore les drafts et les pre-releases
+        if (cJSON_IsTrue(draft) || cJSON_IsTrue(prerelease)) {
+            continue;
+        }
+
+        chosen = release;
+        break;
     }
 
-    if (name->valuestring == NULL) { // check
+    if (!chosen) {
         cJSON_Delete(request_json);
-        return strdup("0.0.7");
+        return strdup("0.0.5");
+    }
+
+    cJSON *name = cJSON_GetObjectItem(chosen, "tag_name");
+    if (!name || !cJSON_IsString(name) || !name->valuestring) {
+        cJSON_Delete(request_json);
+        return strdup("0.0.6");
     }
 
     char *version = strdup(name->valuestring);
