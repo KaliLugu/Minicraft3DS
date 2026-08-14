@@ -105,7 +105,7 @@ Recipe defineRecipe(int item, int amountOrLevel, int numArgs, ...) {
 
 void initRecipes() {
     curPlace = 0;
-    workbenchRecipes.size = 23;
+    workbenchRecipes.size = 24;
     workbenchRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (workbenchRecipes.size));
     workbenchRecipes.recipes[0] = defineRecipe(getIdFromName("ITEM_WORKBENCH"), 1, 1, getIdFromName("ITEM_WOOD"), 20);
     workbenchRecipes.recipes[1] = defineRecipe(getIdFromName("ITEM_FURNACE"), 1, 1, getIdFromName("ITEM_STONE"), 20);
@@ -130,6 +130,7 @@ void initRecipes() {
     workbenchRecipes.recipes[20] = defineRecipe(getIdFromName("ITEM_WALL_WOOD"), 1, 1, getIdFromName("ITEM_WOOD"), 4);
     workbenchRecipes.recipes[21] = defineRecipe(getIdFromName("ITEM_WALL_STONE"), 1, 1, getIdFromName("ITEM_STONE"), 4);
     workbenchRecipes.recipes[22] = defineRecipe(getIdFromName("ITEM_BED"), 1, 2, getIdFromName("ITEM_WOOD"), 4, getIdFromName("ITEM_WOOL"), 2);
+    workbenchRecipes.recipes[23] = defineRecipe(getIdFromName("ITEM_PAPER"), 1, 1, getIdFromName("ITEM_WOOD"), 1);
 
     anvilRecipes.size = 17;
     anvilRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (anvilRecipes.size));
@@ -167,7 +168,8 @@ void initRecipes() {
     loomRecipes.size = 1;
     loomRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (loomRecipes.size));
     loomRecipes.recipes[0] = defineRecipe(getIdFromName("ITEM_STRING"), 1, 1, getIdFromName("ITEM_WOOL"), 1);
-    enchanterRecipes.size = 7;
+
+    enchanterRecipes.size = 13;
     enchanterRecipes.recipes = (Recipe *)malloc(sizeof(Recipe) * (enchanterRecipes.size));
     enchanterRecipes.recipes[0] = defineRecipe(getIdFromName("TOOL_SWORD"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
     enchanterRecipes.recipes[1] = defineRecipe(getIdFromName("TOOL_AXE"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
@@ -176,6 +178,12 @@ void initRecipes() {
     enchanterRecipes.recipes[4] = defineRecipe(getIdFromName("TOOL_SHOVEL"), 4, 2, getIdFromName("ITEM_WOOD"), 5, getIdFromName("ITEM_GEM"), 50);
     enchanterRecipes.recipes[5] = defineRecipe(getIdFromName("ITEM_ARROW_GEM"), 1, 3, getIdFromName("ITEM_WOOD"), 1, getIdFromName("ITEM_GEM"), 3, getIdFromName("ITEM_STRING"), 1);
     enchanterRecipes.recipes[6] = defineRecipe(getIdFromName("ITEM_WALL_GEM"), 1, 1, getIdFromName("ITEM_GEM"), 10);
+    enchanterRecipes.recipes[7] = defineRecipe(getIdFromName("ITEM_SCROLL_UNDYING"), 1, 2, getIdFromName("ITEM_PAPER"), 1, getIdFromName("ITEM_MAGIC_DUST"), 1); // add other Item to create better recipe for Scroll
+    enchanterRecipes.recipes[8] = defineRecipe(getIdFromName("ITEM_SCROLL_REGENERATION"), 1, 2, getIdFromName("ITEM_PAPER"), 1, getIdFromName("ITEM_GOLDEN_APPLE"), 2);
+    enchanterRecipes.recipes[9] = defineRecipe(getIdFromName("ITEM_SCROLL_SPEED"), 1, 2, getIdFromName("ITEM_PAPER"), 1, getIdFromName("ITEM_COAL"), 2);
+    enchanterRecipes.recipes[10] = defineRecipe(getIdFromName("ITEM_SCROLL_STRENGTH"), 1, 3, getIdFromName("ITEM_PAPER"), 1, getIdFromName("ITEM_BONE"), 2, getIdFromName("ITEM_FLESH"), 2);
+    enchanterRecipes.recipes[11] = defineRecipe(getIdFromName("ITEM_SCROLL_SHIELDING"), 1, 2, getIdFromName("ITEM_PAPER"), 1, getIdFromName("ITEM_IRONINGOT"), 2);
+    enchanterRecipes.recipes[12] = defineRecipe(getIdFromName("ITEM_SCROLL_NIGHTVISION"), 1, 2, getIdFromName("ITEM_PAPER"), 1, getIdFromName("ITEM_FLESH"), 2);
 }
 
 /* Free up allocated memory */

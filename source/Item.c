@@ -61,11 +61,9 @@ void removeItemFromInventory(int slot, Inventory *inv) {
 Item newItem(int id, int cLevel) {
     Item item;
     item.id = id;
-    if (id != getIdFromName("NULL")) {
-        if (cLevel > 999)
-            cLevel = 999;
-        item.countLevel = cLevel;
-    }
+    if (cLevel > 999)
+        cLevel = 999;
+    item.countLevel = cLevel;
     item.chestPtr = NULL;
     return item;
 }

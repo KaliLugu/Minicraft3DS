@@ -132,8 +132,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
         if (pd->inputs.k_accept.clicked) {
             if (craftItem(&(pd->currentRecipes), &(pd->currentRecipes.recipes[pd->ingameMenuInvSel]), &(pd->inventory))) {
                 playSoundPositioned(snd_craft, pd->entity.level, pd->entity.x, pd->entity.y);
-                // reset active item pointer, because it could posibly point to garbage now
-                pd->activeItem = &noItem;
+                playerSetActiveItem(pd, &noItem);
             }
         }
         if (pd->inputs.k_up.clicked) {
@@ -210,7 +209,7 @@ void ingameMenuTick(PlayerData *pd, int menu) {
                 int newslot = pd->activeItem->slotNum + 1;
                 pd->activeItem = &(pd->inventory.items[newslot]);
             } else if (pullItem == pd->activeItem) {
-                pd->activeItem = &noItem;
+                playerSetActiveItem(pd, &noItem);
             }
             removeItemFromCurrentInv(pullItem);
             if (pd->ingameMenuInvSel >= i1->lastSlot)
