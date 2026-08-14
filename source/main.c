@@ -121,15 +121,13 @@ int main() {
         fseek(file, -strlen(currentVersion), SEEK_END);
         char savedVersion[16] = {0};
         fread(savedVersion, sizeof(savedVersion), 1, file);
-        if (!isSameVersion(savedVersion) && !isOlderVersion(savedVersion)) {
-            if (!savedVersion == NULL) {
+        fclose(file);
+        if (!isSameVersion(savedVersion) && isOlderVersion(savedVersion)) {
+            if (savedVersion[0] != '\0') {
                 showChangeLog = true;
             }
-            fseek(file, 0, SEEK_END);
-            fwrite(currentVersion, sizeof(char), strlen(currentVersion), file);
-            fclose(file);
+            saveVersionToFile(currentVersion);
         }
-        fclose(file);
     } else {
         do {
             localUID = (((sInt)(rand() % 256)) << 24) | (((sInt)(rand() % 256)) << 16) | (((sInt)(rand() % 256)) << 8) | (((sInt)(rand() % 256))); // generate random 32bit number
