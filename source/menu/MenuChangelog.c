@@ -3,11 +3,13 @@
 #include "../Globals.h"
 #include "../Menu.h"
 #include "../Render.h"
+#include "../version.h"
 
 #include "MenuLoadGame.h"
 
 void menuChangelogTick() {
     if (localInputs.k_accept.clicked) {
+        saveVersionToFile(VERSION_STRING);
         currentSelection = 0;
         currentMenu = MENU_TITLE;
     }

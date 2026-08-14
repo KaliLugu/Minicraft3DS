@@ -17,3 +17,4 @@ extern bool isOlderVersion(const char *version);
 extern bool isNewerVersion(const char *version);
 extern char *fetchLatestVersion();
 extern char *getLatestRemoteVersion();
+extern void saveVersionToFile(const char *version);

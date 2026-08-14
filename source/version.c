@@ -83,3 +83,12 @@ char *getLatestRemoteVersion() {
     exitInternet();
     return v;
 }
+
+void saveVersionToFile(const char *version) {
+    FILE *file = fopen("m3ds_uid.bin", "r+b");
+    if (file) {
+        fseek(file, 0, SEEK_END);
+        fwrite(version, sizeof(char), strlen(version), file);
+        fclose(file);
+    }
+}
