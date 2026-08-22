@@ -51,6 +51,9 @@ void tickMenu(int menu) {
     case MENU_ERROR_LOADING:
         MenuErrorLoadingTick();
         break;
+    case MENU_CHANGELOG:
+        menuChangelogTick();
+        break;
     }
 }
 
@@ -97,6 +100,9 @@ void renderMenu(int menu, int screen, int width, int height) {
         break;
     case MENU_ERROR_LOADING:
         MenuErrorLoadingRender(screen, width, height);
+        break;
+    case MENU_CHANGELOG:
+        menuChangelogRender(screen, width, height);
         break;
     }
 }

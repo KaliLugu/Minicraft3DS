@@ -13,6 +13,8 @@
 char fpsstr[34];
 uByte currentMenu = 0;
 
+bool showChangeLog = false;
+
 sInt localUID;
 
 int loadedtp;

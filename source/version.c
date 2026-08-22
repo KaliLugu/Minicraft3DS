@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "version.h"
+#include "Globals.h"
 #include "cJSON.h"
 #include "network/miniCurl.h"
 
@@ -82,4 +83,13 @@ char *getLatestRemoteVersion() {
     char *v = fetchLatestVersion();
     exitInternet();
     return v;
+}
+
+void saveVersionToFile(const char *version) {
+    FILE *file = fopen("m3ds_uid.bin", "wb");
+    if (file) {
+        fwrite(&localUID, sizeof(sInt), 1, file);
+        fwrite(version, sizeof(char), strlen(version), file);
+        fclose(file);
+    }
 }
