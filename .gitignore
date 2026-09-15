@@ -75,3 +75,6 @@ bannertool
 
 # SSL keys
 *.pem
+
+# compiled fonts
+resources/fonts/**

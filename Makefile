@@ -95,7 +95,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean 3ds build files ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds compile.log
+	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds compile.log resources/fonts/*
 
 #---------------------------------------------------------------------------------
 else
@@ -118,7 +118,7 @@ MAKEFLAGS += -j$(nproc)
 .PHONY:  init
 init:
 	git config core.hooksPath .github/hooks
-	chmod +x .github/hooks/pre-push
+	chmod +x .github/hooks/pre-push fonts/minicraft3ds-font-json2bin fonts/fonts.sh
 	@echo "Git hooks initialized. Pre-push hook is now active."
 
 #---------------------------------------------------------------------------------------
@@ -126,4 +126,4 @@ init:
 #---------------------------------------------------------------------------------------
 all:
 	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
-		bash -c "bash fetch-ssl.sh && make clean && make local -j$$(nproc) 2>&1 | tee build.log"
+		bash -c "bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && bash fetch-ssl.sh && make clean && make local -j$$(nproc) 2>&1 | tee build.log"
