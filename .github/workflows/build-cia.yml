@@ -1,11 +1,11 @@
-name: Build 3DS
+name: Build CIA
 on:
   push:
     branches: ["**"]
   pull_request:
     branches: ["**"]
 jobs:
-  build:
+  build-cia:
     runs-on: ubuntu-latest
     container:
       image: devkitpro/devkitarm:20251231
@@ -16,7 +16,17 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          bash scripts/fetch-ssl.sh && make clean && make local -j$(nproc) 2>&1 | tee build.log
+          bash scripts/fetch-ssl.sh && make clean && make cia -j$(nproc) 2>&1 | tee build.log
+      - name: Upload CIA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Minicraft3DS-cia
+          path: Minicraft3DS.cia
+      - name: Upload 3DS/CCI
+        uses: actions/upload-artifact@v4
+        with:
+          name: Minicraft3DS-3ds
+          path: Minicraft3DS.3ds
       - name: Upload build log
         if: always() && !env.ACT
         uses: actions/upload-artifact@v4
