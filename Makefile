@@ -95,7 +95,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean 3ds build files ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds compile.log
+	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds build.log $(TARGET).lst
 
 #---------------------------------------------------------------------------------
 else
@@ -126,4 +126,23 @@ init:
 #---------------------------------------------------------------------------------------
 all:
 	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
-		bash -c "bash fetch-ssl.sh && make clean && make local -j$$(nproc) 2>&1 | tee build.log"
+		bash -c "bash scripts/fetch-ssl.sh && make clean && make local -j$$(nproc) 2>&1 | tee build.log"
+
+cia-docker:
+	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
+		bash -c "bash scripts/fetch-ssl.sh && make clean && make cia -j$$(nproc) 2>&1 | tee build.log"
+
+cia:
+	echo Building 3DSX/ELF/SMDH...
+	$(MAKE) -j$$(nproc)
+	rm -f makerom bannertool
+	echo download makerom and bannertool
+	bash $(TOPDIR)/scripts/fetch-tools.sh
+	echo Creating banner...
+	$(TOPDIR)/bannertool makebanner -i icons-banners/banner.png -a icons-banners/audio.wav -o icons-banners/banner.bnr
+	echo Creating icon...
+	$(TOPDIR)/bannertool makesmdh -s "Minicraft3DS" -l "3DS Homebrew port of Notch's ludum dare game 'Minicraft', updated." -p "Davideesk/Andre111/ElijahZAwesome/Adrien" -i icons-banners/icon.png  -o icons-banners/icon.icn
+	echo Creating CIA...
+	$(TOPDIR)/makerom -f cia -o Minicraft3DS.cia -DAPP_ENCRYPTED=false -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf Minicraft3DS.elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
+	echo Creating 3DS/CCI...
+	$(TOPDIR)/makerom -rand -f cci -o Minicraft3DS.3ds -DAPP_ENCRYPTED=true -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf Minicraft3DS.elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
