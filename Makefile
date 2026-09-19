@@ -95,11 +95,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean 3ds build files ...
-<<<<<<< HEAD
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds compile.log resources/fonts/*
-=======
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds build.log $(TARGET).lst
->>>>>>> b2526f1 (fix rsf & create make rule for cia build)
+	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds build.log $(TARGET).lst resources/fonts/*
 
 #---------------------------------------------------------------------------------
 else
