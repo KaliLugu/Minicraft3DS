@@ -130,7 +130,7 @@ all:
 
 cia-docker:
 	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
-		bash -c "bash scripts/fetch-ssl.sh && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && make clean && make cia -j$$(nproc) 2>&1 | tee build.log"
+		bash -c "bash scripts/fetch-tools.sh && scripts/fetch-ssl.sh && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && make clean && make cia -j$$(nproc) 2>&1 | tee build.log"
 
 cia:
 	echo Building 3DSX/ELF/SMDH...

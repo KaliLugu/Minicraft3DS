@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+BIN_URL="https://github.com/KaliLugu/minicraft3ds-font-json2bin/releases/download/1.0.0/minicraft3ds-font-json2bin-linux-amd64"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN="$SCRIPT_DIR/minicraft3ds-font-json2bin"
 
@@ -49,13 +50,36 @@ if [[ ! -d "$INPUT_DIR" ]]; then
 fi
 
 if [[ ! -f "$BIN" ]]; then
-    echo "Error: $BIN not found." >&2
-    exit 1
+    echo "Binary not found, downloading from GitHub..."
+    TMP_BIN="$BIN.tmp"
+
+    if command -v curl >/dev/null 2>&1; then
+        curl -fL --progress-bar -o "$TMP_BIN" "$BIN_URL" || {
+            rm -f "$TMP_BIN"
+            echo "Error: download failed (curl)." >&2
+            exit 1
+        }
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q --show-progress -O "$TMP_BIN" "$BIN_URL" || {
+            rm -f "$TMP_BIN"
+            echo "Error: download failed (wget)." >&2
+            exit 1
+        }
+    else
+        echo "Error: neither curl nor wget is installed." >&2
+        exit 1
+    fi
+
+    mv "$TMP_BIN" "$BIN"
+    chmod +x "$BIN"
+    echo "Downloaded and installed: $BIN"
 fi
 
 if [[ ! -x "$BIN" ]]; then
-    echo "Error: $BIN found but not executable (run: chmod +x \"$BIN\")." >&2
-    exit 1
+    chmod +x "$BIN" || {
+        echo "Error: $BIN is not executable and chmod failed." >&2
+        exit 1
+    }
 fi
 
 # Create the output directory if it doesn't exist
