@@ -118,7 +118,7 @@ MAKEFLAGS += -j$(nproc)
 .PHONY:  init
 init:
 	git config core.hooksPath .github/hooks
-	chmod +x .github/hooks/pre-push fonts/minicraft3ds-font-json2bin fonts/fonts.sh
+	chmod +x .github/hooks/pre-push fonts/fonts.sh
 	@echo "Git hooks initialized. Pre-push hook is now active."
 
 #---------------------------------------------------------------------------------------
@@ -126,11 +126,11 @@ init:
 #---------------------------------------------------------------------------------------
 all:
 	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
-		bash -c "bash fetch-ssl.sh && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && make clean && make local -j$$(nproc) 2>&1 | tee build.log"
+		bash -c "bash scripts/fetch-ssl.sh && make clean && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && scripts/fetch-tools.sh && make local -j$$(nproc) 2>&1 | tee build.log"
 
 cia-docker:
 	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
-		bash -c "bash scripts/fetch-tools.sh && scripts/fetch-ssl.sh && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && make clean && make cia -j$$(nproc) 2>&1 | tee build.log"
+		bash -c "bash scripts/fetch-tools.sh && bash scripts/fetch-ssl.sh && make clean && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && make cia -j$$(nproc) 2>&1 | tee build.log"
 
 cia:
 	echo Building 3DSX/ELF/SMDH...

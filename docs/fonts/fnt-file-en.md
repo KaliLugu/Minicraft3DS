@@ -22,7 +22,7 @@ The `.fnt` extension is a project-specific convention for identifying these file
 The `.fnt` file is a simple binary concatenation, with no table of contents or sections of varying sizes:
 
 ```txt
-Offset 0                          : FontBinaryHeader (64 octets, taille fixe)
+Offset 0                          : FontBinaryHeader (64 bytes, fixed size)
 Offset 64                         : FontGlyph[glyph_count]        (20 bytes each, sorted by ascending codepoint)
 Offset 64 + glyph_count*20        : FontKerningPair[kerning_count] (12 bytes each, sorted in ascending order by (first, second))
 ```
@@ -37,12 +37,12 @@ This is exactly the calculation performed by the `--verify` option of the conver
 
 > **Endianness / alignement** : All structures are declared with `#pragma pack(push, 1)`, so no padding is added by the compiler. The offsets below are consistent across any compiler that adheres to this pragma. The format assumes a little-endian platform (both the generator PC and the 3DS/ARM11 reader are little-endian).
 
-## `FontBinaryHeader` — 64 octets
+## `FontBinaryHeader` — 64 bytes
 
 | Offset | size | Field | Type | Description |
 |---|---|---|---|---|
 | 0x00 | 4 | `magic` | `char[4]` | `"FONT"`, sans `\0` Stored. Signature must be verified before any processing. |
-| 0x04 | 2 | `version` | `uint16_t` | Version du format binaire (actuellement `1`). Binary format version (currently `1`). Increment this value if the layout changes. |
+| 0x04 | 2 | `version` | `uint16_t` | Binary format version (actuellement `1`). Binary format version (currently `1`). Increment this value if the layout changes. |
 | 0x06 | 2 | `flags` | `uint16_t` | Bit 0 (`FONT_FLAG_IS_SDF`) : Font in Signed Distance Field. Bit 1 (`FONT_FLAG_KERNING_ENABLED`): kerning enabled |
 | 0x08 | 2 | `glyph_count` | `uint16_t` | Number of glyphs (max 65,535). |
 | 0x0A | 2 | `kerning_count` | `uint16_t` | Number of kerning pairs (max 65,535). |
@@ -161,7 +161,7 @@ The converter expects a JSON object with three sections: `header` (object), `gly
 
 ### Elements of `kerning[]`
 
-| Champ | Type | Obligatoire |
+| Field | Type | Required |
 |---|---|---|
 | `first` | int | **yes** |
 | `second` | int | **yes** |
@@ -175,12 +175,12 @@ minicraft3ds-font-json2bin <input.json> <output.fnt> [--verify]
 
 
 - `input.json` : source file describing the font (see Section 8).
-- `output.fnt` : chemin du fichier binaire à générer.
+- `output.fnt` : path to the binary file to be generated.
 - `--verify` (optional): Immediately re-reads the generated file, checks the `magic`, and recalculates the expected size (`64 + glyph_count*20 + kerning_count*12`) to compare it with the file's actual size. Useful locally and in CI to detect regressions in the format or the converter.
 
 If an error occurs (invalid JSON, missing required field, duplicate codepoint, `default_char` not found, `is_sdf` without a valid `sdf_spread_px`...), the tool displays a clear message on `stderr` and exits with a non-zero return code, without writing a partial output file.
 
-## 10. Utilisation côté runtime (lecture sur 3DS)
+## 10. Runtime Usage (Playing on the 3DS)
 
 1. Load the `.fnt` file into memory (raw read, no parsing).
 2. Cast the first 64 bytes to `FontBinaryHeader*`; check `magic` and `version` before using it.
