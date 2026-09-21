@@ -51,7 +51,7 @@ export APP_TITLE	:= Minicraft
 export APP_DESCRIPTION	:= Minicraft was originally created by Markus "Notch" Perrson.
 export APP_AUTHOR	:= Davideesk/andre111/adrien
 
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export OUTPUT	:=	$(CURDIR)/build/$(TARGET)
 export TOPDIR	:=	$(CURDIR)
 
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) 
@@ -76,7 +76,7 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 export APP_ICON := $(TOPDIR)/icons-banners/icon.png
 
-export _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
+export _3DSXFLAGS += --smdh=$(OUTPUT).smdh
 export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 
 # Export DEPSDIR to fix dependency file path issue
@@ -143,6 +143,6 @@ cia:
 	echo Creating icon...
 	$(TOPDIR)/bannertool makesmdh -s "Minicraft3DS" -l "3DS Homebrew port of Notch's ludum dare game 'Minicraft', updated." -p "Davideesk/Andre111/ElijahZAwesome/Adrien" -i icons-banners/icon.png  -o icons-banners/icon.icn
 	echo Creating CIA...
-	$(TOPDIR)/makerom -f cia -o Minicraft3DS.cia -DAPP_ENCRYPTED=false -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf Minicraft3DS.elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
+	$(TOPDIR)/makerom -f cia -o $(OUTPUT).cia -DAPP_ENCRYPTED=false -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf $(OUTPUT).elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
 	echo Creating 3DS/CCI...
-	$(TOPDIR)/makerom -rand -f cci -o Minicraft3DS.3ds -DAPP_ENCRYPTED=true -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf Minicraft3DS.elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
+	$(TOPDIR)/makerom -rand -f cci -o $(OUTPUT).3ds -DAPP_ENCRYPTED=true -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf $(OUTPUT).elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
