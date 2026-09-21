@@ -104,6 +104,7 @@ Un fichier `.fnt` produit par l'outil de conversion respecte toujours les contra
 - Les paires de kerning sont triées par `(first, second)` croissants.
 - `reserved[32]` est mis à zéro (aucune extension utilisée pour l'instant).
 - Taille du fichier == `64 + glyph_count * 20 + kerning_count * 12` (vérifiable avec l'option `--verify`, voir section 9).
+
 ## Format source JSON attendu
 
 Le convertisseur attend un JSON avec trois sections : `header` (objet), `glyphs` (tableau non vide) et `kerning` (tableau optionnel).
@@ -177,6 +178,7 @@ minicraft3ds-font-json2bin <input.json> <output.fnt> [--verify]
 - `input.json` : fichier source décrivant la police (voir section 8).
 - `output.fnt` : chemin du fichier binaire à générer.
 - `--verify` (optionnel) : relit immédiatement le fichier généré, vérifie le `magic` et recalcule la taille attendue (`64 + glyph_count*20 + kerning_count*12`) pour la comparer à la taille réelle du fichier. Utile en local et en CI pour détecter une régression du format ou du convertisseur.
+
 En cas d'erreur (JSON invalide, champ requis manquant, codepoint dupliqué, `default_char` introuvable, `is_sdf` sans `sdf_spread_px` valide...), l'outil affiche un message explicite sur `stderr` et quitte avec un code de retour non nul, sans écrire de fichier de sortie partiel.
 
 ## 10. Utilisation côté runtime (lecture sur 3DS)
@@ -188,4 +190,5 @@ En cas d'erreur (JSON invalide, champ requis manquant, codepoint dupliqué, `def
 5. Pour dessiner un caractère : recherche binaire (`bsearch`) par `codepoint` dans le tableau de glyphes trié. Si le codepoint est absent, utiliser le glyphe de `default_char`.
 6. Pour l'espacement entre deux caractères consécutifs : recherche binaire par `(first, second)` dans la table de kerning triée ; si aucune paire ne correspond, avance standard (`xadvance`) sans ajustement.
 7. Pour le rendu à une taille d'affichage donnée : calculer `scale = taille_voulue_px / reference_size_px`, puis utiliser `sdf_spread_px` dans le shader SDF pour déterminer le seuillage des bords à cette échelle et obtenir un rendu net à n'importe quelle taille sans regénérer l'atlas.
+
 Comme le format est entièrement POD et packé sur 1 octet, aucune étape de désérialisation n'est nécessaire : le buffer lu depuis le stockage peut être utilisé directement comme tableaux de structs C, ce qui rend le chargement quasi instantané.
