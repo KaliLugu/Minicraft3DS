@@ -67,7 +67,7 @@ Temporary Items
 makerom
 ctrtool
 bannertool
-
+minicraft3ds-font-json2bin
 
 # ssl certs
 #logs 
@@ -75,3 +75,6 @@ bannertool
 
 # SSL keys
 *.pem
+
+# compiled fonts
+resources/fonts/**
