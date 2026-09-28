@@ -5,8 +5,8 @@ BIN_URL="https://github.com/KaliLugu/minicraft3ds-font-json2bin/releases/downloa
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN="$SCRIPT_DIR/minicraft3ds-font-json2bin"
 
-INPUT_DIR="."
-OUTPUT_DIR="."
+INPUT_DIR="fonts/"
+OUTPUT_DIR="resources/fonts/"
 
 usage() {
     echo "Usage: $0 [-i|--input-dir DIR] [-o|--output-dir DIR]" >&2
