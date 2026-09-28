@@ -16,3 +16,4 @@ typedef struct
 extern unsigned int g_fontsCount;
 extern fontsData *g_fontsTable;
 extern void fontsTableBulid(uint8_t fontsCount);
+extern void fontsTableFree(void);

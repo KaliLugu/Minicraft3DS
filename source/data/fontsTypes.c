@@ -13,16 +13,29 @@ static const unsigned int _vanillaCount = sizeof(_vanillaDefs) / sizeof(_vanilla
 fontsData *g_fontsTable = NULL;
 unsigned int g_fontsCount;
 
-void fontsTableBulid(uint8_t fontsCount) {
-    g_fontsCount = _vanillaCount + fontsCount;
-    g_fontsTable = malloc(g_fontsCount * sizeof(fontsData));
+void fontsTableBuild(uint8_t fontsCount) {
+    free(g_fontsTable);
+    g_fontsTable = NULL;
 
-    if (!g_fontsTable) {
-        g_fontsCount = 0;
-        return;
+    g_fontsCount = _vanillaCount + fontsCount;
+    if (g_fontsCount > MAX_FONTS_ID) {
+        g_fontsCount = MAX_FONTS_ID; // to much fonts mods
     }
-    for (unsigned int i = 0; i < _vanillaCount; i++) {
+
+    g_fontsTable = calloc(g_fontsCount, sizeof(fontsData));
+       if (!g_fontsTable) {
+       g_fontsCount = 0;
+       return;
+   }
+
+    for (unsigned int i = 0; i < _vanillaCount && i < g_fontsCount; i++) {
         g_fontsTable[i] = _vanillaDefs[i];
         g_fontsTable[i].id = (FontsId)i;
     }
+}
+
+void fontsTableFree(void) {
+    free(g_fontsTable);
+    g_fontsTable = NULL;
+    g_fontsCount = 0;
 }
