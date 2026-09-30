@@ -186,7 +186,7 @@ minicraft3ds-font-json2bin <input.json> <output.fnt> [--verify]
 
 If an error occurs (invalid JSON, missing required field, duplicate codepoint, `default_char` not found, `is_sdf` without a valid `sdf_spread_px`...), the tool displays a clear message on `stderr` and exits with a non-zero return code, without writing a partial output file.
 
-## 10. Runtime Usage (Playing on the 3DS)
+## Runtime Usage (Playing on the 3DS)
 
 1. Load the `.fnt` file into memory (raw read, no parsing).
 2. Cast the first 64 bytes to `FontBinaryHeader*`; check `magic` and `version` before using it.
