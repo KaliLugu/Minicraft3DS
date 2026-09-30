@@ -2,6 +2,7 @@
 *.elf
 *.lst
 *.log
+*.fnt
 
 # 3DS Dev
 *.3dsx
