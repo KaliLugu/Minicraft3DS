@@ -8,7 +8,7 @@ fi
 make clean
 make
 make clean
-make cia-docker
+make cia
 
 if [ $? -ne 0 ]; then
     echo "❌ Failure - push aborted."

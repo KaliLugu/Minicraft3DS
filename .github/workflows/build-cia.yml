@@ -16,7 +16,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          bash scripts/fetch-ssl.sh && make clean && make cia -j$(nproc) 2>&1 | tee build.log
+          bash scripts/fetch-ssl.sh && make clean && make cia-local -j$(nproc) 2>&1 | tee build.log
       - name: Upload CIA
         uses: actions/upload-artifact@v4
         with:

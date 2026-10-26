@@ -10,6 +10,7 @@ TOPDIR ?= $(CURDIR)
 include $(DEVKITARM)/3ds_rules
 
 TARGET		:=	Minicraft3DS
+TRASH       :=  build/Minicraft3DS
 BUILD		:=	build_3ds
 
 #---------------------------------------------------------------------------------
@@ -84,7 +85,22 @@ export DEPSDIR  := $(CURDIR)/$(BUILD)
 
 .PHONY: $(BUILD) clean all
 
-#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
+# Build docker image
+#---------------------------------------------------------------------------------------
+all:
+	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
+		bash -c "bash scripts/fetch-ssl.sh && make clean && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && scripts/fetch-tools.sh && make local -j$$(nproc) 2>&1 | tee build.log"
+
+cia:
+	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
+		bash -c "bash scripts/fetch-tools.sh && bash scripts/fetch-ssl.sh && make clean && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && make cia-local -j$$(nproc) 2>&1 | tee build.log"
+
+
+
+#---------------------------------------------------------------------------------------
+# Local Build
+#---------------------------------------------------------------------------------------
 local: $(BUILD)
 
 $(BUILD):
@@ -92,12 +108,37 @@ $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
+cia-local:
+	echo Building 3DSX/ELF/SMDH...
+	$(MAKE) local -j$$(nproc)
+	rm -f makerom bannertool
+	echo download makerom and bannertool
+	bash $(TOPDIR)/scripts/fetch-tools.sh
+	echo Creating banner...
+	$(TOPDIR)/bannertool makebanner -i icons-banners/banner.png -a icons-banners/audio.wav -o icons-banners/banner.bnr
+	echo Creating icon...
+	$(TOPDIR)/bannertool makesmdh -s "Minicraft3DS" -l "3DS Homebrew port of Notch's ludum dare game 'Minicraft', updated." -p "Davideesk/Andre111/ElijahZAwesome/Adrien" -i icons-banners/icon.png  -o icons-banners/icon.icn
+	echo Creating CIA...
+	$(TOPDIR)/makerom -f cia -o $(OUTPUT).cia -DAPP_ENCRYPTED=false -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf $(OUTPUT).elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
+	echo Creating 3DS/CCI...
+	$(TOPDIR)/makerom -rand -f cci -o $(OUTPUT).3ds -DAPP_ENCRYPTED=true -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf $(OUTPUT).elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
+
+#---------------------------------------------------------------------------------
+# Clean Build
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean 3ds build files ...
-	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).smdh $(TARGET).elf $(TARGET).cia $(TARGET).3ds build.log $(TARGET).lst resources/fonts/*
+	@rm -fr $(BUILD) $(TRASH).3dsx $(TRASH).smdh $(TRASH).elf $(TRASH).cia $(TRASH).3ds build.log $(TARGET).lst resources/fonts/*
+	pwd
 
 #---------------------------------------------------------------------------------
+# Initialize the repository
+#---------------------------------------------------------------------------------
+init:
+	git config core.hooksPath .github/hooks
+	chmod +x .github/hooks/pre-push fonts/fonts.sh
+	@echo "Git hooks initialized. Pre-push hook is now active."
+
 else
 
 DEPSDIR ?= .
@@ -116,33 +157,4 @@ endif
 MAKEFLAGS += -j$(nproc)
 
 .PHONY:  init
-init:
-	git config core.hooksPath .github/hooks
-	chmod +x .github/hooks/pre-push fonts/fonts.sh
-	@echo "Git hooks initialized. Pre-push hook is now active."
 
-#---------------------------------------------------------------------------------------
-# Build docker image
-#---------------------------------------------------------------------------------------
-all:
-	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
-		bash -c "bash scripts/fetch-ssl.sh && make clean && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && scripts/fetch-tools.sh && make local -j$$(nproc) 2>&1 | tee build.log"
-
-cia-docker:
-	docker run --rm -v "$(PWD):/Minicraft3ds" -w /Minicraft3ds devkitpro/devkitarm:20251231 \
-		bash -c "bash scripts/fetch-tools.sh && bash scripts/fetch-ssl.sh && make clean && bash fonts/fonts.sh -i fonts/ -o resources/fonts/ && make cia -j$$(nproc) 2>&1 | tee build.log"
-
-cia:
-	echo Building 3DSX/ELF/SMDH...
-	$(MAKE) -j$$(nproc)
-	rm -f makerom bannertool
-	echo download makerom and bannertool
-	bash $(TOPDIR)/scripts/fetch-tools.sh
-	echo Creating banner...
-	$(TOPDIR)/bannertool makebanner -i icons-banners/banner.png -a icons-banners/audio.wav -o icons-banners/banner.bnr
-	echo Creating icon...
-	$(TOPDIR)/bannertool makesmdh -s "Minicraft3DS" -l "3DS Homebrew port of Notch's ludum dare game 'Minicraft', updated." -p "Davideesk/Andre111/ElijahZAwesome/Adrien" -i icons-banners/icon.png  -o icons-banners/icon.icn
-	echo Creating CIA...
-	$(TOPDIR)/makerom -f cia -o $(OUTPUT).cia -DAPP_ENCRYPTED=false -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf $(OUTPUT).elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
-	echo Creating 3DS/CCI...
-	$(TOPDIR)/makerom -rand -f cci -o $(OUTPUT).3ds -DAPP_ENCRYPTED=true -rsf icons-banners/Minicraft3DS.rsf -target t -exefslogo -elf $(OUTPUT).elf -icon icons-banners/icon.icn -banner icons-banners/banner.bnr
