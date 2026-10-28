@@ -4,7 +4,7 @@
 #include <string.h>
 #include <malloc.h>
 #include <stddef.h>
-#include <3ds.h>
+#include "../engine/engine.h"
 
 extern int internetInit();
 extern int exitInternet();

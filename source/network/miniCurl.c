@@ -1,7 +1,7 @@
 #include "miniCurl.h"
 #include "../version.h"
 
-static u32 *_socBuffer = NULL;
+static uInt *_socBuffer = NULL;
 
 typedef struct {
     char *string;
@@ -24,7 +24,7 @@ int internetInit() {
     FILE *f = fopen("sdmc:/minicraft_net.txt", "w");
     if (f) { fprintf(f, "acWait OK, doing socInit\n"); fclose(f); }
 
-    _socBuffer = (u32 *)memalign(0x1000, 0x100000);
+    _socBuffer = (uInt *)memalign(0x1000, 0x100000);
     if (!_socBuffer) {
         acExit();
         return -1;
