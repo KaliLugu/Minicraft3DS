@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BIN_URL="https://github.com/KaliLugu/minicraft3ds-font-json2bin/releases/download/1.0.0/minicraft3ds-font-json2bin-linux-amd64"
+os="$(uname -s)"
+arch="$(uname -m)"
+
+BASE_URL="https://github.com/KaliLugu/minicraft3ds-font-json2bin/releases/download/1.0.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN="$SCRIPT_DIR/minicraft3ds-font-json2bin"
 
@@ -14,6 +17,27 @@ usage() {
     echo "  -o, --output-dir DIR   Directory where the .bin files will be saved (default: current directory)" >&2
     exit 1
 }
+
+if [[ "$os" == "Darwin" && "$(sysctl -n sysctl.proc_translated 2>/dev/null || true)" == "1" ]]; then
+    arch="arm64"
+fi
+
+
+case "${os}-${arch}" in
+    Linux-x86_64)
+        platform="linux-amd64"
+        BIN_URL="$BASE_URL/minicraft3ds-font-json2bin-linux-amd64"
+        ;;
+    Darwin-arm64)
+        platform="darwin-arm64"
+        BIN_URL="$BASE_URL/minicraft3ds-font-json2bin-apple-silicon"
+        ;;
+    *)
+        echo "Error: unsupported platform: ${os} ${arch}" >&2
+        exit 1
+        ;;
+esac
+
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
