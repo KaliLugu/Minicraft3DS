@@ -1,3 +1,5 @@
+#include "fontsTypes.h"
+
 #pragma once
 
 extern char* getDisplayNameFromName(const char *name);

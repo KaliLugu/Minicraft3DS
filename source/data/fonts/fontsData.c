@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "fontsTypes.h"
+#include "fontsData.h"
 
 FontsId getIdFromName(const char *name) {
     if (g_fontsTable == NULL || g_fontsTable == 0) return 0;
