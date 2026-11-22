@@ -1,5 +1,5 @@
 #include "Quests.h"
-#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 
 #include "Globals.h"
 #include "Render.h"

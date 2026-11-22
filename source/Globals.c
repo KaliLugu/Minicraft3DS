@@ -1,6 +1,6 @@
 #include "Globals.h"
 #include "Ingame.h"
-#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 
 #include "render/TextureManager.h"
 

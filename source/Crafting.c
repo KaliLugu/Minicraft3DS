@@ -1,6 +1,6 @@
 #include "Crafting.h"
-#include "data/items/ItemsData.h"
 #include "data/items/ItemsTypes.h"
+#include "data/items/ItemsData.h"
 
 #include "Data.h"
 #include <string.h>

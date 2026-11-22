@@ -8,7 +8,7 @@
 #include "SaveLoad.h"
 #include "engine/sync.h"
 #include "network/Synchronizer.h"
-#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 
 #define SAVE_THREAD_STACK (64 * 1024)
 

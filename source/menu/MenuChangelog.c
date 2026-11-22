@@ -1,4 +1,4 @@
-#include "MenuMultiplayerHost.h"
+#include "MenuChangelog.h"
 
 #include "../Globals.h"
 #include "../Menu.h"
