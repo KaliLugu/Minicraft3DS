@@ -1,5 +1,5 @@
 #include "RenderLights.h"
-#include "../data/items/ItemsData.h"
+#include "../data/items/ItemsTypes.h"
 
 MImage playerLightBakeImage;
 MImage lanternLightBakeImage;

@@ -1,6 +1,6 @@
 #include "Player.h"
-#include "data/items/ItemsData.h"
 #include "data/items/ItemsTypes.h"
+#include "data/items/ItemsData.h"
 #include "Globals.h"
 #include <limits.h>
 

@@ -1,7 +1,7 @@
 #include "Render.h"
 #include "render/RenderTiles.h"
 #include "render/TextureManager.h"
-#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 
 extern int syncTickCount;
 

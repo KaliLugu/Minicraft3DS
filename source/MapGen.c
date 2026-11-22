@@ -1,6 +1,6 @@
 #include "MapGen.h"
 #include "network/Synchronizer.h"
-#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 
 int featureX;
 int featureY;

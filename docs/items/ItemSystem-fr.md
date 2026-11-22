@@ -29,7 +29,8 @@ Les vérifications de bornes utilisent `g_itemCount` (valeur runtime) plutôt qu
 ## Architecture actuelle
 
 ### Définition des items
-Les items vanilla sont définis dans `source/data/items/ItemsTypes.c` via un tableau statique interne `_vanillaDefs[]`.
+
+Les items vanilla sont définis dans `source/data/items/ItemsData.c` via un tableau statique interne `_vanillaDefs[]`.
 Ce tableau contient uniquement les définitions des items du jeu de base et n'est pas exposé directement aux autres modules.
 
 La table d'items accessible globalement est :
@@ -123,16 +124,16 @@ Le reste de la chaîne (`itemsTableBuild`, lookup, sérialisation) fonctionne d�
 
 ## Ce qui a changé (historique refacto)
 
-- `ItemsTypes.c`
+- `ItemsData.c`
   - `_vanillaDefs[]` contient les définitions vanilla
   - `itemsTableBuild(uint16_t modCount)` alloue `g_itemTable` dynamiquement
   - `g_itemCount` est défini en runtime
   - `ItemsTables[]` n'existe plus
-- `ItemsTypes.h`
+- `ItemsData.h`
   - plus d'`extern ItemData ItemsTables[]`
   - plus d'`extern const unsigned int itemCount`
   - exporte `g_itemTable`, `g_itemCount`, `itemsTableBuild()`
-- `ItemsData.c`
+- `ItemsTypes.c`
   - `_itemNames` et `_itemSingle` supprimés (données migrées dans `ItemData`)
   - `itemGetIconX()` et `itemGetIconY()` remplacent les anciens tableaux (`_itemIconX`, `_itemIconY`)
   - `getNameFromId()` et les bornes utilisent `g_itemCount`
@@ -145,9 +146,9 @@ Le reste de la chaîne (`itemsTableBuild`, lookup, sérialisation) fonctionne d�
 
 | Fichier | Rôle |
 |---|---|
-| `source/data/items/ItemsData.h` | Déclaration de `ItemData`, `ItemId`, `ItemCategory`, fonctions liées aux items |
-| `source/data/items/ItemsTypes.h` | Expose `g_itemTable`, `g_itemCount` et `itemsTableBuild()` |
-| `source/data/items/ItemsTypes.c` | Définitions vanilla, build dynamique de la table d'items |
-| `source/data/items/ItemsData.c` | Recherche d'items, initialisation des arrays dérivés, bounds checks |
+| `source/data/items/ItemsTypes.h` | Déclaration de `ItemData`, `ItemId`, `ItemCategory`, fonctions liées aux items |
+| `source/data/items/ItemsData.h` | Expose `g_itemTable`, `g_itemCount` et `itemsTableBuild()` |
+| `source/data/items/ItemsData.c` | Définitions vanilla, build dynamique de la table d'items |
+| `source/data/items/ItemsTypes.c` | Recherche d'items, initialisation des arrays dérivés, bounds checks |
 | `source/Data.c` | Ordre d'initialisation : build de la table puis init des données |
 | `source/SaveLoad.c` | Sérialisation et désérialisation des items via noms logiques |

@@ -19,7 +19,7 @@
 #include "network/RP2P.h"
 #include "network/Synchronizer.h"
 #include "render/TextureManager.h"
-#include "data/items/ItemsData.h"
+#include "data/items/ItemsTypes.h"
 #include "texturepack.h"
 #include "version.h"
 
